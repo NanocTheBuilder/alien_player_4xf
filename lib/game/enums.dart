@@ -1,24 +1,52 @@
-class FleetType{
+abstract class Difficulty {
+  final String name;
+  final int cpPerEcon;
+  final int numberOfAlienPlayers;
+
+  const Difficulty(this.name, this.cpPerEcon, this.numberOfAlienPlayers);
+}
+
+class FleetType {
   static const FleetType REGULAR_FLEET = FleetType(FleetNameSequence.BASIC);
   static const FleetType RAIDER_FLEET = FleetType(FleetNameSequence.RAIDER);
   static const FleetType DEFENSE_FLEET = FleetType(FleetNameSequence.DEFENSE);
   static const FleetType EXPANSION_FLEET = FleetType(FleetNameSequence.BASIC);
-  static const FleetType EXTERMINATION_FLEET_GALACTIC_CAPITAL = FleetType(FleetNameSequence.BASIC);
-  static const FleetType EXTERMINATION_FLEET_HOME_WORLD = FleetType(FleetNameSequence.BASIC);
+  static const FleetType EXTERMINATION_FLEET_GALACTIC_CAPITAL =
+      FleetType(FleetNameSequence.BASIC);
+  static const FleetType EXTERMINATION_FLEET_HOME_WORLD =
+      FleetType(FleetNameSequence.BASIC);
+
   const FleetType(this.sequence);
+
   final FleetNameSequence sequence;
+
   bool isSameNameSequence(FleetType other) => sequence == other.sequence;
 }
 
-enum FleetNameSequence{BASIC, DEFENSE, RAIDER }
+enum FleetNameSequence { BASIC, DEFENSE, RAIDER }
 
-enum PlayerColor {GREEN, YELLOW, RED, BLUE }
+enum PlayerColor { GREEN, YELLOW, RED, BLUE }
 
-enum Seeable {FIGHTERS, MINES, BOARDING_SHIPS, VETERANS, SIZE_3_SHIPS }
+enum Seeable { FIGHTERS, MINES, BOARDING_SHIPS, VETERANS, SIZE_3_SHIPS }
 
-enum Technology {MOVE, SHIP_SIZE, ATTACK, DEFENSE, TACTICS, CLOAKING, SCANNER, FIGHTERS, POINT_DEFENSE, MINE_SWEEPER, SECURITY_FORCES, MILITARY_ACADEMY, BOARDING, GROUND_COMBAT}
+enum Technology {
+  MOVE,
+  SHIP_SIZE,
+  ATTACK,
+  DEFENSE,
+  TACTICS,
+  CLOAKING,
+  SCANNER,
+  FIGHTERS,
+  POINT_DEFENSE,
+  MINE_SWEEPER,
+  SECURITY_FORCES,
+  MILITARY_ACADEMY,
+  BOARDING,
+  GROUND_COMBAT
+}
 
-enum FleetBuildOption {COMBAT_IS_ABOVE_PLANET, HOME_DEFENSE, COMBAT_WITH_NPAS }
+enum FleetBuildOption { COMBAT_IS_ABOVE_PLANET, HOME_DEFENSE, COMBAT_WITH_NPAS }
 
 class ShipType {
   static const ShipType RAIDER = ShipType(12, 2, 99);
@@ -41,19 +69,28 @@ class ShipType {
   static const ShipType GRAV_ARMOR = ShipType(4, 2, 99);
   static const ShipType BOARDING_SHIP = ShipType(12, 2, 99);
 
-  static const List<ShipType> cheapToExpensive = [SCOUT, DESTROYER, CRUISER, BATTLECRUISER, BATTLESHIP, DREADNAUGHT, TITAN];
+  static const List<ShipType> cheapToExpensive = [
+    SCOUT,
+    DESTROYER,
+    CRUISER,
+    BATTLECRUISER,
+    BATTLESHIP,
+    DREADNAUGHT,
+    TITAN
+  ];
 
-  final num cost;
-  final num hullSize;
-  final num requiredShipSize;
+  final int cost;
+  final int hullSize;
+  final int requiredShipSize;
 
   const ShipType(this.cost, this.hullSize, this.requiredShipSize);
 
-  bool canBeBuilt(int availableCP, int shipSizeLevel) => availableCP >= cost && shipSizeLevel >= requiredShipSize;
+  bool canBeBuilt(int availableCP, int shipSizeLevel) =>
+      availableCP >= cost && shipSizeLevel >= requiredShipSize;
 
   static ShipType findCheapest(int minHullSize) {
     return cheapToExpensive.firstWhere((type) => type.hullSize >= minHullSize,
-    orElse: () => null);
+        orElse: () => null);
   }
 
   static Iterable<ShipType> getBiggerTypesInReverse(ShipType type) {
@@ -61,8 +98,8 @@ class ShipType {
   }
 
   static ShipType findBiggest(int availableCP, int shipSizeLevel) {
-    return cheapToExpensive.reversed.firstWhere((type) => type.canBeBuilt(availableCP, shipSizeLevel),
-    orElse: () => null);
+    return cheapToExpensive.reversed.firstWhere(
+        (type) => type.canBeBuilt(availableCP, shipSizeLevel),
+        orElse: () => null);
   }
-
 }
