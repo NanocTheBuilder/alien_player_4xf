@@ -6,8 +6,7 @@ import 'package:test/test.dart';
 import 'mock_roller.dart';
 
 void main() {
-  // class EconomicRollTest {
-  //
+
   //@formatter:off
   var resultTable = [
     [[     ], [     ], [      ], [      ]],

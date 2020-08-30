@@ -28,7 +28,7 @@ class GroupBuilder {
   GroupBuilder(this.game);
 
   void buildGroup(Fleet fleet, ShipType shipType, [int maxToBuy = 999]) {
-    int shipToBuy = (fleet.remainingCP / shipType.cost) as int;
+    int shipToBuy = fleet.remainingCP ~/ shipType.cost;
     shipToBuy = shipToBuy > maxToBuy ? maxToBuy : shipToBuy;
     fleet.addGroup(Group(shipType, shipToBuy));
   }
@@ -92,7 +92,7 @@ class FleetBuilder extends GroupBuilder {
   }
 
   void buildCarrierFleet(Fleet fleet) {
-    int shipsToBuild = (fleet.fleetCP / FULL_CV_COST) as int;
+    int shipsToBuild = fleet.fleetCP ~/ FULL_CV_COST;
     fleet.addGroup(Group(ShipType.CARRIER, shipsToBuild));
     fleet.addGroup(Group(ShipType.FIGHTER, shipsToBuild * 3));
   }
@@ -109,7 +109,7 @@ class FleetBuilder extends GroupBuilder {
               fleet.remainingCP >= biggerType.cost) {
             int remainder = fleet.remainingCP % cheapestType.cost;
             int difference = biggerType.cost - cheapestType.cost;
-            int shipType2ToBuy = (remainder / difference) as int;
+            int shipType2ToBuy = remainder ~/ difference;
             buildGroup(fleet, biggerType, shipType2ToBuy);
           }
         }

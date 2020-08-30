@@ -10,7 +10,7 @@ abstract class TechnologyPrices {
   List<Technology> availableTechs = [];
   Map<Technology, List<int>> map = {};
 
-  void init(Technology technology, List ints) {
+  void init(Technology technology, List<int> ints) {
     map[technology] = ints;
     availableTechs.add(technology);
   }
@@ -31,7 +31,7 @@ abstract class TechnologyPrices {
 abstract class TechnologyBuyer {
   Game game;
 
-  Map<Technology, int> TECHNOLOGY_ROLL_TABLE = SplayTreeMap();
+  Map<Technology, int> TECHNOLOGY_ROLL_TABLE = SplayTreeMap((tech1, tech2){return tech1.index - tech2.index;});
 
   List<int> get shipSizeRollTable;
 
@@ -39,7 +39,7 @@ abstract class TechnologyBuyer {
     initRollTable();
   }
 
-  void buyTechs(Fleet fleet, [List<FleetBuildOption> options]) {
+  void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const []]) {
     buyOptionalTechs(fleet, options);
     spendRemainingTechCP(fleet, options);
   }
@@ -52,7 +52,7 @@ abstract class TechnologyBuyer {
 
   void buyOptionalTechs(Fleet fleet, [List<FleetBuildOption> options]);
 
-  void spendRemainingTechCP(Fleet fleet, [List<FleetBuildOption> options]) {
+  void spendRemainingTechCP(Fleet fleet, [List<FleetBuildOption> options = const []]) {
     while (true) {
       List<Technology> buyable = findBuyableTechs(fleet, options);
       if (buyable.isEmpty) break;
@@ -124,7 +124,7 @@ abstract class TechnologyBuyer {
   }
 
   List<Technology> findBuyableTechs(
-      Fleet fleet, [List<FleetBuildOption> options]) {
+      Fleet fleet, [List<FleetBuildOption> options = const []]) {
     List<Technology> buyable = [];
     for (Technology technology in TECHNOLOGY_ROLL_TABLE.keys) {
       if (fleetCanBuyNextLevel(fleet, technology, options)) {

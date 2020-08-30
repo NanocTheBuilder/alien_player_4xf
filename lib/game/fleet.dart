@@ -21,10 +21,11 @@ class Group {
   @override
   int get hashCode => size.hashCode * shipType.hashCode;
 
-//    @Override
-//    String toString() {
-//        return "Group [size=" + size + ", shipType=" + shipType + "]";
-//    }
+  @override
+  String toString() {
+    return 'Group{size: $size, shipType: $shipType}';
+  }
+
 //
 }
 

@@ -17,7 +17,7 @@ class FleetLauncher {
         return null;
     }
 
-    Fleet launchFleet(AlienPlayer ap, int turn, [List<FleetBuildOption> options]) {
+    Fleet launchFleet(AlienPlayer ap, int turn, [List<FleetBuildOption> options = const[]]) {
         if (ap.economicSheet.fleetCP >= ShipType.SCOUT.cost) {
             Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, ap.economicSheet.fleetCP);
             if (shouldLaunchRaiderFleet(ap, options)) {
@@ -40,7 +40,7 @@ class FleetLauncher {
         return roll;
     }
 
-    bool shouldLaunchRaiderFleet(AlienPlayer ap, [List<FleetBuildOption> options = const []]) {
+    bool shouldLaunchRaiderFleet(AlienPlayer ap, [List<FleetBuildOption> options = const[]]) {
         if(options.contains(FleetBuildOption.HOME_DEFENSE))
             return false;
         return ap.economicSheet.fleetCP >= ShipType.RAIDER.cost

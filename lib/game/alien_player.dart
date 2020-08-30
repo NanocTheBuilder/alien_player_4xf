@@ -42,12 +42,12 @@ class AlienPlayer {
 
   int getExtraEconRoll(int turn) => economicSheet.getExtraEcon(turn);
 
-  void buyTechs(Fleet fleet, List options) {
+  void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     purchasedCloakThisTurn = false;
     game.scenario.buyTechs(fleet, options);
   }
 
-  FleetBuildResult firstCombat(Fleet fleet, List options) {
+  FleetBuildResult firstCombat(Fleet fleet, [List<FleetBuildOption> options = const []]) {
     var result = FleetBuildResult(this);
     var oldTechValues = Map.fromIterable(game.scenario.availableTechs,
         key: (tech) => tech, value: (tech) => technologyLevels[tech]);

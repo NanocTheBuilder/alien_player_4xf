@@ -10,7 +10,11 @@ class MockRoller extends DiceRoller {
   Queue<List<int>> rolls = Queue();
 
   void mockRoll(int roll) {
-    rolls.add([10, roll]);
+    mockRoll2(10, roll);
+  }
+
+void mockRoll2(int limit, int roll) {
+    rolls.add([limit, roll]);
   }
 
   @override
