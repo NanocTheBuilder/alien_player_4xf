@@ -245,7 +245,7 @@ class VpSoloFleetLauncher extends FleetLauncher {
 
   @override
   Fleet launchFleet(AlienPlayer ap, int turn,
-      [List<FleetBuildOption> options]) {
+      [List<FleetBuildOption> options = const[]]) {
     int bank = (ap.economicSheet as VpEconomicSheet).bank;
     Fleet fleet = super.launchFleet(ap, turn, options);
     if (fleet == null) {

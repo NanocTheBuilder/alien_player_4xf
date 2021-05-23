@@ -3,8 +3,10 @@ import 'package:alienplayer4xf/game/dice_roller.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/game.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
+import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
 import 'package:alienplayer4xf/widgets/game_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 const Map PlayerColors = {
@@ -15,15 +17,15 @@ const Map PlayerColors = {
 };
 
 void main() {
-  runApp(
-      ChangeNotifierProvider<GameModel>(create: (context) => GameModel(), child: MyApp()));
+  runApp(ChangeNotifierProvider<GameModel>(
+      create: (context) => GameModel(), child: MyApp()));
 }
 
 class GameModel extends ChangeNotifier {
   Game _game;
 
   GameModel() {
-    _game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,
+    _game = Game(Scenario4(), BaseGameDifficulty.NORMAL,
         [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
     _game.roller = DiceRoller();
   }
@@ -38,6 +40,7 @@ class GameModel extends ChangeNotifier {
 
   get currentTurn => _game.currentTurn;
 
+  bool showDetails = true;
 }
 
 class MyApp extends StatelessWidget {
@@ -45,12 +48,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Alien Player 4X App',
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: GamePage(title: 'Alien Player 4X Main'),
-    );
+        title: 'Alien Player 4X App',
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: TextTheme(
+            bodyText2: TextStyle(fontSize: Theme.of(context).textTheme.bodyText2.fontSize * 1.3),
+            button: TextStyle(fontSize: Theme.of(context).textTheme.button.fontSize * 1.3),
+          )
+        ),
+        home: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/smc_wing_full_2560.png",
+                      bundle: DefaultAssetBundle.of(context)),
+                  fit: BoxFit.cover)),
+          child: GamePage(title: 'Alien Player 4X'),
+        ));
   }
 }
-
