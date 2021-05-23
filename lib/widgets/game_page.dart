@@ -7,6 +7,8 @@ import 'alien_player_view.dart';
 import 'econ_phase_result_dialog.dart';
 
 class GamePage extends StatelessWidget {
+  static const MAX_TURNS = 100;
+
   final String title;
 
   GamePage({Key key, this.title}) : super(key: key);
@@ -48,14 +50,14 @@ class GamePage extends StatelessWidget {
                       child: Text(
                         "Economic Phase ${game.currentTurn}",
                       )),
-                  onPressed: game.currentTurn < 3
+                  onPressed: game.currentTurn < MAX_TURNS
                       ? () {
                           var result = game.doEconomicPhase();
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return EconPhaseResultDialog(
-                                    game.currentTurn, result);
+                                    game.currentTurn, result, game.showDetails);
                               });
                         }
                       : null));

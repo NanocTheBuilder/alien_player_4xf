@@ -40,7 +40,7 @@ class GameModel extends ChangeNotifier {
 
   get currentTurn => _game.currentTurn;
 
-  bool showDetails = true;
+  bool showDetails = false;
 }
 
 class MyApp extends StatelessWidget {

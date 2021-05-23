@@ -93,6 +93,8 @@ class AlienPlayerView extends StatelessWidget {
 
     return Container(
         child: Card(
-            color: PlayerColors[alien.color], child: Column(children: rows)));
+            color: PlayerColors[alien.color],
+            child: Padding(
+                padding: EdgeInsets.all(4.0), child: Column(children: rows))));
   }
 }
