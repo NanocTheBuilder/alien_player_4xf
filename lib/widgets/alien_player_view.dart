@@ -1,36 +1,77 @@
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
+import 'package:alienplayer4xf/widgets/fleet_build_result_dialog.dart';
+import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
 
 class AlienPlayerView extends StatelessWidget {
   final AlienPlayer alien;
   final bool showDetails;
+  final bool showActions;
 
-  Widget techLabel(String label, Technology technology) {
-    var labelStr = '${label} : ${alien.technologyLevels[technology]}';
-    var fontWeight = alien.technologyLevels[technology] ==
-            alien.game.scenario.getStartingLevel(technology)
-        ? FontWeight.normal
-        : FontWeight.bold;
+  AlienPlayerView(this.alien, this.showDetails, {this.showActions = false});
 
-    return Expanded(
-        flex: 1,
-        child: Container(
-            child: Text(
-          labelStr,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: fontWeight),
-        )));
-  }
-
-  AlienPlayerView(this.alien, this.showDetails);
   @override
   Widget build(BuildContext context) {
     List<Widget> rows = [];
-    if (showDetails)
+    addDetails(rows, context);
+    addLabels(rows);
+    if (!showActions) {
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text("${alien.fleets.length} fleets"),
+          const SizedBox(width: 16),
+        ],
+      ));
+    }
+    if (showActions) {
+      rows.add(Consumer<GameModel>(builder: (context, game, child) {
+        return Row(
+          children: [
+            const SizedBox(width: 16),
+            TextButton(
+                child: Text("Home Defense"),
+                onPressed: () {
+                  var result = game.buildHomeDefense(alien);
+                  showDialog(
+                      context: context,
+                      builder: (context) => FleetBuildResultDialog(result));
+                }),
+            const SizedBox(width: 16),
+            (alien.game.scenario is Scenario4
+                ? TextButton(
+                    child: Text("Colony Defense"),
+                    onPressed: () {
+                      var result =
+                          game.buildColonyDefense(alien as Scenario4Player);
+                      showDialog(
+                          context: context,
+                          builder: (context) => FleetBuildResultDialog(result));
+                    })
+                : const SizedBox(width: 0)),
+            Expanded(child: Container()),
+            IconButton(icon: Icon(Icons.delete)),
+            const SizedBox(width: 16),
+          ],
+        );
+      }));
+    }
+
+    return Container(
+        child: Card(
+            color: PlayerColors[alien.color],
+            child: Padding(
+                padding: EdgeInsets.all(4.0), child: Column(children: rows))));
+  }
+
+  void addDetails(List<Widget> rows, BuildContext context) {
+    if (showDetails) {
       rows.add(Row(children: [
         Expanded(
             flex: 1,
@@ -57,44 +98,69 @@ class AlienPlayerView extends StatelessWidget {
               style: Theme.of(context).textTheme.subtitle2,
             ))),
       ]));
+    }
+  }
+
+  void addLabels(List<Widget> rows) {
     rows.addAll([
       Row(children: [
-        techLabel('Move', Technology.MOVE),
-        techLabel('Ship Size', Technology.SHIP_SIZE),
+        techLabel(Technology.MOVE),
+        techLabel(Technology.SHIP_SIZE),
       ]),
       Row(children: [
-        techLabel('Attack', Technology.ATTACK),
-        techLabel('Defense', Technology.DEFENSE),
-        techLabel('Tactics', Technology.TACTICS),
+        techLabel(Technology.ATTACK),
+        techLabel(Technology.DEFENSE),
+        techLabel(Technology.TACTICS),
       ]),
       Row(children: [
-        techLabel('Fighters', Technology.FIGHTERS),
-        techLabel('Cloaking', Technology.CLOAKING),
-        techLabel('Scanner', Technology.SCANNER),
+        techLabel(Technology.FIGHTERS),
+        techLabel(Technology.CLOAKING),
+        techLabel(Technology.SCANNER),
       ]),
       Row(children: [
-        techLabel('Point Defense', Technology.POINT_DEFENSE),
-        techLabel('Mine Sweep', Technology.MINE_SWEEPER),
+        techLabel(Technology.POINT_DEFENSE),
+        techLabel(Technology.MINE_SWEEPER),
       ]),
     ]);
 
     if (alien.game.scenario is Scenario4) {
       rows.addAll([
         Row(children: [
-          techLabel('Ground', Technology.GROUND_COMBAT),
-          techLabel('Boarding', Technology.BOARDING),
-          techLabel('Security', Technology.SECURITY_FORCES),
+          techLabel(Technology.GROUND_COMBAT),
+          techLabel(Technology.BOARDING),
+          techLabel(Technology.SECURITY_FORCES),
         ]),
         Row(children: [
-          techLabel('Military Academy', Technology.MILITARY_ACADEMY),
+          techLabel(Technology.MILITARY_ACADEMY),
+          (alien.game.scenario is VpSoloScenario
+              ? Expanded(
+                  flex: 1,
+                  child: Container(
+                      child: Text(
+                    'Colonies : ${(alien as VpAlienPlayer).colonies}',
+                    textAlign: TextAlign.center,
+                  )))
+              : const SizedBox(width: 0))
         ]),
       ]);
     }
+  }
 
-    return Container(
-        child: Card(
-            color: PlayerColors[alien.color],
-            child: Padding(
-                padding: EdgeInsets.all(4.0), child: Column(children: rows))));
+  Widget techLabel(Technology technology) {
+    var labelStr =
+        '${Strings.technologies[technology]} : ${alien.technologyLevels[technology]}';
+    var fontWeight = alien.technologyLevels[technology] ==
+            alien.game.scenario.getStartingLevel(technology)
+        ? FontWeight.normal
+        : FontWeight.bold;
+
+    return Expanded(
+        flex: 1,
+        child: Container(
+            child: Text(
+          labelStr,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: fontWeight),
+        )));
   }
 }

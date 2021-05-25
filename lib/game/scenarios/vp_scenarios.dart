@@ -11,7 +11,7 @@ abstract class VpDifficulty extends Difficulty {
   final int startingBank;
   final int maxDefenseCp;
 
-  const VpDifficulty(String name, int cpPerEcon, int numberOfAlienPlayers,
+  const VpDifficulty(String name, int numberOfAlienPlayers, int cpPerEcon,
       this.startingBank, this.maxDefenseCp)
       : super(name, cpPerEcon, numberOfAlienPlayers);
 }

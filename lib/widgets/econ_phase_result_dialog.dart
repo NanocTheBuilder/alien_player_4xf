@@ -2,7 +2,7 @@ import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/main.dart';
 import 'package:flutter/material.dart';
-import 'package:alienplayer4xf/widgets/strings.dart';
+import 'package:alienplayer4xf/widgets/string_helper.dart';
 
 class EconPhaseResultDialog extends StatelessWidget {
   final int currentTurn;
@@ -24,14 +24,13 @@ class EconPhaseResultDialog extends StatelessWidget {
     }
     //fleet
     if (result.fleet != null) {
-      rows.add(Text("New Fleet: " +
-          Strings.fleetTypes[result.fleet.fleetType.name] +
+      rows.add(Text(Strings.fleetTypes[result.fleet.fleetType.name] +
           " " +
           result.fleet.name +
           (showDetails ? " (${result.fleet.fleetCP} CP)" : "")));
       if (result.moveTechRolled) {
         rows.add(Text(
-            "New Move Technology: ${result.alienPlayer.technologyLevels[Technology.MOVE]}"));
+            "${Strings.technologies[Technology.MOVE]}: ${result.alienPlayer.technologyLevels[Technology.MOVE]}"));
       }
     }
     return Container(

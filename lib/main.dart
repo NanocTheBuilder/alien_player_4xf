@@ -1,13 +1,18 @@
 import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
+import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/dice_roller.dart';
 import 'package:alienplayer4xf/game/enums.dart';
+import 'package:alienplayer4xf/game/fleet_builders.dart';
 import 'package:alienplayer4xf/game/game.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
 import 'package:alienplayer4xf/widgets/game_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'game/fleet.dart';
 
 const Map PlayerColors = {
   PlayerColor.RED: Color.fromARGB(255, 255, 0, 0),
@@ -25,8 +30,9 @@ class GameModel extends ChangeNotifier {
   Game _game;
 
   GameModel() {
-    _game = Game(Scenario4(), BaseGameDifficulty.NORMAL,
-        [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    _game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    //_game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    //_game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW]);
     _game.roller = DiceRoller();
   }
 
@@ -36,6 +42,29 @@ class GameModel extends ChangeNotifier {
     var result = _game.doEconomicPhase();
     notifyListeners();
     return result;
+  }
+
+  FleetBuildResult buildHomeDefense(AlienPlayer ap){
+    var result = ap.buildHomeDefense();
+    notifyListeners();
+    return result;
+  }
+
+  FleetBuildResult buildColonyDefense(Scenario4Player ap){
+    var result = ap.buildColonyDefense();
+    notifyListeners();
+    return result;
+  }
+
+  FleetBuildResult firstCombat(Fleet fleet, [List<FleetBuildOption> options = const []]){
+    var result = fleet.ap.firstCombat(fleet, options);
+    notifyListeners();
+    return result;
+  }
+
+  void deleteFleet(Fleet fleet){
+    fleet.ap.removeFleet(fleet);
+    notifyListeners();
   }
 
   get currentTurn => _game.currentTurn;
