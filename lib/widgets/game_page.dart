@@ -35,7 +35,7 @@ class GamePage extends StatelessWidget {
                                 alienPlayer: game.aliens[index],
                                 showDetails: game.showDetails,
                               ))),
-                  child: AlienPlayerView(game.aliens[index], game.showDetails),
+                  child: AlienPlayerView(game.aliens[index], game.showDetails, showFleetCount: true),
                 );
               },
             );

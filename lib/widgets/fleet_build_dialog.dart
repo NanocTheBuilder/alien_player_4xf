@@ -27,25 +27,21 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
   Widget build(BuildContext context) {
     List<Widget> rows = [];
     rows.add(Row(children: [
-      Text("Combat above planet"),
       Checkbox(
           value: combatAbovePlanet,
           onChanged: (value) {
-            setState(() {
-              combatAbovePlanet = value;
-            });
-          })
+            setState(() => combatAbovePlanet = value);
+          }),
+      Text("Combat above planet"),
     ]));
     if (fleet.ap is VpAlienPlayer) {
       rows.add(Row(children: [
-        Text("Enemy is NPA"),
         Checkbox(
             value: enemyIsNpa,
             onChanged: (value) {
-              setState(() {
-                enemyIsNpa = value;
-              });
-            })
+              setState(() => enemyIsNpa = value);
+            }),
+        Text("Enemy is NPA"),
       ]));
     }
     return Consumer<GameModel>(builder: (context, game, child) {
@@ -54,9 +50,7 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
           actions: <Widget>[
             TextButton(
               child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop()
             ),
             TextButton(
               child: Text('OK'),

@@ -29,7 +29,7 @@ class FleetView extends StatelessWidget {
                           "${Strings.fleetTypes[fleet.fleetType.name]} ${fleet.name}"),
                       subtitle: (fleet.hadFirstCombat
                           ? Text(Strings.groups(fleet))
-                          : Text("${fleet.fleetCP} CP")),
+                          : game.showDetails ? Text("${fleet.fleetCP} CP") : const SizedBox(width: 0)),
                       trailing: (fleet.hadFirstCombat
                           ? IconButton(
                               icon: Icon(Icons.delete),

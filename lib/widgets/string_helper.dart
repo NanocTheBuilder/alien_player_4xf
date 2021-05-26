@@ -1,7 +1,15 @@
+import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 
 class Strings {
+  static const Map<PlayerColor, String> players = {
+    PlayerColor.GREEN : "Green",
+    PlayerColor.YELLOW : "Yellow",
+    PlayerColor.RED : "Red",
+    PlayerColor.BLUE : "Blue",
+  } ;
+
   static const Map<String, String> shipTypes = {
     "RAIDER": "R",
     "CARRIER": "CV",

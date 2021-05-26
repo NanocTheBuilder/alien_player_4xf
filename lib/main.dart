@@ -30,8 +30,8 @@ class GameModel extends ChangeNotifier {
   Game _game;
 
   GameModel() {
-    _game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
-    //_game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    //_game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    _game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
     //_game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW]);
     _game.roller = DiceRoller();
   }
@@ -67,9 +67,14 @@ class GameModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void eliminate(AlienPlayer ap){
+    ap.isEliminated = true;
+    notifyListeners();
+  }
+
   get currentTurn => _game.currentTurn;
 
-  bool showDetails = false;
+  bool showDetails = true;
 }
 
 class MyApp extends StatelessWidget {

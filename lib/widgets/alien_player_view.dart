@@ -13,15 +13,17 @@ class AlienPlayerView extends StatelessWidget {
   final AlienPlayer alien;
   final bool showDetails;
   final bool showActions;
+  final bool showFleetCount;
 
-  AlienPlayerView(this.alien, this.showDetails, {this.showActions = false});
+  AlienPlayerView(this.alien, this.showDetails,
+      {this.showActions = false, this.showFleetCount = false});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> rows = [];
     addDetails(rows, context);
     addLabels(rows);
-    if (!showActions) {
+    if (showFleetCount) {
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -56,7 +58,14 @@ class AlienPlayerView extends StatelessWidget {
                     })
                 : const SizedBox(width: 0)),
             Expanded(child: Container()),
-            IconButton(icon: Icon(Icons.delete)),
+            (!alien.isEliminated)
+                ? IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) =>
+                            confirmElimination(context, game, alien)))
+                : const Text("Eliminated"),
             const SizedBox(width: 16),
           ],
         );
@@ -162,5 +171,24 @@ class AlienPlayerView extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(fontWeight: fontWeight),
         )));
+  }
+
+  AlertDialog confirmElimination(
+      BuildContext context, GameModel game, AlienPlayer player) {
+    return AlertDialog(
+      title: Text("Are You Sure?"),
+      content: Text("Do you want to eliminate player ${Strings.players[player.color]}"),
+      actions: [
+        TextButton(
+            child: Text("Cancel"),
+            onPressed: () => Navigator.of(context).pop()),
+        TextButton(
+            child: Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+              game.eliminate(player);
+            })
+      ],
+    );
   }
 }
