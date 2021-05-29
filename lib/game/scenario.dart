@@ -8,8 +8,6 @@ import 'fleet_launcher.dart';
 import 'game.dart';
 
 abstract class Scenario{
-
-    //TODO: private these
     TechnologyBuyer techBuyer;
     TechnologyPrices techPrices;
     FleetBuilder fleetBuilder;

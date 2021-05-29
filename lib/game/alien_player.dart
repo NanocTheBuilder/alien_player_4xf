@@ -14,7 +14,6 @@ class AlienPlayer {
   List<Fleet> fleets = [];
   Map<Technology, int> technologyLevels = {};
 
-  //TODO privates?
   var purchasedCloakThisTurn = false;
   var isEliminated = false;
 

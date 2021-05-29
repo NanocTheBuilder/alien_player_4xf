@@ -38,6 +38,8 @@ class GameModel extends ChangeNotifier {
 
   get aliens => _game.aliens;
 
+  get scenario => _game.scenario;
+
   List<EconPhaseResult> doEconomicPhase() {
     var result = _game.doEconomicPhase();
     notifyListeners();
@@ -71,6 +73,25 @@ class GameModel extends ChangeNotifier {
     ap.isEliminated = true;
     notifyListeners();
   }
+
+  //These change the game state, but don't call notifyListeners.
+  //Call "updateSeenThing" after all techs & seeables has been updated to call notifyListeners.
+  int getSeenLevel(Technology technology) => _game.getSeenLevel(technology);
+  void setSeenLevel(Technology technology, int level) => _game.setSeenLevel(technology, level);
+  bool isSeenThing(Seeable seeable) => _game.isSeenThing(seeable);
+  void addSeenThing(Seeable seeable) => _game.addSeenThing(seeable);
+  void removeSeenThing(Seeable seeable) => _game.removeSeenThing(seeable);
+  void setSeenThing(Seeable seeable, bool seen){
+    if(seen)
+      _game.addSeenThing(seeable);
+    else
+      _game.removeSeenThing(seeable);
+  }
+  void finishUpdate(){
+    notifyListeners();
+  }
+
+  int getMaxLevel(Technology technology) => _game.scenario.getMaxLevel(technology);
 
   get currentTurn => _game.currentTurn;
 

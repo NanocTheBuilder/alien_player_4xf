@@ -27,21 +27,23 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
   Widget build(BuildContext context) {
     List<Widget> rows = [];
     rows.add(Row(children: [
-      Checkbox(
+      Expanded(child:
+      CheckboxListTile(
+          title: Text("Combat above planet"),
           value: combatAbovePlanet,
           onChanged: (value) {
             setState(() => combatAbovePlanet = value);
-          }),
-      Text("Combat above planet"),
+          })),
     ]));
     if (fleet.ap is VpAlienPlayer) {
       rows.add(Row(children: [
-        Checkbox(
+        Expanded(child:
+        CheckboxListTile(
+          title: Text("Enemy is NPA"),
             value: enemyIsNpa,
             onChanged: (value) {
               setState(() => enemyIsNpa = value);
-            }),
-        Text("Enemy is NPA"),
+            })),
       ]));
     }
     return Consumer<GameModel>(builder: (context, game, child) {

@@ -1,14 +1,15 @@
-import 'package:alienplayer4xf/game/alien_player.dart';
+import 'dart:core';
+
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 
 class Strings {
   static const Map<PlayerColor, String> players = {
-    PlayerColor.GREEN : "Green",
-    PlayerColor.YELLOW : "Yellow",
-    PlayerColor.RED : "Red",
-    PlayerColor.BLUE : "Blue",
-  } ;
+    PlayerColor.GREEN: "Green",
+    PlayerColor.YELLOW: "Yellow",
+    PlayerColor.RED: "Red",
+    PlayerColor.BLUE: "Blue",
+  };
 
   static const Map<String, String> shipTypes = {
     "RAIDER": "R",
@@ -44,25 +45,33 @@ class Strings {
 
   static const Map<Technology, String> technologies = {
     Technology.MOVE: "Move",
-    Technology.SHIP_SIZE : "Ship Size",
-    Technology.ATTACK : "Attack",
-    Technology.DEFENSE : "Defense",
-    Technology.TACTICS : "Tactics",
-    Technology.CLOAKING : "Cloaking",
-    Technology.SCANNER : "Scanner",
-    Technology.FIGHTERS : "Fighters",
-    Technology.POINT_DEFENSE : "Point Defense",
-    Technology.MINE_SWEEPER : "Mine Sweep",
-    Technology.SECURITY_FORCES : "Security",
-    Technology.MILITARY_ACADEMY : "Military Academy",
-    Technology.BOARDING : "Boarding",
-    Technology.GROUND_COMBAT : "Ground",
+    Technology.SHIP_SIZE: "Ship Size",
+    Technology.ATTACK: "Attack",
+    Technology.DEFENSE: "Defense",
+    Technology.TACTICS: "Tactics",
+    Technology.CLOAKING: "Cloaking",
+    Technology.SCANNER: "Scanner",
+    Technology.FIGHTERS: "Fighters",
+    Technology.POINT_DEFENSE: "Point Defense",
+    Technology.MINE_SWEEPER: "Mine Sweep",
+    Technology.SECURITY_FORCES: "Security",
+    Technology.MILITARY_ACADEMY: "Military Academy",
+    Technology.BOARDING: "Boarding",
+    Technology.GROUND_COMBAT: "Ground",
+  };
+
+  static const Map<Seeable, String> seeables = {
+    Seeable.FIGHTERS: "Fighters",
+    Seeable.MINES: "Mines",
+    Seeable.BOARDING_SHIPS: "Boarding Ships",
+    Seeable.VETERANS: "Veterans",
+    Seeable.SIZE_3_SHIPS: "Size 3 Ships"
   };
 
   static String groups(Fleet fleet) {
     StringBuffer sb = StringBuffer();
     fleet.groups.forEach((element) {
-      sb.write("[${element.size} ${shipTypes[element.shipType.name]}] ");
+      sb.write("[${element.size}\u00A0${shipTypes[element.shipType.name]}] ");
     });
     return sb.toString().trimRight();
   }

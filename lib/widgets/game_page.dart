@@ -1,4 +1,5 @@
 import 'package:alienplayer4xf/widgets/alien_player_page.dart';
+import 'package:alienplayer4xf/widgets/seen_techs_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,11 +16,13 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<GameModel>(builder: (context, game, child) {
+      return Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(title),
-        ),
+        //appBar: AppBar(
+        //  title: Text(title),
+        //
+        //),
         body: Center(
           child: Consumer<GameModel>(builder: (context, game, child) {
             return ListView.builder(
@@ -35,32 +38,39 @@ class GamePage extends StatelessWidget {
                                 alienPlayer: game.aliens[index],
                                 showDetails: game.showDetails,
                               ))),
-                  child: AlienPlayerView(game.aliens[index], game.showDetails, showFleetCount: true),
+                  child: AlienPlayerView(game.aliens[index], game.showDetails,
+                      showFleetCount: true),
                 );
               },
             );
           }),
         ),
-        bottomNavigationBar:
-            Consumer<GameModel>(builder: (context, game, child) {
-          return BottomAppBar(
-              child: TextButton(
-                  child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Economic Phase ${game.currentTurn}",
-                      )),
-                  onPressed: game.currentTurn < MAX_TURNS
-                      ? () {
-                          var result = game.doEconomicPhase();
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EconPhaseResultDialog(
-                                    game.currentTurn, result, game.showDetails);
-                              });
-                        }
-                      : null));
-        }));
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add_chart),
+          onPressed: () => showDialog(
+              context: context,
+              builder: (BuildContext) => SeenTechsDialog(game)),
+        ),
+        bottomNavigationBar: BottomAppBar(
+            child: TextButton(
+                child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Economic Phase ${game.currentTurn}",
+                    )),
+                onPressed: game.currentTurn < MAX_TURNS
+                    ? () {
+                        var result = game.doEconomicPhase();
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return EconPhaseResultDialog(
+                                  game.currentTurn, result, game.showDetails);
+                            });
+                      }
+                    : null)),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+      );
+    });
   }
 }
