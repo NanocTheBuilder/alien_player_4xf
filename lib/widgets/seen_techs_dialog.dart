@@ -85,6 +85,7 @@ class SeenTechsState extends State<SeenTechsDialog> {
       ],
     ));
     return AlertDialog(
+      insetPadding: EdgeInsets.symmetric(horizontal: 4.0),
       title: Text("Tech Levels & Ships Seen by AP"),
       content: Container(
         width: double.maxFinite,

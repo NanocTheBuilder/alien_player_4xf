@@ -1,5 +1,6 @@
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
+import 'package:alienplayer4xf/game/game.dart';
 import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
 import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
 import 'package:alienplayer4xf/widgets/fleet_build_result_dialog.dart';
@@ -20,42 +21,43 @@ class AlienPlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> rows = [];
-    addDetails(rows, context);
-    addLabels(rows);
-    if (showFleetCount) {
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text("${alien.fleets.length} fleets"),
-          const SizedBox(width: 16),
-        ],
-      ));
-    }
-    if (showActions) {
-      rows.add(Consumer<GameModel>(builder: (context, game, child) {
-        return Row(
+    return Consumer<GameModel>(builder: (context, game, child) {
+      List<Widget> rows = [];
+      addDetails(rows, context);
+      addLabels(context, rows, game);
+      if (showFleetCount) {
+        rows.add(Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Text("${alien.fleets.length} fleets"),
             const SizedBox(width: 16),
-            TextButton(
-                child: Text("Home Defense"),
-                onPressed: () {
-                  var result = game.buildHomeDefense(alien);
-                  showDialog(
-                      context: context,
-                      builder: (context) => FleetBuildResultDialog(result));
-                }),
-            const SizedBox(width: 16),
-            (alien.game.scenario is Scenario4
-                ? TextButton(
-                    child: Text("Colony Defense"),
+          ],
+        ));
+      }
+      if (showActions) {
+        rows.add(Row(
+          children: [
+            Expanded(
+                child: TextButton(
+                    child: Text("Home Defense"),
                     onPressed: () {
-                      var result =
-                          game.buildColonyDefense(alien as Scenario4Player);
+                      var result = game.buildHomeDefense(alien);
                       showDialog(
                           context: context,
                           builder: (context) => FleetBuildResultDialog(result));
-                    })
+                    })),
+            (alien.game.scenario is Scenario4
+                ? Expanded(
+                    child: TextButton(
+                        child: Text("Colony Defense"),
+                        onPressed: () {
+                          var result =
+                              game.buildColonyDefense(alien as Scenario4Player);
+                          showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  FleetBuildResultDialog(result));
+                        }))
                 : const SizedBox(width: 0)),
             Expanded(child: Container()),
             (!alien.isEliminated)
@@ -66,17 +68,16 @@ class AlienPlayerView extends StatelessWidget {
                         builder: (context) =>
                             confirmElimination(context, game, alien)))
                 : const Text("Eliminated"),
-            const SizedBox(width: 16),
           ],
-        );
-      }));
-    }
-
-    return Container(
-        child: Card(
-            color: PlayerColors[alien.color],
-            child: Padding(
-                padding: EdgeInsets.all(4.0), child: Column(children: rows))));
+        ));
+      }
+      return Container(
+          child: Card(
+              color: PlayerColors[alien.color],
+              child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Column(children: rows))));
+    });
   }
 
   void addDetails(List<Widget> rows, BuildContext context) {
@@ -110,52 +111,62 @@ class AlienPlayerView extends StatelessWidget {
     }
   }
 
-  void addLabels(List<Widget> rows) {
+  void addLabels(BuildContext context, List<Widget> rows, GameModel game) {
     rows.addAll([
       Row(children: [
-        techLabel(Technology.MOVE),
-        techLabel(Technology.SHIP_SIZE),
+        techLabel(context, Technology.MOVE),
+        techLabel(context, Technology.SHIP_SIZE),
       ]),
       Row(children: [
-        techLabel(Technology.ATTACK),
-        techLabel(Technology.DEFENSE),
-        techLabel(Technology.TACTICS),
+        techLabel(context, Technology.ATTACK),
+        techLabel(context, Technology.DEFENSE),
+        techLabel(context, Technology.TACTICS),
       ]),
       Row(children: [
-        techLabel(Technology.FIGHTERS),
-        techLabel(Technology.CLOAKING),
-        techLabel(Technology.SCANNER),
+        techLabel(context, Technology.FIGHTERS),
+        techLabel(context, Technology.CLOAKING),
+        techLabel(context, Technology.SCANNER),
       ]),
       Row(children: [
-        techLabel(Technology.POINT_DEFENSE),
-        techLabel(Technology.MINE_SWEEPER),
+        techLabel(context, Technology.POINT_DEFENSE),
+        techLabel(context, Technology.MINE_SWEEPER),
       ]),
     ]);
 
     if (alien.game.scenario is Scenario4) {
       rows.addAll([
         Row(children: [
-          techLabel(Technology.GROUND_COMBAT),
-          techLabel(Technology.BOARDING),
-          techLabel(Technology.SECURITY_FORCES),
+          techLabel(context, Technology.GROUND_COMBAT),
+          techLabel(context, Technology.BOARDING),
+          techLabel(context, Technology.SECURITY_FORCES),
         ]),
         Row(children: [
-          techLabel(Technology.MILITARY_ACADEMY),
+          techLabel(context, Technology.MILITARY_ACADEMY),
           (alien.game.scenario is VpSoloScenario
               ? Expanded(
                   flex: 1,
-                  child: Container(
+                  child: InkWell(
                       child: Text(
-                    'Colonies : ${(alien as VpAlienPlayer).colonies}',
-                    textAlign: TextAlign.center,
-                  )))
+                        'Colonies : ${(alien as VpAlienPlayer).colonies}',
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: showActions
+                          ? () => showDialog(
+                              context: context,
+                              builder: (context) => changeValue(
+                                  context,
+                                  "Colonies",
+                                  values(10),
+                                  (alien as VpAlienPlayer).colonies,
+                                  (value) => game.setColonies(alien, value)))
+                          : null))
               : const SizedBox(width: 0))
         ]),
       ]);
     }
   }
 
-  Widget techLabel(Technology technology) {
+  Widget techLabel(BuildContext context, Technology technology) {
     var labelStr =
         '${Strings.technologies[technology]} : ${alien.technologyLevels[technology]}';
     var fontWeight = alien.technologyLevels[technology] ==
@@ -165,19 +176,27 @@ class AlienPlayerView extends StatelessWidget {
 
     return Expanded(
         flex: 1,
-        child: Container(
-            child: Text(
-          labelStr,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: fontWeight),
-        )));
+        child: InkWell(
+          child: Text(
+            labelStr,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: fontWeight),
+          ),
+          onTap: showActions
+              ? () => showDialog(
+                  context: context,
+                  builder: (context) =>
+                      changeTechnologyLevel(context, technology))
+              : null,
+        ));
   }
 
   AlertDialog confirmElimination(
       BuildContext context, GameModel game, AlienPlayer player) {
     return AlertDialog(
       title: Text("Are You Sure?"),
-      content: Text("Do you want to eliminate player ${Strings.players[player.color]}"),
+      content: Text(
+          "Do you want to eliminate player ${Strings.players[player.color]}"),
       actions: [
         TextButton(
             child: Text("Cancel"),
@@ -190,5 +209,60 @@ class AlienPlayerView extends StatelessWidget {
             })
       ],
     );
+  }
+
+  Widget changeTechnologyLevel(BuildContext context, Technology technology) {
+    return Consumer<GameModel>(builder: (context, game, child) {
+      return changeValue(
+          context,
+          Strings.technologies[technology],
+          technologyLevels(game, technology),
+          alien.technologyLevels[technology],
+          (value) => game.setLevel(alien, technology, value));
+    });
+  }
+
+  AlertDialog changeValue(
+      BuildContext context,
+      String label,
+      List<DropdownMenuItem<dynamic>> items,
+      int initValue,
+      Function commitValue) {
+    var intValue = initValue;
+    return AlertDialog(
+      title: Text("Select value"),
+      content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return ListTile(
+          title: Text(label),
+          trailing: DropdownButton(
+              items: items,
+              value: intValue,
+              onChanged: (value) => setState(() => intValue = value)),
+        );
+      }),
+      actions: [
+        TextButton(
+            child: Text("Cancel"),
+            onPressed: () => Navigator.of(context).pop()),
+        TextButton(
+            child: Text("OK"),
+            onPressed: () {
+              commitValue.call(intValue);
+              Navigator.of(context).pop();
+            })
+      ],
+    );
+  }
+
+  List<DropdownMenuItem> technologyLevels(
+      GameModel game, Technology technology) {
+    return values(game.getMaxLevel(technology) + 1);
+  }
+
+  List<DropdownMenuItem> values(int maxValue) {
+    return List.generate(maxValue, (i) => i)
+        .map((e) => DropdownMenuItem(value: e, child: Text(e.toString())))
+        .toList();
   }
 }

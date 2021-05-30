@@ -17,7 +17,7 @@ import 'game/fleet.dart';
 const Map PlayerColors = {
   PlayerColor.RED: Color.fromARGB(255, 255, 0, 0),
   PlayerColor.GREEN: Color.fromARGB(255, 0, 255, 0),
-  PlayerColor.BLUE: Color.fromARGB(255, 0, 0, 255),
+  PlayerColor.BLUE: Color.fromARGB(255, 0, 200, 255),
   PlayerColor.YELLOW: Color.fromARGB(255, 255, 255, 0),
 };
 
@@ -31,8 +31,8 @@ class GameModel extends ChangeNotifier {
 
   GameModel() {
     //_game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
-    _game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
-    //_game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW]);
+    //_game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
+    _game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.BLUE]);
     _game.roller = DiceRoller();
   }
 
@@ -92,6 +92,16 @@ class GameModel extends ChangeNotifier {
   }
 
   int getMaxLevel(Technology technology) => _game.scenario.getMaxLevel(technology);
+
+  void setLevel(AlienPlayer alienPlayer, Technology technology, int level){
+    alienPlayer.technologyLevels[technology] = level;
+    notifyListeners();
+  }
+
+  void setColonies(AlienPlayer alienPlayer, int colonies){
+    (alienPlayer as VpAlienPlayer).colonies = colonies;
+    notifyListeners();
+  }
 
   get currentTurn => _game.currentTurn;
 
