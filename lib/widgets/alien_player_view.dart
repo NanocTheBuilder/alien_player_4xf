@@ -41,7 +41,7 @@ class AlienPlayerView extends StatelessWidget {
             Expanded(
                 child: TextButton(
                     style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
-                    child: Text("Home Defense", style: TextStyle(fontWeight: FontWeight.bold),),
+                    child: Text("Home Defense"),
                     onPressed: () {
                       var result = game.buildHomeDefense(alien);
                       showDialog(
@@ -52,7 +52,7 @@ class AlienPlayerView extends StatelessWidget {
                 ? Expanded(
                     child: TextButton(
                         style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
-                        child: Text("Colony Defense", style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: Text("Colony Defense"),
                         onPressed: () {
                           var result =
                               game.buildColonyDefense(alien as Scenario4Player);
