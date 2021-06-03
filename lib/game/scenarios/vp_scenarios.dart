@@ -173,8 +173,7 @@ class VpSoloScenario extends Scenario4 {
         VpEconomicSheet(difficulty as VpDifficulty), game, color);
   }
 
-  @override
-  List<Difficulty> get difficulties => VpSoloDifficulty.values;
+  static List<Difficulty> difficulties() => VpSoloDifficulty.values;
 }
 
 class Vp2pScenario extends VpSoloScenario {
@@ -187,13 +186,11 @@ class Vp2pScenario extends VpSoloScenario {
     fleetLauncher = VpCoopFleetLauncher(game);
   }
 
-  @override
-  List<Difficulty> get difficulties => Vp2pDifficulty.values;
+  static List<Difficulty> difficulties() => Vp2pDifficulty.values;
 }
 
 class Vp3pScenario extends Vp2pScenario {
-  @override
-  List<Difficulty> get difficulties => Vp3pDifficulty.values;
+  static List<Difficulty> difficulties() => Vp3pDifficulty.values;
 }
 
 class VpAlienPlayer extends Scenario4Player {

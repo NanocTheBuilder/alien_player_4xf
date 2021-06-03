@@ -17,7 +17,8 @@ class AlienPlayerView extends StatelessWidget {
   final bool showFleetCount;
 
   AlienPlayerView(this.alien, this.showDetails,
-      {this.showActions = false, this.showFleetCount = false});
+      {this.showActions = false, this.showFleetCount = false, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,8 @@ class AlienPlayerView extends StatelessWidget {
           children: [
             Expanded(
                 child: TextButton(
-                    child: Text("Home Defense"),
+                    style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
+                    child: Text("Home Defense", style: TextStyle(fontWeight: FontWeight.bold),),
                     onPressed: () {
                       var result = game.buildHomeDefense(alien);
                       showDialog(
@@ -49,7 +51,8 @@ class AlienPlayerView extends StatelessWidget {
             (alien.game.scenario is Scenario4
                 ? Expanded(
                     child: TextButton(
-                        child: Text("Colony Defense"),
+                        style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
+                        child: Text("Colony Defense", style: TextStyle(fontWeight: FontWeight.bold),),
                         onPressed: () {
                           var result =
                               game.buildColonyDefense(alien as Scenario4Player);

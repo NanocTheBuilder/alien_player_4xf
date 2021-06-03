@@ -1,4 +1,6 @@
 import 'package:alienplayer4xf/widgets/alien_player_page.dart';
+import 'package:alienplayer4xf/widgets/new_game_dialog.dart';
+import 'package:alienplayer4xf/widgets/settings_dialog.dart';
 import 'package:alienplayer4xf/widgets/seen_techs_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +11,6 @@ import 'econ_phase_result_dialog.dart';
 
 class GamePage extends StatelessWidget {
   static const MAX_TURNS = 100;
-
   final String title;
 
   GamePage({Key key, this.title}) : super(key: key);
@@ -19,10 +20,34 @@ class GamePage extends StatelessWidget {
     return Consumer<GameModel>(builder: (context, game, child) {
       return Scaffold(
         backgroundColor: Colors.transparent,
-        //appBar: AppBar(
-        //  title: Text(title),
-        //
-        //),
+        appBar: AppBar(
+          title: Text(title),
+          actions: [
+            PopupMenuButton<MenuActions>(
+                onSelected: (MenuActions action) {
+                  if (action == MenuActions.settings) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => SettingsDialog(game));
+                  } else if (action == MenuActions.new_game) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => NewGameDialog(game));
+                  }
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<MenuActions>>[
+                      const PopupMenuItem<MenuActions>(
+                        value: MenuActions.new_game,
+                        child: Text("New Game"),
+                      ),
+                      const PopupMenuItem<MenuActions>(
+                        value: MenuActions.settings,
+                        child: Text("Settings"),
+                      ),
+                    ])
+          ],
+        ),
         body: Center(
           child: Consumer<GameModel>(builder: (context, game, child) {
             return ListView.builder(

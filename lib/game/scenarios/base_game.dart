@@ -39,8 +39,7 @@ class BaseGameScenario extends Scenario {
     return AlienPlayer(AlienEconomicSheet(difficulty), game, color);
   }
 
-  @override
-  List<Difficulty> get difficulties => const [
+  static List<Difficulty> difficulties() => const [
         BaseGameDifficulty.EASY,
         BaseGameDifficulty.NORMAL,
         BaseGameDifficulty.HARD,

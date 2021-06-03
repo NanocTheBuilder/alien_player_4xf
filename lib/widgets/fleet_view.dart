@@ -13,7 +13,7 @@ import '../main.dart';
 
 class FleetView extends StatelessWidget {
   final Fleet fleet;
-  FleetView(this.fleet);
+  FleetView(this.fleet, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,9 +5,9 @@ import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
 
 class SeenTechsDialog extends StatefulWidget {
-  GameModel game;
+  final GameModel game;
 
-  SeenTechsDialog(this.game);
+  const SeenTechsDialog(this.game, {Key key}) : super(key: key);
 
   @override
   SeenTechsState createState() => SeenTechsState(game);

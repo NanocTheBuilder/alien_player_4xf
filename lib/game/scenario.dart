@@ -18,7 +18,7 @@ abstract class Scenario{
 
     AlienPlayer newPlayer(Game game, Difficulty difficulty, PlayerColor color);
 
-    List<Difficulty> get difficulties;
+    //List<Difficulty> get difficulties;
 
     List<Technology> get availableTechs => techPrices.availableTechs;
 

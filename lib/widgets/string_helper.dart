@@ -2,6 +2,9 @@ import 'dart:core';
 
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
+import 'package:alienplayer4xf/game/scenarios/base_game.dart';
+import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
 
 class Strings {
   static const Map<PlayerColor, String> players = {
@@ -75,4 +78,25 @@ class Strings {
     });
     return sb.toString().trimRight();
   }
+
+  static Map<Type, ScenarioBuildData> scenarioBuildData = {
+    BaseGameScenario : ScenarioBuildData("1 Player Alien Empire", BaseGameScenario.difficulties(), BaseGameDifficulty.NORMAL, () => BaseGameScenario()),
+    Scenario4 : ScenarioBuildData("Space Empires Solitaire Scenario #4", Scenario4.difficulties(), BaseGameDifficulty.NORMAL, () => Scenario4()),
+    VpSoloScenario : ScenarioBuildData("Alien Player VP Rules (Solitaire)", VpSoloScenario.difficulties(), VpSoloDifficulty.NORMAL, () => VpSoloScenario()),
+    Vp2pScenario : ScenarioBuildData("Alien Player Co-op (2 Players)", Vp2pScenario.difficulties(), Vp2pDifficulty.NORMAL, () => Vp2pScenario()),
+    Vp3pScenario : ScenarioBuildData("Alien Player Co-op (3 Players)", Vp3pScenario.difficulties(), Vp3pDifficulty.NORMAL, () => Vp3pScenario()),
+  };
+
+  static Map<String, String> difficulties = {
+    "EASY" : "Easy", "NORMAL" : "Normal", "HARD" : "Hard", "HARDER" : "Harder", "REALLY_TOUGH" : "Really Tough", "GOOD_LUCK" : "Good Luck"
+  };
+}
+
+class ScenarioBuildData{
+  final String name;
+  final List<Difficulty> difficulties;
+  final Difficulty normalDifficulty;
+  final Function constructor;
+
+  ScenarioBuildData(this.name, this.difficulties, this.normalDifficulty, this.constructor);
 }

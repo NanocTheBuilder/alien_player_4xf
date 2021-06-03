@@ -10,7 +10,7 @@ import 'fleet_view.dart';
 class FleetBuildDialog extends StatefulWidget {
   final Fleet fleet;
 
-  FleetBuildDialog(this.fleet);
+  FleetBuildDialog(this.fleet, {Key key}) : super(key: key);
 
   @override
   FleetBuildOptionsState createState() => FleetBuildOptionsState(fleet);

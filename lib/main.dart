@@ -13,13 +13,16 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'game/fleet.dart';
+import 'game/scenario.dart';
 
 const Map PlayerColors = {
-  PlayerColor.RED: Color.fromARGB(255, 255, 0, 0),
-  PlayerColor.GREEN: Color.fromARGB(255, 0, 255, 0),
-  PlayerColor.BLUE: Color.fromARGB(255, 0, 200, 255),
+  PlayerColor.RED: Color.fromARGB(255, 255, 98, 56),
+  PlayerColor.GREEN: Color.fromARGB(255, 33, 227, 47),
+  PlayerColor.BLUE: Color.fromARGB(255, 41, 222, 255),
   PlayerColor.YELLOW: Color.fromARGB(255, 255, 255, 0),
 };
+
+enum MenuActions { new_game, settings }
 
 void main() {
   runApp(ChangeNotifierProvider<GameModel>(
@@ -32,13 +35,24 @@ class GameModel extends ChangeNotifier {
   GameModel() {
     //_game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
     //_game = Game(Scenario4(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
-    _game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.BLUE]);
-    _game.roller = DiceRoller();
+    //_game = Game(VpSoloScenario(), VpSoloDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.BLUE]);
+    //_game.roller = DiceRoller();
+    newGame(Scenario4(), BaseGameDifficulty.NORMAL,
+        [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);
   }
 
-  get aliens => _game.aliens;
+  void newGame(Scenario scenario, Difficulty difficulty,
+      List<PlayerColor> playerColors) {
+    _game = Game(scenario, difficulty, playerColors);
+    _game.roller = DiceRoller();
+    notifyListeners();
+  }
+
+  List<AlienPlayer> get aliens => _game.aliens;
 
   get scenario => _game.scenario;
+
+  get difficulty => _game.difficulty;
 
   List<EconPhaseResult> doEconomicPhase() {
     var result = _game.doEconomicPhase();
@@ -46,30 +60,31 @@ class GameModel extends ChangeNotifier {
     return result;
   }
 
-  FleetBuildResult buildHomeDefense(AlienPlayer ap){
+  FleetBuildResult buildHomeDefense(AlienPlayer ap) {
     var result = ap.buildHomeDefense();
     notifyListeners();
     return result;
   }
 
-  FleetBuildResult buildColonyDefense(Scenario4Player ap){
+  FleetBuildResult buildColonyDefense(Scenario4Player ap) {
     var result = ap.buildColonyDefense();
     notifyListeners();
     return result;
   }
 
-  FleetBuildResult firstCombat(Fleet fleet, [List<FleetBuildOption> options = const []]){
+  FleetBuildResult firstCombat(Fleet fleet,
+      [List<FleetBuildOption> options = const []]) {
     var result = fleet.ap.firstCombat(fleet, options);
     notifyListeners();
     return result;
   }
 
-  void deleteFleet(Fleet fleet){
+  void deleteFleet(Fleet fleet) {
     fleet.ap.removeFleet(fleet);
     notifyListeners();
   }
 
-  void eliminate(AlienPlayer ap){
+  void eliminate(AlienPlayer ap) {
     ap.isEliminated = true;
     notifyListeners();
   }
@@ -77,35 +92,38 @@ class GameModel extends ChangeNotifier {
   //These change the game state, but don't call notifyListeners.
   //Call "updateSeenThing" after all techs & seeables has been updated to call notifyListeners.
   int getSeenLevel(Technology technology) => _game.getSeenLevel(technology);
-  void setSeenLevel(Technology technology, int level) => _game.setSeenLevel(technology, level);
+  void setSeenLevel(Technology technology, int level) =>
+      _game.setSeenLevel(technology, level);
   bool isSeenThing(Seeable seeable) => _game.isSeenThing(seeable);
   void addSeenThing(Seeable seeable) => _game.addSeenThing(seeable);
   void removeSeenThing(Seeable seeable) => _game.removeSeenThing(seeable);
-  void setSeenThing(Seeable seeable, bool seen){
-    if(seen)
+  void setSeenThing(Seeable seeable, bool seen) {
+    if (seen)
       _game.addSeenThing(seeable);
     else
       _game.removeSeenThing(seeable);
   }
-  void finishUpdate(){
+
+  void finishUpdate() {
     notifyListeners();
   }
 
-  int getMaxLevel(Technology technology) => _game.scenario.getMaxLevel(technology);
+  int getMaxLevel(Technology technology) =>
+      _game.scenario.getMaxLevel(technology);
 
-  void setLevel(AlienPlayer alienPlayer, Technology technology, int level){
+  void setLevel(AlienPlayer alienPlayer, Technology technology, int level) {
     alienPlayer.technologyLevels[technology] = level;
     notifyListeners();
   }
 
-  void setColonies(AlienPlayer alienPlayer, int colonies){
+  void setColonies(AlienPlayer alienPlayer, int colonies) {
     (alienPlayer as VpAlienPlayer).colonies = colonies;
     notifyListeners();
   }
 
   get currentTurn => _game.currentTurn;
 
-  bool showDetails = true;
+  bool showDetails = false;
 }
 
 class MyApp extends StatelessWidget {
@@ -115,12 +133,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Alien Player 4X App',
         theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: TextTheme(
-            bodyText2: TextStyle(fontSize: Theme.of(context).textTheme.bodyText2.fontSize * 1.3),
-            button: TextStyle(fontSize: Theme.of(context).textTheme.button.fontSize * 1.3),
-          )
-        ),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            textTheme: TextTheme(
+              bodyText2: TextStyle(
+                  fontSize:
+                      Theme.of(context).textTheme.bodyText2.fontSize * 1.3),
+              button: TextStyle(
+                  fontSize: Theme.of(context).textTheme.button.fontSize * 1.3),
+            )),
         home: Container(
           decoration: BoxDecoration(
               image: DecorationImage(

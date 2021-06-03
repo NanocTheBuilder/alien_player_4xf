@@ -9,7 +9,7 @@ class EconPhaseResultDialog extends StatelessWidget {
   final List<EconPhaseResult> results;
   final bool showDetails;
 
-  EconPhaseResultDialog(this.currentTurn, this.results, this.showDetails);
+  EconPhaseResultDialog(this.currentTurn, this.results, this.showDetails, {Key key}) : super(key: key);
 
   Widget resultCard(
       EconPhaseResult result, BuildContext context, bool showDetails) {

@@ -24,8 +24,7 @@ class Scenario4 extends Scenario {
     return Scenario4Player(AlienEconomicSheet(difficulty), game, color);
   }
 
-  @override
-  List<Difficulty> get difficulties => const [
+  static List<Difficulty> difficulties() => const [
         BaseGameDifficulty.EASY,
         BaseGameDifficulty.NORMAL,
         BaseGameDifficulty.HARD,
