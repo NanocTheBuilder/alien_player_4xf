@@ -1,5 +1,23 @@
-import 'dart:core';
+/*
+ *  Copyright (C) 2021 Balázs Péter
+ *
+ *  This file is part of Alien Player 4X.
+ *
+ *  Alien Player 4XF is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Alien Player 4X is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
+import 'dart:core';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
@@ -80,23 +98,46 @@ class Strings {
   }
 
   static Map<Type, ScenarioBuildData> scenarioBuildData = {
-    BaseGameScenario : ScenarioBuildData("1 Player Alien Empire", BaseGameScenario.difficulties(), BaseGameDifficulty.NORMAL, () => BaseGameScenario()),
-    Scenario4 : ScenarioBuildData("Space Empires Solitaire Scenario #4", Scenario4.difficulties(), BaseGameDifficulty.NORMAL, () => Scenario4()),
-    VpSoloScenario : ScenarioBuildData("Alien Player VP Rules (Solitaire)", VpSoloScenario.difficulties(), VpSoloDifficulty.NORMAL, () => VpSoloScenario()),
-    Vp2pScenario : ScenarioBuildData("Alien Player Co-op (2 Players)", Vp2pScenario.difficulties(), Vp2pDifficulty.NORMAL, () => Vp2pScenario()),
-    Vp3pScenario : ScenarioBuildData("Alien Player Co-op (3 Players)", Vp3pScenario.difficulties(), Vp3pDifficulty.NORMAL, () => Vp3pScenario()),
+    BaseGameScenario: ScenarioBuildData(
+        "1 Player Alien Empire",
+        BaseGameScenario.difficulties(),
+        BaseGameDifficulty.NORMAL,
+        () => BaseGameScenario()),
+    Scenario4: ScenarioBuildData("Space Empires Solitaire Scenario #4",
+        Scenario4.difficulties(), BaseGameDifficulty.NORMAL, () => Scenario4()),
+    VpSoloScenario: ScenarioBuildData(
+        "Alien Player VP Rules (Solitaire)",
+        VpSoloScenario.difficulties(),
+        VpSoloDifficulty.NORMAL,
+        () => VpSoloScenario()),
+    Vp2pScenario: ScenarioBuildData(
+        "Alien Player Co-op (2 Players)",
+        Vp2pScenario.difficulties(),
+        Vp2pDifficulty.NORMAL,
+        () => Vp2pScenario()),
+    Vp3pScenario: ScenarioBuildData(
+        "Alien Player Co-op (3 Players)",
+        Vp3pScenario.difficulties(),
+        Vp3pDifficulty.NORMAL,
+        () => Vp3pScenario()),
   };
 
   static Map<String, String> difficulties = {
-    "EASY" : "Easy", "NORMAL" : "Normal", "HARD" : "Hard", "HARDER" : "Harder", "REALLY_TOUGH" : "Really Tough", "GOOD_LUCK" : "Good Luck"
+    "EASY": "Easy",
+    "NORMAL": "Normal",
+    "HARD": "Hard",
+    "HARDER": "Harder",
+    "REALLY_TOUGH": "Really Tough",
+    "GOOD_LUCK": "Good Luck"
   };
 }
 
-class ScenarioBuildData{
+class ScenarioBuildData {
   final String name;
   final List<Difficulty> difficulties;
   final Difficulty normalDifficulty;
   final Function constructor;
 
-  ScenarioBuildData(this.name, this.difficulties, this.normalDifficulty, this.constructor);
+  ScenarioBuildData(
+      this.name, this.difficulties, this.normalDifficulty, this.constructor);
 }
