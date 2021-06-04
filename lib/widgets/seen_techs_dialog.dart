@@ -26,19 +26,19 @@ import 'package:flutter/material.dart';
 class SeenTechsDialog extends StatefulWidget {
   final GameModel game;
 
-  const SeenTechsDialog(this.game, {Key key}) : super(key: key);
+  const SeenTechsDialog(this.game, {Key? key}) : super(key: key);
 
   @override
   SeenTechsState createState() => SeenTechsState(game);
 }
 
 class SeenTechsState extends State<SeenTechsDialog> {
-  GameModel game;
+  late GameModel game;
   //base
-  int cloaking, scanner, pointDefense;
-  bool fighters, mines;
+  late int cloaking, scanner, pointDefense;
+  late bool fighters, mines;
   //scenario4
-  bool boardingShips, size3Ships, veterans;
+  late bool boardingShips, size3Ships, veterans;
 
   SeenTechsState(this.game);
 
@@ -139,7 +139,7 @@ class SeenTechsState extends State<SeenTechsDialog> {
   Widget techDropdown(
       Technology technology, int value, Function(dynamic) setStateFn) {
     return ListTile(
-      title: Text(Strings.technologies[technology]),
+      title: Text(Strings.technologies[technology]!),
       trailing: DropdownButton(
         items: values(technology),
         value: value,
@@ -157,7 +157,7 @@ class SeenTechsState extends State<SeenTechsDialog> {
   Widget seenCheckbox(
       Seeable seeable, bool value, Function(dynamic) setStateFn) {
     return CheckboxListTile(
-        title: Text(Strings.seeables[seeable]),
+        title: Text(Strings.seeables[seeable]!),
         value: value,
         onChanged: setStateFn);
   }

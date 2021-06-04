@@ -33,14 +33,14 @@ import '../../mock_roller.dart';
 void main() {
 //extends BasegameFixture {
 
-  Game game;
-  AlienPlayer ap;
-  DefenseBuilder defBuilder;
-  MockRoller roller;
-  AlienEconomicSheet sheet;
-  FleetBuilder fleetBuilder;
-  TechnologyBuyer techBuyer;
-  FleetLauncher fleetLauncher;
+  late Game game;
+  late AlienPlayer ap;
+  late DefenseBuilder defBuilder;
+  late MockRoller roller;
+  late AlienEconomicSheet sheet;
+  late FleetBuilder fleetBuilder;
+  late TechnologyBuyer techBuyer;
+  late FleetLauncher fleetLauncher;
 
   void assertEquals(expected, actual) {
     expect(actual, expected);
@@ -91,10 +91,10 @@ void main() {
   tearDown(assertRoller);
 //BaseGameFixture
 
-  EconPhaseResult result;
+  late EconPhaseResult result;
 
   void assertGroups(List<Group> expectedGroups) {
-    assertFleet(result.fleet, expectedGroups);
+    assertFleet(result.fleet!, expectedGroups);
   }
 
   void mock2Fleet1Tech1DefRoll() {
@@ -108,7 +108,7 @@ void main() {
     roller.mockRoll(5); //Ship size
     roller.mockRoll2(10, 1); //Attack
     roller.mockRoll(fleetCompositionRoll); //fleet composition
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 5);
     assertLevel(Technology.ATTACK, 2);
     assertRoller();
@@ -116,8 +116,8 @@ void main() {
 
   void assertRegularFleetLaunch(int fleetCP) {
     assertEquals(ap, result.alienPlayer);
-    assertEquals(fleetCP, result.fleet.fleetCP);
-    assertEquals(FleetType.REGULAR_FLEET, result.fleet.fleetType);
+    assertEquals(fleetCP, result.fleet!.fleetCP);
+    assertEquals(FleetType.REGULAR_FLEET, result.fleet!.fleetType);
   }
 
   void launchRegularFleet() {
@@ -188,7 +188,7 @@ void main() {
     roller.mockRoll(6); //Buy next fighter level
     roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
     roller.mockRoll(3); //fleet composition
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
     assertLevel(Technology.FIGHTERS, 3);
@@ -220,7 +220,7 @@ void main() {
     roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
     roller.mockRoll(4); //Has seen PD, but buy only full cariers
     roller.mockRoll(6); //fleet composition
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
     assertLevel(Technology.FIGHTERS, 3);
@@ -251,7 +251,7 @@ void main() {
     roller.mockRoll(8); //Ship size
     roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
     roller.mockRoll(8); //fleet composition
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
     assertLevel(Technology.FIGHTERS, 1);
@@ -277,12 +277,12 @@ void main() {
     assertRoller();
     roller.mockRoll(5); //Ship size
     roller.mockRoll2(10, 6); //Cloak
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 5);
     assertLevel(Technology.CLOAKING, 1);
     assertRoller();
     assertGroups([Group(ShipType.RAIDER, 5)]);
-    assertEquals(FleetType.RAIDER_FLEET, result.fleet.fleetType);
+    assertEquals(FleetType.RAIDER_FLEET, result.fleet!.fleetType);
     assertCPs(10, 0, 10);
   });
 
@@ -295,7 +295,7 @@ void main() {
     roller.mockRoll(7); //fleet launch
     roller.mockRoll(4); //move tech
     result = ap.makeEconRoll(10);
-    assertEquals(FleetType.RAIDER_FLEET, result.fleet.fleetType);
+    assertEquals(FleetType.RAIDER_FLEET, result.fleet!.fleetType);
     assertCPs(10, 30, 10);
     assertLevel(Technology.MOVE, 2);
     assertEquals(true, result.moveTechRolled);
@@ -304,7 +304,7 @@ void main() {
 
     roller.mockRoll(6); //Ship size
     roller.mockRoll(6); //next cloak
-    ap.firstCombat(result.fleet);
+    ap.firstCombat(result.fleet!);
     assertLevel(Technology.CLOAKING, 2);
     assertCPs(10, 0, 10);
   });

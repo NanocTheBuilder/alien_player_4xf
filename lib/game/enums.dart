@@ -120,7 +120,7 @@ class ShipType {
 
   static ShipType findCheapest(int minHullSize) {
     return cheapToExpensive.firstWhere((type) => type.hullSize >= minHullSize,
-        orElse: () => null);
+        orElse: () => null as ShipType);
   }
 
   static Iterable<ShipType> getBiggerTypesInReverse(ShipType type) {
@@ -130,6 +130,6 @@ class ShipType {
   static ShipType findBiggest(int availableCP, int shipSizeLevel) {
     return cheapToExpensive.reversed.firstWhere(
         (type) => type.canBeBuilt(availableCP, shipSizeLevel),
-        orElse: () => null);
+        orElse: () => null as ShipType);
   }
 }

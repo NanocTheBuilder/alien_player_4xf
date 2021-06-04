@@ -28,7 +28,7 @@ class FleetLauncher {
     
     FleetLauncher(this.game);
 
-    Fleet rollFleetLaunch(AlienPlayer ap, int turn) {
+    Fleet? rollFleetLaunch(AlienPlayer ap, int turn) {
         int roll = getFleetLaunchRoll(ap);
         if (roll <= ap.economicSheet.getFleetLaunch(turn)) {
             return launchFleet(ap, turn);
@@ -36,7 +36,7 @@ class FleetLauncher {
         return null;
     }
 
-    Fleet launchFleet(AlienPlayer ap, int turn, [List<FleetBuildOption> options = const[]]) {
+    Fleet? launchFleet(AlienPlayer ap, int turn, [List<FleetBuildOption> options = const[]]) {
         if (ap.economicSheet.fleetCP >= ShipType.SCOUT.cost) {
             Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, ap.economicSheet.fleetCP);
             if (shouldLaunchRaiderFleet(ap, options)) {

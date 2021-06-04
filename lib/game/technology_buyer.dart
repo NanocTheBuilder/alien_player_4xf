@@ -35,15 +35,15 @@ abstract class TechnologyPrices {
   }
 
   int getStartingLevel(Technology technology) {
-    return map[technology][0];
+    return map[technology]![0];
   }
 
   int getCost(Technology technology, int level) {
-    return map[technology][level];
+    return map[technology]![level];
   }
 
   int getMaxLevel(Technology technology) {
-    return map[technology].length - 1;
+    return map[technology]!.length - 1;
   }
 }
 
@@ -147,7 +147,7 @@ abstract class TechnologyBuyer {
     List<Technology> buyable = [];
     for (Technology technology in TECHNOLOGY_ROLL_TABLE.keys) {
       if (fleetCanBuyNextLevel(fleet, technology, options)) {
-        for (int i = 0; i < TECHNOLOGY_ROLL_TABLE[technology]; i++)
+        for (int i = 0; i < TECHNOLOGY_ROLL_TABLE[technology]!; i++)
           buyable.add(technology);
       }
     }
@@ -207,7 +207,7 @@ abstract class TechnologyBuyer {
       buyNextLevel(ap, Technology.SECURITY_FORCES);
   }
 
-  void buyGroundCombatIfNeeded(AlienPlayer ap, {bool combatIsAbovePlanet}) {
+  void buyGroundCombatIfNeeded(AlienPlayer ap, {bool combatIsAbovePlanet = false}) {
     if (combatIsAbovePlanet) buyNextLevel(ap, Technology.GROUND_COMBAT);
   }
 

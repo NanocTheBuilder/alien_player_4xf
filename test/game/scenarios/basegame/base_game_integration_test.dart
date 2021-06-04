@@ -28,17 +28,17 @@ import 'package:test/test.dart';
 import '../../mock_roller.dart';
 
 void main() {
-  AlienPlayer ap;
-  AlienEconomicSheet sheet;
-  Fleet fleet;
+  late AlienPlayer ap;
+  late AlienEconomicSheet sheet;
+  late Fleet fleet;
 
   void assertEquals(expected, actual) {
     expect(actual, expected);
   }
 
   void assertRegularFleetLaunch(EconPhaseResult result, int fleetCP) {
-    assertEquals(fleetCP, result.fleet.fleetCP);
-    assertEquals(FleetType.REGULAR_FLEET, result.fleet.fleetType);
+    assertEquals(fleetCP, result.fleet!.fleetCP);
+    assertEquals(FleetType.REGULAR_FLEET, result.fleet!.fleetType);
     assertEquals(result.fleet, ap.fleets[0]);
   }
 

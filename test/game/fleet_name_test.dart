@@ -25,7 +25,7 @@ import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:test/test.dart';
 
 void main() {
-  AlienPlayer ap;
+  late AlienPlayer ap;
 
   setUp(() {
     var game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,

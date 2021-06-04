@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 class NewGameDialog extends StatefulWidget {
   final GameModel game;
 
-  const NewGameDialog(this.game, {Key key}) : super(key: key);
+  const NewGameDialog(this.game, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => NewGameDialogState(game);
@@ -33,11 +33,10 @@ class NewGameDialog extends StatefulWidget {
 
 class NewGameDialogState extends State<NewGameDialog> {
   final GameModel game;
-  Type scenario;
-  //Function<Scenario>() constuctor;
-  Difficulty difficulty;
-  List<PlayerColor> playerColors;
-  bool green, yellow, red, blue;
+  late Type scenario;
+  late Difficulty difficulty;
+  late List<PlayerColor> playerColors;
+  late bool green, yellow, red, blue;
 
   NewGameDialogState(this.game);
   @override
@@ -72,7 +71,7 @@ class NewGameDialogState extends State<NewGameDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            DropdownButton(
+            DropdownButton<Type>(
               value: scenario,
               items: Strings.scenarioBuildData.entries
                   .map((entry) => DropdownMenuItem(
@@ -81,16 +80,16 @@ class NewGameDialogState extends State<NewGameDialog> {
                       ))
                   .toList(),
               onChanged: (value) => setState(() {
-                scenario = value;
+                scenario = value!;
                 updateDifficulty(
-                    Strings.scenarioBuildData[value].normalDifficulty);
+                    Strings.scenarioBuildData[value]!.normalDifficulty);
               }),
             ),
             DropdownButton(
               value: difficulty,
-              items: Strings.scenarioBuildData[scenario].difficulties
+              items: Strings.scenarioBuildData[scenario]!.difficulties
                   .map((e) => DropdownMenuItem(
-                        child: Text(Strings.difficulties[e.name]),
+                        child: Text(Strings.difficulties[e.name]!),
                         value: e,
                       ))
                   .toList(),
@@ -120,7 +119,7 @@ class NewGameDialogState extends State<NewGameDialog> {
               ? () {
                   Navigator.of(context).pop();
                   game.newGame(
-                      Strings.scenarioBuildData[scenario].constructor.call(),
+                      Strings.scenarioBuildData[scenario]!.constructor.call(),
                       difficulty,
                       selectedPlayers());
                 }

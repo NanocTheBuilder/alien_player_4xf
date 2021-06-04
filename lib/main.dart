@@ -48,7 +48,7 @@ void main() {
 }
 
 class GameModel extends ChangeNotifier {
-  Game _game;
+  late Game _game;
 
   GameModel() {
     //_game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]);
@@ -155,9 +155,9 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(
               bodyText2: TextStyle(
                   fontSize:
-                      Theme.of(context).textTheme.bodyText2.fontSize * 1.3),
+                      Theme.of(context).textTheme.bodyText2!.fontSize! * 1.3),
               button: TextStyle(
-                  fontSize: Theme.of(context).textTheme.button.fontSize * 1.3),
+                  fontSize: Theme.of(context).textTheme.button!.fontSize! * 1.3),
             )),
         home: Container(
           decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class MyApp extends StatelessWidget {
                   image: AssetImage("assets/smc_wing_full_2560.png",
                       bundle: DefaultAssetBundle.of(context)),
                   fit: BoxFit.cover)),
-          child: GamePage(title: 'Alien Player 4X'),
+          child: GamePage('Alien Player 4X'),
         ));
   }
 }

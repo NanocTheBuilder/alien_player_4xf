@@ -34,7 +34,11 @@ class Group {
 
   @override
   bool operator ==(other) {
-    return other?.shipType == shipType && other?.size == size;
+    if(identical(this, other))
+      return true;
+    if(other.runtimeType != runtimeType)
+      return false;
+    return other is Group && other.shipType == shipType && other.size == size;
   }
 
   @override
@@ -50,7 +54,7 @@ class Group {
 
 class Fleet {
   FleetType _fleetType;
-  String _name;
+  late String _name;
 
   int fleetCP;
   List<Group> groups = [];
@@ -95,7 +99,7 @@ class Fleet {
 
   void addGroup(Group group) {
     if (group.size > 0) {
-      Group existingGroup = findGroup(group.shipType);
+      Group? existingGroup = findGroup(group.shipType);
       if (existingGroup != null)
         existingGroup.addShips(group.size);
       else
@@ -103,7 +107,7 @@ class Fleet {
     }
   }
 
-  Group findGroup(ShipType shipType) {
+  Group? findGroup(ShipType shipType) {
     for (Group group in groups) {
       if (group.shipType == shipType) return group;
     }

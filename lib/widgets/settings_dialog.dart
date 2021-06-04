@@ -24,15 +24,15 @@ import 'package:flutter/material.dart';
 class SettingsDialog extends StatefulWidget {
   final GameModel game;
 
-  const SettingsDialog(this.game, {Key key}) : super(key: key);
+  const SettingsDialog(this.game, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SettingsState(game);
 }
 
 class SettingsState extends State<SettingsDialog> {
-  final GameModel game;
-  bool hideCps;
+  late final GameModel game;
+  late bool hideCps;
 
   SettingsState(this.game);
 
@@ -51,7 +51,7 @@ class SettingsState extends State<SettingsDialog> {
             subtitle: Text(
                 "Hide the AP's current CPs and the CP values of unrevealed fleets"),
             value: hideCps,
-            onChanged: (value) => setState(() => hideCps = value),
+            onChanged: (value) => setState(() => hideCps = value!),
 
           //         ),
           ),

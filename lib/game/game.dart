@@ -20,18 +20,20 @@
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/scenario.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'alien_economic_sheet.dart';
 import 'dice_roller.dart';
 
+@JsonSerializable()
 class Game {
-  DiceRoller roller;
-  Scenario scenario;
-  List<AlienPlayer> aliens;
-  Map<Technology, int> seenLevels;
-  Set<Seeable> seenThings;
-  int currentTurn;
-  Difficulty difficulty;
+  late DiceRoller roller;
+  late Scenario scenario;
+  late List<AlienPlayer> aliens;
+  Map<Technology, int> seenLevels = {};
+  Set<Seeable> seenThings = {};
+  int currentTurn = 1;
+  late Difficulty difficulty;
 
   Game(this.scenario, this.difficulty, List playerColors) {
     scenario.init(this);
@@ -65,7 +67,7 @@ class Game {
   }
 
   int getSeenLevel(Technology technology) {
-    return seenLevels[technology];
+    return seenLevels[technology]!;
   }
 
   void setSeenLevel(Technology technology, int level) {

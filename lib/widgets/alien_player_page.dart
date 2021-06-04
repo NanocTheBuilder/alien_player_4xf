@@ -27,11 +27,11 @@ import 'alien_player_view.dart';
 import 'fleet_view.dart';
 
 class AlienPlayerPage extends StatelessWidget {
-  final String title;
+  late final String title;
   final AlienPlayer alienPlayer;
   final bool showDetails;
 
-  AlienPlayerPage({Key key, this.title, this.alienPlayer, this.showDetails})
+  AlienPlayerPage(this.title, this.alienPlayer, this.showDetails, {Key? key})
       : super(key: key);
 
   @override

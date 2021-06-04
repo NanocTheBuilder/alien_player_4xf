@@ -27,11 +27,11 @@ import 'fleet_launcher.dart';
 import 'game.dart';
 
 abstract class Scenario{
-    TechnologyBuyer techBuyer;
-    TechnologyPrices techPrices;
-    FleetBuilder fleetBuilder;
-    DefenseBuilder defenseBuilder;
-    FleetLauncher fleetLauncher;
+    late TechnologyBuyer techBuyer;
+    late TechnologyPrices techPrices;
+    late FleetBuilder fleetBuilder;
+    late DefenseBuilder defenseBuilder;
+    late FleetLauncher fleetLauncher;
 
     void init(Game game);
 
@@ -45,11 +45,11 @@ abstract class Scenario{
         return techPrices.getStartingLevel(technology);
     }
 
-    void buildFleet(Fleet fleet, [List<FleetBuildOption> options]) {
+    void buildFleet(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
         fleetBuilder.buildFleet(fleet, options);
     }
 
-    Fleet buildHomeDefense(AlienPlayer alienPlayer) {
+    Fleet? buildHomeDefense(AlienPlayer alienPlayer) {
         return defenseBuilder.buildHomeDefense(alienPlayer);
     }
 
@@ -57,7 +57,7 @@ abstract class Scenario{
         techBuyer.buyNextLevel(alienPlayer, technology);
     }
 
-    void buyTechs(Fleet fleet, [List<FleetBuildOption> options]) {
+    void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
         techBuyer.buyTechs(fleet, options);
     }
 
@@ -69,7 +69,7 @@ abstract class Scenario{
         return techPrices.getMaxLevel(technology);
     }
 
-    Fleet rollFleetLaunch(AlienPlayer alienPlayer, int turn){
+    Fleet? rollFleetLaunch(AlienPlayer alienPlayer, int turn){
         return fleetLauncher.rollFleetLaunch(alienPlayer, turn);
     }
 }

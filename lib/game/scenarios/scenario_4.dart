@@ -52,7 +52,7 @@ class Scenario4 extends Scenario {
         BaseGameDifficulty.GOOD_LUCK
       ];
 
-  Fleet buildColonyDefense(AlienPlayer alienPlayer) {
+  Fleet? buildColonyDefense(AlienPlayer alienPlayer) {
     return (defenseBuilder as Scenario4DefenseBuilder)
         .buildColonyDefense(alienPlayer);
   }
@@ -64,7 +64,7 @@ class Scenario4Player extends AlienPlayer {
 
   FleetBuildResult buildColonyDefense() {
     FleetBuildResult result = FleetBuildResult(this);
-    Fleet fleet = (game.scenario as Scenario4).buildColonyDefense(this);
+    Fleet? fleet = (game.scenario as Scenario4).buildColonyDefense(this);
     if (fleet != null) {
       economicSheet.spendDefCP(fleet.buildCost);
       fleet.hadFirstCombat = true;
@@ -164,7 +164,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
     }
   }
 
-  Fleet buildColonyDefense(AlienPlayer ap) {
+  Fleet? buildColonyDefense(AlienPlayer ap) {
     int defCP = getDefCp(ap);
     if (defCP >= ShipType.INFANTRY.cost) {
       int maxCP = game.roller.roll() + game.roller.roll();
@@ -197,7 +197,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
 class Scenario4FleetBuilder extends FleetBuilder {
   Scenario4FleetBuilder(Game game) : super(game);
 
-  void buildFleet(Fleet fleet, [List<FleetBuildOption> options]) {
+  void buildFleet(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     if (fleet.fleetType == FleetType.RAIDER_FLEET ||
         shouldBuildRaiderFleet(fleet, options)) {
       buildRaiderFleet(fleet);
@@ -225,7 +225,7 @@ class Scenario4FleetBuilder extends FleetBuilder {
   }
 
   void buildOneFullyLoadedTransport(Fleet fleet,
-      [List<FleetBuildOption> options]) {
+      [List<FleetBuildOption> options = const[]]) {
     fleet.addFreeGroup(Group(ShipType.TRANSPORT, 1));
     buildGroundUnits(fleet).forEach((group) => fleet.addFreeGroup(group));
   }

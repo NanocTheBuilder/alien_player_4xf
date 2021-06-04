@@ -29,10 +29,10 @@ import 'package:test/test.dart';
 import '../../mock_roller.dart';
 
 void main() {
-  AlienPlayer ap;
-  AlienEconomicSheet sheet;
-  MockRoller roller;
-  FleetBuilder fleetBuilder;
+  late AlienPlayer ap;
+  late AlienEconomicSheet sheet;
+  late MockRoller roller;
+  late FleetBuilder fleetBuilder;
 
   //utils come first
   void assertBuiltGroups(Fleet fleet, List<FleetBuildOption> options, List<Group> expectedGroups) {

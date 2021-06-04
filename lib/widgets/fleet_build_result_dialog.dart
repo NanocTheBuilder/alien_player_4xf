@@ -27,7 +27,7 @@ import 'string_helper.dart';
 class FleetBuildResultDialog extends StatelessWidget{
   FleetBuildResult result;
 
-  FleetBuildResultDialog(this.result, {Key key}) : super(key: key);
+  FleetBuildResultDialog(this.result, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

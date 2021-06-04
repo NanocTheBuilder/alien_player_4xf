@@ -37,9 +37,9 @@ class EconRollResult {
 }
 
 class EconPhaseResult extends EconRollResult {
-  Fleet fleet;
+  Fleet? fleet;
   AlienPlayer alienPlayer;
-  bool moveTechRolled;
+  bool moveTechRolled = false;
 
   EconPhaseResult(this.alienPlayer);
 }

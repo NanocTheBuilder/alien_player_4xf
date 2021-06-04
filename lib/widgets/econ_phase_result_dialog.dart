@@ -28,7 +28,7 @@ class EconPhaseResultDialog extends StatelessWidget {
   final List<EconPhaseResult> results;
   final bool showDetails;
 
-  EconPhaseResultDialog(this.currentTurn, this.results, this.showDetails, {Key key}) : super(key: key);
+  EconPhaseResultDialog(this.currentTurn, this.results, this.showDetails, {Key? key}) : super(key: key);
 
   Widget resultCard(
       EconPhaseResult result, BuildContext context, bool showDetails) {
@@ -43,10 +43,10 @@ class EconPhaseResultDialog extends StatelessWidget {
     }
     //fleet
     if (result.fleet != null) {
-      rows.add(Text(Strings.fleetTypes[result.fleet.fleetType.name] +
+      rows.add(Text(Strings.fleetTypes[result.fleet!.fleetType.name]! +
           " " +
-          result.fleet.name +
-          (showDetails ? " (${result.fleet.fleetCP} CP)" : "")));
+          result.fleet!.name +
+          (showDetails ? " (${result.fleet!.fleetCP} CP)" : "")));
       if (result.moveTechRolled) {
         rows.add(Text(
             "${Strings.technologies[Technology.MOVE]}: ${result.alienPlayer.technologyLevels[Technology.MOVE]}"));

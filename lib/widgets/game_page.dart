@@ -32,7 +32,7 @@ class GamePage extends StatelessWidget {
   static const MAX_TURNS = 100;
   final String title;
 
-  GamePage({Key key, this.title}) : super(key: key);
+  GamePage(this.title, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,8 @@ class GamePage extends StatelessWidget {
                   if (action == MenuActions.settings) {
                     showDialog(
                         context: context,
-                        builder: (BuildContext context) => SettingsDialog(game));
+                        builder: (BuildContext context) =>
+                            SettingsDialog(game));
                   } else if (action == MenuActions.new_game) {
                     showDialog(
                         context: context,
@@ -78,9 +79,9 @@ class GamePage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => AlienPlayerPage(
-                                title: title,
-                                alienPlayer: game.aliens[index],
-                                showDetails: game.showDetails,
+                                title,
+                                game.aliens[index],
+                                game.showDetails,
                               ))),
                   child: AlienPlayerView(game.aliens[index], game.showDetails,
                       showFleetCount: true),

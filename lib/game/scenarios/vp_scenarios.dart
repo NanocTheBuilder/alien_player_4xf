@@ -75,7 +75,7 @@ class Vp3pDifficulty extends VpDifficulty {
 }
 
 class VpEconomicSheet extends AlienEconomicSheet {
-  int bank;
+  late int bank;
 
   VpEconomicSheet(VpDifficulty difficulty) : super (difficulty) {
     bank = difficulty.startingBank;
@@ -260,10 +260,10 @@ class VpSoloFleetLauncher extends FleetLauncher {
   VpSoloFleetLauncher(Game game) : super(game);
 
   @override
-  Fleet launchFleet(AlienPlayer ap, int turn,
+  Fleet? launchFleet(AlienPlayer ap, int turn,
       [List<FleetBuildOption> options = const[]]) {
     int bank = (ap.economicSheet as VpEconomicSheet).bank;
-    Fleet fleet = super.launchFleet(ap, turn, options);
+    Fleet? fleet = super.launchFleet(ap, turn, options);
     if (fleet == null) {
       if (bank >= 50) {
         fleet = Fleet(ap, FleetType.EXPANSION_FLEET, 0);

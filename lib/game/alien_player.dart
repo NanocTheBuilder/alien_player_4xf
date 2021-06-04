@@ -88,7 +88,7 @@ class AlienPlayer {
 
   FleetBuildResult buildHomeDefense() {
     var result = FleetBuildResult(this);
-    Fleet fleet = game.scenario.fleetLauncher
+    Fleet? fleet = game.scenario.fleetLauncher
         .launchFleet(this, game.currentTurn, [FleetBuildOption.HOME_DEFENSE]);
     if (fleet != null) {
       result = firstCombat(fleet, [
@@ -97,7 +97,7 @@ class AlienPlayer {
       ]);
     }
 
-    Fleet defenseFleet = game.scenario.buildHomeDefense(this);
+    Fleet? defenseFleet = game.scenario.buildHomeDefense(this);
     if (defenseFleet != null) {
       economicSheet.spendDefCP(defenseFleet.buildCost);
       defenseFleet.hadFirstCombat = true;
@@ -108,14 +108,14 @@ class AlienPlayer {
   }
 
   bool buyNextMoveLevel() {
-    int oldLevel = technologyLevels[Technology.MOVE];
+    int oldLevel = technologyLevels[Technology.MOVE]!;
     if (game.roller.roll() <= 4) {
       game.scenario.buyNextLevel(this, Technology.MOVE);
     }
     return technologyLevels[Technology.MOVE] != oldLevel;
   }
 
-  int getLevel(Technology technology) => technologyLevels[technology];
+  int getLevel(Technology technology) => technologyLevels[technology]!;
 
   void setLevel(Technology technology, int level) {
     technologyLevels[technology] = level;
@@ -130,10 +130,10 @@ class AlienPlayer {
     return "?";
   }
 
-  Fleet findFleetByName(String name, FleetType fleetType) {
-    return fleets.firstWhere(
+  Fleet? findFleetByName(String name, FleetType fleetType) {
+    return fleets.cast<Fleet?>().firstWhere(
         (fleet) =>
-            fleet.name == name && fleet.fleetType.isSameNameSequence(fleetType),
+            fleet!.name == name && fleet.fleetType.isSameNameSequence(fleetType),
         orElse: () => null);
   }
 }

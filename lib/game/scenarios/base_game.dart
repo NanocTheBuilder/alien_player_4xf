@@ -90,7 +90,7 @@ class BaseGameTechnologyBuyer extends TechnologyBuyer {
   List<int> get shipSizeRollTable => SHIP_SIZE_ROLL_TABLE;
 
   @override
-  void buyOptionalTechs(Fleet fleet, [List<FleetBuildOption> options]) {
+  void buyOptionalTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     AlienPlayer ap = fleet.ap;
     buyPointDefenseIfNeeded(ap);
     buyMineSweepIfNeeded(ap);

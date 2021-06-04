@@ -29,7 +29,7 @@ import 'fleet_view.dart';
 class FleetBuildDialog extends StatefulWidget {
   final Fleet fleet;
 
-  FleetBuildDialog(this.fleet, {Key key}) : super(key: key);
+  FleetBuildDialog(this.fleet, {Key? key}) : super(key: key);
 
   @override
   FleetBuildOptionsState createState() => FleetBuildOptionsState(fleet);
@@ -51,7 +51,7 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
           title: Text("Combat above planet"),
           value: combatAbovePlanet,
           onChanged: (value) {
-            setState(() => combatAbovePlanet = value);
+            setState(() => combatAbovePlanet = value as bool);
           })),
     ]));
     if (fleet.ap is VpAlienPlayer) {
@@ -61,7 +61,7 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
           title: Text("Enemy is NPA"),
             value: enemyIsNpa,
             onChanged: (value) {
-              setState(() => enemyIsNpa = value);
+              setState(() => enemyIsNpa = value as bool);
             })),
       ]));
     }

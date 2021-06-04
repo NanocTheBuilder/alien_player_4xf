@@ -30,10 +30,10 @@ import '../../mock_roller.dart';
 
 void main() {
 
-  AlienPlayer ap;
-  AlienEconomicSheet sheet;
-  MockRoller roller;
-  DefenseBuilder defBuilder;
+  late AlienPlayer ap;
+  late AlienEconomicSheet sheet;
+  late MockRoller roller;
+  late DefenseBuilder defBuilder;
 
   //utils come first
   void assertBuiltGroups(int defCP, int roll, List<Group> expectedGroups) {
@@ -44,7 +44,7 @@ void main() {
     for (Group g in expectedGroups) {
       expectedCost += g.shipType.cost * g.size;
     }
-    expect(fleet.fleetType, FleetType.DEFENSE_FLEET);
+    expect(fleet!.fleetType, FleetType.DEFENSE_FLEET);
     expect(fleet.groups, expectedGroups);
     expect(fleet.buildCost, expectedCost);
   }

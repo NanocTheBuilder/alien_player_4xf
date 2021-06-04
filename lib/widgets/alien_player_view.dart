@@ -35,7 +35,7 @@ class AlienPlayerView extends StatelessWidget {
   final bool showFleetCount;
 
   AlienPlayerView(this.alien, this.showDetails,
-      {this.showActions = false, this.showFleetCount = false, Key key})
+      {this.showActions = false, this.showFleetCount = false, Key? key})
       : super(key: key);
 
   @override
@@ -58,7 +58,7 @@ class AlienPlayerView extends StatelessWidget {
           children: [
             Expanded(
                 child: TextButton(
-                    style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
+                    style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple.shade400)),
                     child: Text("Home Defense"),
                     onPressed: () {
                       var result = game.buildHomeDefense(alien);
@@ -69,7 +69,7 @@ class AlienPlayerView extends StatelessWidget {
             (alien.game.scenario is Scenario4
                 ? Expanded(
                     child: TextButton(
-                        style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple[400])),
+                        style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple.shade400)),
                         child: Text("Colony Defense"),
                         onPressed: () {
                           var result =
@@ -236,9 +236,9 @@ class AlienPlayerView extends StatelessWidget {
     return Consumer<GameModel>(builder: (context, game, child) {
       return changeValue(
           context,
-          Strings.technologies[technology],
+          Strings.technologies[technology]!,
           technologyLevels(game, technology),
-          alien.technologyLevels[technology],
+          alien.technologyLevels[technology]!,
           (value) => game.setLevel(alien, technology, value));
     });
   }
@@ -246,7 +246,7 @@ class AlienPlayerView extends StatelessWidget {
   AlertDialog changeValue(
       BuildContext context,
       String label,
-      List<DropdownMenuItem<dynamic>> items,
+      List<DropdownMenuItem<int>> items,
       int initValue,
       Function commitValue) {
     var intValue = initValue;
@@ -256,10 +256,10 @@ class AlienPlayerView extends StatelessWidget {
           builder: (BuildContext context, StateSetter setState) {
         return ListTile(
           title: Text(label),
-          trailing: DropdownButton(
+          trailing: DropdownButton<int>(
               items: items,
               value: intValue,
-              onChanged: (value) => setState(() => intValue = value)),
+              onChanged: (value) => setState(() => intValue = value as int)),
         );
       }),
       actions: [
@@ -276,12 +276,12 @@ class AlienPlayerView extends StatelessWidget {
     );
   }
 
-  List<DropdownMenuItem> technologyLevels(
+  List<DropdownMenuItem<int>> technologyLevels(
       GameModel game, Technology technology) {
     return values(game.getMaxLevel(technology) + 1);
   }
 
-  List<DropdownMenuItem> values(int maxValue) {
+  List<DropdownMenuItem<int>> values(int maxValue) {
     return List.generate(maxValue, (i) => i)
         .map((e) => DropdownMenuItem(value: e, child: Text(e.toString())))
         .toList();
