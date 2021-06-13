@@ -26,6 +26,7 @@ import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../game_model.dart';
 import '../main.dart';
 
 class AlienPlayerView extends StatelessWidget {
@@ -66,7 +67,7 @@ class AlienPlayerView extends StatelessWidget {
                           context: context,
                           builder: (context) => FleetBuildResultDialog(result));
                     })),
-            (alien.game.scenario is Scenario4
+            (alien.game!.scenario is Scenario4
                 ? Expanded(
                     child: TextButton(
                         style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple.shade400)),
@@ -154,7 +155,7 @@ class AlienPlayerView extends StatelessWidget {
       ]),
     ]);
 
-    if (alien.game.scenario is Scenario4) {
+    if (alien.game!.scenario is Scenario4) {
       rows.addAll([
         Row(children: [
           techLabel(context, Technology.GROUND_COMBAT),
@@ -163,7 +164,7 @@ class AlienPlayerView extends StatelessWidget {
         ]),
         Row(children: [
           techLabel(context, Technology.MILITARY_ACADEMY),
-          (alien.game.scenario is VpSoloScenario
+          (alien.game!.scenario is VpSoloScenario
               ? Expanded(
                   flex: 1,
                   child: InkWell(
@@ -191,7 +192,7 @@ class AlienPlayerView extends StatelessWidget {
     var labelStr =
         '${Strings.technologies[technology]} : ${alien.technologyLevels[technology]}';
     var fontWeight = alien.technologyLevels[technology] ==
-            alien.game.scenario.getStartingLevel(technology)
+            alien.game!.scenario.getStartingLevel(technology)
         ? FontWeight.normal
         : FontWeight.bold;
 

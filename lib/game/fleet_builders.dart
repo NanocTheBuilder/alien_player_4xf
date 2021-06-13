@@ -58,25 +58,25 @@ class FleetBuilder extends GroupBuilder {
 
   FleetBuilder(Game game) : super(game);
 
-  void buildFleet(Fleet fleet, List<FleetBuildOption> options) {
+  void buildFleet(AlienPlayer ap, Fleet fleet, List<FleetBuildOption> options) {
     if (fleet.fleetType == FleetType.RAIDER_FLEET) {
-      buildRaiderFleet(fleet);
+      buildRaiderFleet(ap, fleet);
     } else {
-      buyFullCarriers(fleet, options);
-      if (shouldBuildRaiderFleet(fleet, options)) {
-        buildRaiderFleet(fleet);
+      buyFullCarriers(ap, fleet, options);
+      if (shouldBuildRaiderFleet(ap, fleet, options)) {
+        buildRaiderFleet(ap, fleet);
       } else {
-        buildFlagship(fleet);
-        buildPossibleDD(fleet);
-        buildRemainderFleet(fleet);
+        buildFlagship(ap, fleet);
+        buildPossibleDD(ap, fleet);
+        buildRemainderFleet(ap, fleet);
       }
     }
   }
 
-  void buildRemainderFleet(Fleet fleet) {
+  void buildRemainderFleet(AlienPlayer ap, Fleet fleet) {
     if (fleet.canBuyMoreShips) {
       int fleetCompositionRoll = game.roller.roll();
-      bool canUsePD = fleet.ap.getLevel(Technology.POINT_DEFENSE) > 0 &&
+      bool canUsePD = ap.getLevel(Technology.POINT_DEFENSE) > 0 &&
           game.isSeenThing(Seeable.FIGHTERS);
       if (canUsePD) {
         fleetCompositionRoll -= 2;
@@ -86,26 +86,26 @@ class FleetBuilder extends GroupBuilder {
       }
 
       if (fleetCompositionRoll <= 3) {
-        buildBallanced(fleet, 1);
+        buildBallanced(ap, fleet, 1);
       } else if (fleetCompositionRoll <= 6) {
         if (fleet.canBuyMoreShips)
-          buildBallanced(
+          buildBallanced(ap,
               fleet,
-              max(fleet.ap.getLevel(Technology.ATTACK),
-                  fleet.ap.getLevel(Technology.DEFENSE)));
+              max(ap.getLevel(Technology.ATTACK),
+                  ap.getLevel(Technology.DEFENSE)));
       } else {
         while (fleet.canBuyMoreShips) {
           buildGroup(
               fleet,
               ShipType.findBiggest(
-                  fleet.remainingCP, fleet.ap.getLevel(Technology.SHIP_SIZE)));
+                  fleet.remainingCP, ap.getLevel(Technology.SHIP_SIZE)));
         }
       }
     }
   }
 
-  void buyFullCarriers(Fleet fleet, List<FleetBuildOption> options) {
-    if (shouldBuildCarrierFleet(fleet, options)) {
+  void buyFullCarriers(AlienPlayer ap, Fleet fleet, List<FleetBuildOption> options) {
+    if (shouldBuildCarrierFleet(ap, fleet, options)) {
       buildCarrierFleet(fleet);
     }
   }
@@ -117,8 +117,8 @@ class FleetBuilder extends GroupBuilder {
   }
 
   //TODO: FIND A READABLE ALGORITHM?
-  void buildBallanced(Fleet fleet, int minHullSize) {
-    int apShipSize = fleet.ap.getLevel(Technology.SHIP_SIZE);
+  void buildBallanced(AlienPlayer ap, Fleet fleet, int minHullSize) {
+    int apShipSize = ap.getLevel(Technology.SHIP_SIZE);
     for (int i = minHullSize; i >= 0; i--) {
       ShipType cheapestType = ShipType.findCheapest(i);
       if (apShipSize >= cheapestType.requiredShipSize) {
@@ -137,47 +137,47 @@ class FleetBuilder extends GroupBuilder {
     }
   }
 
-  void buildPossibleDD(Fleet fleet) {
+  void buildPossibleDD(AlienPlayer ap, Fleet fleet) {
     if (fleet.remainingCP >= ShipType.RAIDER.cost) {
       if (ShipType.DESTROYER.canBeBuilt(
-              fleet.remainingCP, fleet.ap.getLevel(Technology.SHIP_SIZE)) &&
+              fleet.remainingCP, ap.getLevel(Technology.SHIP_SIZE)) &&
           game.getSeenLevel(Technology.CLOAKING) <=
-              fleet.ap.getLevel(Technology.SCANNER) &&
+              ap.getLevel(Technology.SCANNER) &&
           fleet.findGroup(ShipType.DESTROYER) == null)
         fleet.addGroup(Group(ShipType.DESTROYER, 1));
     }
   }
 
-  void buildRaiderFleet(Fleet fleet) {
-    fleet.fleetType = FleetType.RAIDER_FLEET;
+  void buildRaiderFleet(AlienPlayer ap, Fleet fleet) {
+    fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
     buildGroup(fleet, ShipType.RAIDER);
   }
 
-  void buildFlagship(Fleet fleet) {
+  void buildFlagship(AlienPlayer ap, Fleet fleet) {
     if (fleet.canBuyMoreShips) {
       ShipType shipType = ShipType.findBiggest(
-          fleet.remainingCP, fleet.ap.getLevel(Technology.SHIP_SIZE));
+          fleet.remainingCP, ap.getLevel(Technology.SHIP_SIZE));
       fleet.addGroup(Group(shipType, 1));
     }
   }
 
-  bool shouldBuildCarrierFleet(Fleet fleet, [List<FleetBuildOption> options = const []]) {
+  bool shouldBuildCarrierFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
     if (fleet.fleetCP < FULL_CV_COST ||
-        fleet.ap.getLevel(Technology.FIGHTERS) == 0 ||
+        ap.getLevel(Technology.FIGHTERS) == 0 ||
         options.contains(FleetBuildOption.COMBAT_WITH_NPAS)) return false;
     return game.getSeenLevel(Technology.POINT_DEFENSE) == 0 &&
             !game.isSeenThing(Seeable.MINES) ||
         game.roller.roll() < 5;
   }
 
-  bool shouldBuildRaiderFleet(Fleet fleet, [List<FleetBuildOption> options = const []]) {
+  bool shouldBuildRaiderFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
     // TODO more test for this. Especially the resetting of
     // isPurchasedThisTurn
     if (options.contains(FleetBuildOption.HOME_DEFENSE)) return false;
     return fleet.groups.isEmpty &&
         fleet.fleetCP >= ShipType.RAIDER.cost &&
-        fleet.ap.purchasedCloakThisTurn &&
-        fleet.ap.getLevel(Technology.CLOAKING) >
+        ap.purchasedCloakThisTurn &&
+        ap.getLevel(Technology.CLOAKING) >
             game.getSeenLevel(Technology.SCANNER);
   }
 }
@@ -191,14 +191,14 @@ class DefenseBuilder extends GroupBuilder {
 
   Fleet? buildHomeDefense(AlienPlayer ap) {
     if (ap.economicSheet.defCP >= ShipType.MINE.cost) {
-      Fleet fleet = Fleet(ap, FleetType.DEFENSE_FLEET, ap.economicSheet.defCP);
-      buyHomeDefenseUnits(fleet);
+      Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.DEFENSE_FLEET, ap.economicSheet.defCP);
+      buyHomeDefenseUnits(ap, fleet);
       return fleet;
     } else
       return null;
   }
 
-  void buyHomeDefenseUnits(Fleet fleet) {
+  void buyHomeDefenseUnits(AlienPlayer ap, Fleet fleet) {
     int roll = game.roller.roll();
     if (roll < 4) {
       buildGroup(fleet, ShipType.MINE);

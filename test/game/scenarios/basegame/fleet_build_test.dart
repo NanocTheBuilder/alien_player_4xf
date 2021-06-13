@@ -35,8 +35,8 @@ void main() {
   late FleetBuilder fleetBuilder;
 
   //utils come first
-  void assertBuiltGroups(Fleet fleet, List<FleetBuildOption> options, List<Group> expectedGroups) {
-    fleetBuilder.buildFleet(fleet, options);
+  void assertBuiltGroups(AlienPlayer ap, Fleet fleet, List<FleetBuildOption> options, List<Group> expectedGroups) {
+    fleetBuilder.buildFleet(ap, fleet, options);
     var expectedCost = 0;
     for (Group g in expectedGroups) {
       expectedCost += g.shipType.cost * g.size;
@@ -47,18 +47,18 @@ void main() {
 
   void assertBuiltFlagship(int shipSize, int fleetCP, ShipType shipType) {
     ap.setLevel(Technology.SHIP_SIZE, shipSize);
-    Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, fleetCP);
-    assertBuiltGroups(fleet, [], [Group(shipType, 1)]);
+    Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, fleetCP);
+    assertBuiltGroups(ap, fleet, [], [Group(shipType, 1)]);
   }
 
   void assertBuiltFleet(int fleetTypeRoll, int fleetCP, List<FleetBuildOption> options, List<Group> expectedGroups) {
     roller.mockRoll(fleetTypeRoll);
-    Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, fleetCP);
-    assertBuiltGroups(fleet, options, expectedGroups);
+    Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, fleetCP);
+    assertBuiltGroups(ap, fleet, options, expectedGroups);
   }
 
   setUp(() {
-    var game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,
+    var game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
         [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);
     ap = game.aliens[0];
     sheet = ap.economicSheet;
@@ -68,8 +68,8 @@ void main() {
   });
 
   test('buildRaiderFleet', (){
-    var fleet = Fleet(ap, FleetType.RAIDER_FLEET, 24);
-    assertBuiltGroups(fleet, [], [Group(ShipType.RAIDER, 2)]);
+    var fleet = Fleet.ofAlienPlayer(ap, FleetType.RAIDER_FLEET, 24);
+    assertBuiltGroups(ap, fleet, [], [Group(ShipType.RAIDER, 2)]);
   });
 
   test('buildScoutFleet',() {
@@ -80,11 +80,11 @@ void main() {
 
   test('buildCarrierFleet', () {
   ap.setLevel(Technology.FIGHTERS, 1);
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 27);
-  assertBuiltGroups(fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 27);
+  assertBuiltGroups(ap, fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3)]);
 
-  fleet = Fleet(ap, FleetType.REGULAR_FLEET, 54);
-  assertBuiltGroups(fleet, [], [Group(ShipType.CARRIER, 2), Group(ShipType.FIGHTER, 6)]);
+  fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 54);
+  assertBuiltGroups(ap, fleet, [], [Group(ShipType.CARRIER, 2), Group(ShipType.FIGHTER, 6)]);
 
   });
 
@@ -95,14 +95,14 @@ void main() {
 
   test('dontBuildCarrierFleetIfSeenPDAndFailedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
-  ap.game.setSeenLevel(Technology.POINT_DEFENSE, 1);
+  ap.game!.setSeenLevel(Technology.POINT_DEFENSE, 1);
   roller.mockRoll(5);
   assertBuiltFleet(1, 27, [], [Group(ShipType.SCOUT, 4)]);
   });
 
   test('dontBuildCarrierFleetIfSeenMinesAndFailedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
-  ap.game.addSeenThing(Seeable.MINES);
+  ap.game!.addSeenThing(Seeable.MINES);
   roller.mockRoll(5);
   assertBuiltFleet(1, 27, [], [Group(ShipType.SCOUT, 4)]);
   });
@@ -114,26 +114,26 @@ void main() {
 
   test('dontBuildCarrierFleetIfSeenPDAndEnemyIsNPA', () {
   ap.setLevel(Technology.FIGHTERS, 1);
-  ap.game.setSeenLevel(Technology.POINT_DEFENSE, 1);
+  ap.game!.setSeenLevel(Technology.POINT_DEFENSE, 1);
   assertBuiltFleet(1, 27, [FleetBuildOption.COMBAT_WITH_NPAS], [Group(ShipType.SCOUT, 4)]);
   });
 
   test('buildCarrierFleetIfSeenPDAndPassedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
-  ap.game.setSeenLevel(Technology.POINT_DEFENSE, 1);
+  ap.game!.setSeenLevel(Technology.POINT_DEFENSE, 1);
   roller.mockRoll(4);
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 27);
-  assertBuiltGroups(fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 27);
+  assertBuiltGroups(ap, fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3)]);
   });
 
   test('buildRaiderFleetIfJustPurchasedCloak', () {
   ap.setLevel(Technology.CLOAKING, 1);
   ap.purchasedCloakThisTurn = true;
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 12);
-  assertBuiltGroups(fleet, [], [Group(ShipType.RAIDER, 1)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 12);
+  assertBuiltGroups(ap, fleet, [], [Group(ShipType.RAIDER, 1)]);
   expect(fleet.fleetType, FleetType.RAIDER_FLEET);
 
-  ap.game.setSeenLevel(Technology.SCANNER, 1);
+  ap.game!.setSeenLevel(Technology.SCANNER, 1);
   assertBuiltFleet(1, 12, [], [Group(ShipType.SCOUT, 2)]);
   });
 
@@ -141,8 +141,8 @@ void main() {
   ap.setLevel(Technology.CLOAKING, 1);
   ap.purchasedCloakThisTurn = true;
   ap.setLevel(Technology.SHIP_SIZE, 2);
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 11);
-  assertBuiltGroups(fleet,[], [Group(ShipType.DESTROYER, 1)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 11);
+  assertBuiltGroups(ap, fleet,[], [Group(ShipType.DESTROYER, 1)]);
   });
 
 
@@ -150,8 +150,8 @@ void main() {
   ap.setLevel(Technology.CLOAKING, 1);
   ap.purchasedCloakThisTurn = true;
   ap.setLevel(Technology.SHIP_SIZE, 2);
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 12);
-  assertBuiltGroups(fleet,[FleetBuildOption.HOME_DEFENSE], [Group(ShipType.DESTROYER, 1)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 12);
+  assertBuiltGroups(ap, fleet,[FleetBuildOption.HOME_DEFENSE], [Group(ShipType.DESTROYER, 1)]);
 
   });
 
@@ -160,8 +160,8 @@ void main() {
   ap.setLevel(Technology.CLOAKING, 1);
   ap.purchasedCloakThisTurn = true;
   ap.setLevel(Technology.SHIP_SIZE, 2);
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 39);
-  assertBuiltGroups(fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3), Group(ShipType.DESTROYER, 1)]);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 39);
+  assertBuiltGroups(ap, fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3), Group(ShipType.DESTROYER, 1)]);
   });
 
   test('buyFlagshipFirst', () {
@@ -180,7 +180,7 @@ void main() {
   ap.setLevel(Technology.SHIP_SIZE, 3);
   assertBuiltFleet(1, 30, [], [Group(ShipType.CRUISER, 1), Group(ShipType.DESTROYER, 2)]);
 
-  ap.game.setSeenLevel(Technology.CLOAKING, 1);
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1);
   assertBuiltFleet(1, 30, [], [Group(ShipType.CRUISER, 1), Group(ShipType.SCOUT, 3)]);
 
   ap.setLevel(Technology.SCANNER, 1);
@@ -188,7 +188,7 @@ void main() {
   });
 
   test('buildLargestFleet', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
 
   ap.setLevel(Technology.SHIP_SIZE, 2);
   assertBuiltFleet(1, 18, [], [Group(ShipType.DESTROYER, 2)]);
@@ -202,7 +202,7 @@ void main() {
   });
 
   test('buildLargestShips', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
 
   ap.setLevel(Technology.SHIP_SIZE, 2);
   assertBuiltFleet(7, 21, [], [Group(ShipType.DESTROYER, 2)]);
@@ -216,7 +216,7 @@ void main() {
   });
 
   test('buildBalancedFleet', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // NO Possible DD
 
   ap.setLevel(Technology.SHIP_SIZE, 5);
   assertBuiltFleet(4, 44, [], [Group(ShipType.BATTLESHIP, 1), Group(ShipType.SCOUT, 4)]);
@@ -250,18 +250,18 @@ void main() {
   });
 
   test('subtractTwoIfHasPDAndSeenFighters', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
   ap.setLevel(Technology.POINT_DEFENSE, 1);
-  ap.game.addSeenThing(Seeable.FIGHTERS);
+  ap.game!.addSeenThing(Seeable.FIGHTERS);
 
   ap.setLevel(Technology.SHIP_SIZE, 3);
   assertBuiltFleet(5, 27, [], [Group(ShipType.CRUISER, 1), Group(ShipType.SCOUT, 2)]);
   });
 
   test('subtractTwoIfHasPDAndSeenFightersAndBuy2SC', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
   ap.setLevel(Technology.POINT_DEFENSE, 1);
-  ap.game.addSeenThing(Seeable.FIGHTERS);
+  ap.game!.addSeenThing(Seeable.FIGHTERS);
 
   ap.setLevel(Technology.SHIP_SIZE, 5);
   ap.setLevel(Technology.ATTACK, 2);
@@ -275,10 +275,10 @@ void main() {
   });
 
   test('subtractTwoIfHasPDAndSeenFightersAndDontBuy2SCIfHasFullCarrier', () {
-  ap.game.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
+  ap.game!.setSeenLevel(Technology.CLOAKING, 1); // No Possible DD
   ap.setLevel(Technology.FIGHTERS, 1);
   ap.setLevel(Technology.POINT_DEFENSE, 1);
-  ap.game.addSeenThing(Seeable.FIGHTERS);
+  ap.game!.addSeenThing(Seeable.FIGHTERS);
 
   ap.setLevel(Technology.SHIP_SIZE, 3);
   ap.setLevel(Technology.ATTACK, 2);
@@ -289,8 +289,8 @@ void main() {
   });
 
   test('noCPnoFleet', () {
-  Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, 5);
-  assertBuiltGroups(fleet, [], []);
+  Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 5);
+  assertBuiltGroups(ap, fleet, [], []);
   expect(fleet.buildCost, 0);
   });
   

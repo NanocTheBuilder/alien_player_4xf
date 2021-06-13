@@ -17,6 +17,8 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../alien_economic_sheet.dart';
 import '../alien_player.dart';
 import '../dice_roller.dart';
@@ -25,6 +27,8 @@ import '../fleet.dart';
 import '../fleet_launcher.dart';
 import '../game.dart';
 import 'scenario_4.dart';
+
+part 'vp_scenarios.g.dart';
 
 abstract class VpDifficulty extends Difficulty {
   final int startingBank;
@@ -37,8 +41,8 @@ abstract class VpDifficulty extends Difficulty {
 
 class VpSoloDifficulty extends VpDifficulty {
   static const VpSoloDifficulty EASY = VpSoloDifficulty("EASY", 2, 5, 0, 50);
-  static const VpSoloDifficulty NORMAL = VpSoloDifficulty(
-      "NORMAL", 2, 10, 100, 50);
+  static const VpSoloDifficulty NORMAL =
+      VpSoloDifficulty("NORMAL", 2, 10, 100, 50);
   static const VpSoloDifficulty HARD = VpSoloDifficulty("HARD", 2, 15, 100, 50);
 
   const VpSoloDifficulty(String name, int numberOfAPs, int cpPerEcon,
@@ -48,23 +52,50 @@ class VpSoloDifficulty extends VpDifficulty {
   static get values => const [EASY, NORMAL, HARD];
 }
 
+class VpSoloDifficultyConverter implements JsonConverter<VpSoloDifficulty, String> {
+  const VpSoloDifficultyConverter();
+
+  @override
+  VpSoloDifficulty fromJson(String json) {
+    return VpSoloDifficulty.values.firstWhere((element) => element.name == json);
+  }
+
+  @override
+  String toJson(VpSoloDifficulty object) {
+    return object.name;
+  }
+}
+
 class Vp2pDifficulty extends VpDifficulty {
   static const Vp2pDifficulty EASY = Vp2pDifficulty("EASY", 2, 5, 150, 75);
   static const Vp2pDifficulty NORMAL = Vp2pDifficulty("NORMAL", 2, 10, 150, 75);
   static const Vp2pDifficulty HARD = Vp2pDifficulty("HARD", 2, 15, 150, 75);
 
   const Vp2pDifficulty(String name, int numberOfAPs, int cpPerEcon,
-      int startingBank,
-      int maxDefenseCp)
+      int startingBank, int maxDefenseCp)
       : super(name, numberOfAPs, cpPerEcon, startingBank, maxDefenseCp);
 
   static get values => const [EASY, NORMAL, HARD];
 }
 
+class Vp2pDifficultyConverter implements JsonConverter<Vp2pDifficulty, String> {
+  const Vp2pDifficultyConverter();
+
+  @override
+  Vp2pDifficulty fromJson(String json) {
+    return Vp2pDifficulty.values.firstWhere((element) => element.name == json);
+  }
+
+  @override
+  String toJson(Vp2pDifficulty object) {
+    return object.name;
+  }
+}
+
 class Vp3pDifficulty extends VpDifficulty {
   static const Vp3pDifficulty EASY = Vp3pDifficulty("EASY", 2, 10, 200, 125);
-  static const Vp3pDifficulty NORMAL = Vp3pDifficulty(
-      "NORMAL", 2, 15, 200, 125);
+  static const Vp3pDifficulty NORMAL =
+      Vp3pDifficulty("NORMAL", 2, 15, 200, 125);
   static const Vp3pDifficulty HARD = Vp3pDifficulty("HARD", 2, 20, 200, 155);
 
   const Vp3pDifficulty(String name, int numberOfAPs, int cpPerEcon,
@@ -74,48 +105,113 @@ class Vp3pDifficulty extends VpDifficulty {
   static get values => const [EASY, NORMAL, HARD];
 }
 
-class VpEconomicSheet extends AlienEconomicSheet {
-  late int bank;
+class Vp3pDifficultyConverter implements JsonConverter<Vp3pDifficulty, String> {
+  const Vp3pDifficultyConverter();
 
-  VpEconomicSheet(VpDifficulty difficulty) : super (difficulty) {
-    bank = difficulty.startingBank;
+  @override
+  Vp3pDifficulty fromJson(String json) {
+    return Vp3pDifficulty.values.firstWhere((element) => element.name == json);
   }
 
-  //@formatter:off
-    static final List<List<int>> resultTable = const[
-        [ 99, 99, 99],
-        [  1,  2, 99],
-        [  1,  4, 99],
-        [  1,  4,  9],
-        [  1,  5,  9],
-        [  1,  7, 10],
-        [  1,  5, 10],
-        [  1,  6, 10],
-        [  1,  6, 10],
-        [  1,  6, 10],
-        [  1,  8, 10],
-        [  1,  8, 10],
-        [  1,  8, 10],
-        [  1,  7, 99],
-        [  1,  7, 99],
-        [  1,  8, 99],
-        [  1,  8, 99],
-        [  1,  9, 99],
-        [  1,  9, 99],
-        [  1, 10, 99],
-        [  1, 10, 99],
-    ];
+  @override
+  String toJson(Vp3pDifficulty object) {
+    return object.name;
+  }
+}
 
-    static var econRolls = const [ -99, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5];
-    static var fleetLaunch = const [ -99, -99, 10, 10, 5, 10, 4, 10, 4, 5, 6, 4, 6, 3, 10, 3, 10, 3, 10, 3, 10 ];
-    //@formatter:on
+@JsonSerializable()
+@DifficultyConverter()
+class VpEconomicSheet extends AlienEconomicSheet {
+  int bank;
+
+  VpEconomicSheet(Difficulty difficulty) : bank = (difficulty as VpDifficulty).startingBank, super(difficulty);
+
+  factory VpEconomicSheet.fromJson(Map<String, dynamic> json) => _$VpEconomicSheetFromJson(json);
+  Map<String, dynamic> toJson() {
+    var json = _$VpEconomicSheetToJson(this);
+    json["type"] = "VpEconomicSheet";
+    return json;
+  }
+
+   //@formatter:off
+  static final List<List<int>> resultTable = const [
+    [99, 99, 99],
+    [1, 2, 99],
+    [1, 4, 99],
+    [1, 4, 9],
+    [1, 5, 9],
+    [1, 7, 10],
+    [1, 5, 10],
+    [1, 6, 10],
+    [1, 6, 10],
+    [1, 6, 10],
+    [1, 8, 10],
+    [1, 8, 10],
+    [1, 8, 10],
+    [1, 7, 99],
+    [1, 7, 99],
+    [1, 8, 99],
+    [1, 8, 99],
+    [1, 9, 99],
+    [1, 9, 99],
+    [1, 10, 99],
+    [1, 10, 99],
+  ];
+
+  static var econRolls = const [
+    -99,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+  ];
+  static var fleetLaunch = const [
+    -99,
+    -99,
+    10,
+    10,
+    5,
+    10,
+    4,
+    10,
+    4,
+    5,
+    6,
+    4,
+    6,
+    3,
+    10,
+    3,
+    10,
+    3,
+    10,
+    3,
+    10
+  ];
+  //@formatter:on
 
   @override
   EconRollResult makeRoll(int turn, DiceRoller roller) {
     EconRollResult result = EconRollResult();
     int limit = 10;
-    if (defCP == (difficulty as VpDifficulty).maxDefenseCp
-        && requiredRoll(turn, AlienEconomicSheet.RESULT_DEF) != 99) {
+    if (defCP == (difficulty as VpDifficulty).maxDefenseCp &&
+        requiredRoll(turn, AlienEconomicSheet.RESULT_DEF) != 99) {
       limit = requiredRoll(turn, AlienEconomicSheet.RESULT_DEF) - 1;
     }
 
@@ -124,13 +220,11 @@ class VpEconomicSheet extends AlienEconomicSheet {
       int defCP = 2 * difficulty.cpPerEcon;
       this.defCP += defCP;
       result.defCP = defCP;
-    }
-    else if (roll >= requiredRoll(turn, AlienEconomicSheet.RESULT_TECH)) {
+    } else if (roll >= requiredRoll(turn, AlienEconomicSheet.RESULT_TECH)) {
       int techCP = difficulty.cpPerEcon;
       this.techCP += techCP;
       result.techCP = techCP;
-    }
-    else {
+    } else {
       int fleetCP = difficulty.cpPerEcon;
       this.fleetCP += fleetCP;
       result.fleetCP = fleetCP;
@@ -187,9 +281,8 @@ class VpSoloScenario extends Scenario4 {
   }
 
   @override
-  AlienPlayer newPlayer(Game game, Difficulty difficulty, PlayerColor color) {
-    return VpAlienPlayer(
-        VpEconomicSheet(difficulty as VpDifficulty), game, color);
+  AlienPlayer newPlayer(Difficulty difficulty, PlayerColor color) {
+    return VpAlienPlayer(VpEconomicSheet(difficulty as VpDifficulty), color);
   }
 
   static List<Difficulty> difficulties() => VpSoloDifficulty.values;
@@ -212,16 +305,25 @@ class Vp3pScenario extends Vp2pScenario {
   static List<Difficulty> difficulties() => Vp3pDifficulty.values;
 }
 
+@JsonSerializable()
 class VpAlienPlayer extends Scenario4Player {
-
   int colonies = 0;
 
-  VpAlienPlayer(VpEconomicSheet sheet, Game game, PlayerColor color)
-      : super(sheet, game, color);
+  VpAlienPlayer(VpEconomicSheet economicSheet, PlayerColor color)
+      : super(economicSheet, color);
 
   @override
   int getExtraEconRoll(int turn) {
     return colonies;
+  }
+
+  factory VpAlienPlayer.fromJson(Map<String, dynamic> json) => _$VpAlienPlayerFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(){
+    var json = _$VpAlienPlayerToJson(this);
+    json["type"] = "VpAlienPlayer";
+    return json;
   }
 }
 
@@ -229,18 +331,16 @@ class VpFleetBuilder extends Scenario4FleetBuilder {
   VpFleetBuilder(Game game) : super(game);
 
   @override
-  void buildOneFullyLoadedTransport(Fleet fleet,
+  void buildOneFullyLoadedTransport(AlienPlayer ap, Fleet fleet,
       [List<FleetBuildOption> options = const []]) {
     if (fleet.fleetType == FleetType.EXPANSION_FLEET) {
-      super.buildOneFullyLoadedTransport(fleet);
-    }
-    else if (fleet.remainingCP >= 40) {
+      super.buildOneFullyLoadedTransport(ap, fleet);
+    } else if (fleet.remainingCP >= 40) {
       int roll = game.roller.roll();
-      if (options.contains(FleetBuildOption.COMBAT_IS_ABOVE_PLANET))
-        roll -= 2;
+      if (options.contains(FleetBuildOption.COMBAT_IS_ABOVE_PLANET)) roll -= 2;
       if (roll <= 5) {
         fleet.addGroup(Group(ShipType.TRANSPORT, 1));
-        buildGroundUnits(fleet).forEach((group) => fleet.addGroup(group));
+        buildGroundUnits(ap, fleet).forEach((group) => fleet.addGroup(group));
       }
     }
   }
@@ -261,32 +361,30 @@ class VpSoloFleetLauncher extends FleetLauncher {
 
   @override
   Fleet? launchFleet(AlienPlayer ap, int turn,
-      [List<FleetBuildOption> options = const[]]) {
+      [List<FleetBuildOption> options = const []]) {
     int bank = (ap.economicSheet as VpEconomicSheet).bank;
     Fleet? fleet = super.launchFleet(ap, turn, options);
     if (fleet == null) {
       if (bank >= 50) {
-        fleet = Fleet(ap, FleetType.EXPANSION_FLEET, 0);
+        fleet = Fleet.ofAlienPlayer(ap, FleetType.EXPANSION_FLEET, 0);
       }
     }
     if (fleet != null) {
-      setFleetType(fleet, turn);
+      setFleetType(ap, fleet, turn);
     }
     return fleet;
   }
 
-  void setFleetType(Fleet fleet, int turn) {
-    var sheet = fleet.ap.economicSheet as VpEconomicSheet;
+  void setFleetType(AlienPlayer ap, Fleet fleet, int turn) {
+    var sheet = ap.economicSheet as VpEconomicSheet;
     if (fleet.fleetType == FleetType.REGULAR_FLEET) {
       int roll = game.roller.roll();
-      if (turn > 7)
-        roll += 2;
-      if (turn > 10)
-        roll += 2;
+      if (turn > 7) roll += 2;
+      if (turn > 10) roll += 2;
       if (roll < 8) {
-        fleet.fleetType = FleetType.EXPANSION_FLEET;
+        fleet.setFleetType(ap, FleetType.EXPANSION_FLEET);
       } else {
-        fleet.fleetType = getExterminationFleetType(turn);
+        fleet.setFleetType(ap, getExterminationFleetType(turn));
       }
     }
 
@@ -311,8 +409,7 @@ class VpCoopFleetLauncher extends VpSoloFleetLauncher {
   FleetType getExterminationFleetType(int turn) {
     if ((turn & 1) == 1) {
       return FleetType.EXTERMINATION_FLEET_GALACTIC_CAPITAL;
-    }
-    else
+    } else
       return FleetType.EXTERMINATION_FLEET_HOME_WORLD;
   }
 }

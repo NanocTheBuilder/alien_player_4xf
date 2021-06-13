@@ -17,7 +17,6 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'alien_economic_sheet.dart';
 import 'alien_player.dart';
 import 'enums.dart';
 import 'fleet.dart';
@@ -38,10 +37,10 @@ class FleetLauncher {
 
     Fleet? launchFleet(AlienPlayer ap, int turn, [List<FleetBuildOption> options = const[]]) {
         if (ap.economicSheet.fleetCP >= ShipType.SCOUT.cost) {
-            Fleet fleet = Fleet(ap, FleetType.REGULAR_FLEET, ap.economicSheet.fleetCP);
+            Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, ap.economicSheet.fleetCP);
             if (shouldLaunchRaiderFleet(ap, options)) {
-                fleet.fleetType = FleetType.RAIDER_FLEET;
-                game.scenario.buildFleet(fleet);
+                fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
+                game.scenario.buildFleet(ap, fleet);
             }
             int cpSpent = fleet.fleetType == FleetType.RAIDER_FLEET ? fleet.buildCost : fleet.fleetCP;
             ap.economicSheet.spendFleetCP(cpSpent);

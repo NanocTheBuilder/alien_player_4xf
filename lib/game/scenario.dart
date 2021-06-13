@@ -17,7 +17,10 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:alienplayer4xf/game/technology_buyer.dart';
+import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'alien_player.dart';
 import 'enums.dart';
@@ -35,9 +38,7 @@ abstract class Scenario{
 
     void init(Game game);
 
-    AlienPlayer newPlayer(Game game, Difficulty difficulty, PlayerColor color);
-
-    //List<Difficulty> get difficulties;
+    AlienPlayer newPlayer(Difficulty difficulty, PlayerColor color);
 
     List<Technology> get availableTechs => techPrices.availableTechs;
 
@@ -45,8 +46,8 @@ abstract class Scenario{
         return techPrices.getStartingLevel(technology);
     }
 
-    void buildFleet(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
-        fleetBuilder.buildFleet(fleet, options);
+    void buildFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const[]]) {
+        fleetBuilder.buildFleet(ap, fleet, options);
     }
 
     Fleet? buildHomeDefense(AlienPlayer alienPlayer) {
@@ -57,8 +58,8 @@ abstract class Scenario{
         techBuyer.buyNextLevel(alienPlayer, technology);
     }
 
-    void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
-        techBuyer.buyTechs(fleet, options);
+    void buyTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const[]]) {
+        techBuyer.buyTechs(ap, fleet, options);
     }
 
     int getCost(Technology technology, int level) {
@@ -72,4 +73,22 @@ abstract class Scenario{
     Fleet? rollFleetLaunch(AlienPlayer alienPlayer, int turn){
         return fleetLauncher.rollFleetLaunch(alienPlayer, turn);
     }
+}
+
+class ScenarioConverter implements JsonConverter<Scenario, String>{
+  const ScenarioConverter();
+
+  @override
+  Scenario fromJson(String json) {
+    switch(json){
+      case "BaseGameScenario":
+      default:
+        return BaseGameScenario();
+    }
+  }
+
+  @override
+  String toJson(Scenario scenario) {
+    return scenario.runtimeType.toString();
+  }
 }

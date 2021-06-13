@@ -17,6 +17,8 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../alien_economic_sheet.dart';
 import '../alien_player.dart';
 import '../enums.dart';
@@ -27,7 +29,7 @@ import '../game.dart';
 import '../scenario.dart';
 import '../technology_buyer.dart';
 
-class BaseGameDifficulty extends Difficulty {
+class BaseGameDifficulty extends Difficulty{
   static const BaseGameDifficulty EASY = BaseGameDifficulty('EASY', 5, 2);
   static const BaseGameDifficulty NORMAL = BaseGameDifficulty('NORMAL', 5, 3);
   static const BaseGameDifficulty HARD = BaseGameDifficulty('HARD', 10, 2);
@@ -40,8 +42,22 @@ class BaseGameDifficulty extends Difficulty {
   const BaseGameDifficulty(name, cpPerEcon, numberOfAlienPlayers)
       : super(name, cpPerEcon, numberOfAlienPlayers);
 
-  static get values =>
+  static List<BaseGameDifficulty> get values =>
       const [EASY, NORMAL, HARD, HARDER, REALLY_TOUGH, GOOD_LUCK];
+}
+
+class BaseGameDifficultyConverter implements JsonConverter<BaseGameDifficulty, String>{
+  const BaseGameDifficultyConverter();
+
+  @override
+  BaseGameDifficulty fromJson(String json) {
+    return BaseGameDifficulty.values.firstWhere((element) => element.name == json);
+  }
+
+  @override
+  String toJson(BaseGameDifficulty object) {
+    return object.name;
+  }
 }
 
 class BaseGameScenario extends Scenario {
@@ -55,8 +71,8 @@ class BaseGameScenario extends Scenario {
   }
 
   @override
-  AlienPlayer newPlayer(Game game, Difficulty difficulty, PlayerColor color) {
-    return AlienPlayer(AlienEconomicSheet(difficulty), game, color);
+  AlienPlayer newPlayer(Difficulty difficulty, PlayerColor color) {
+    return AlienPlayer(AlienEconomicSheet(difficulty), color);
   }
 
   static List<Difficulty> difficulties() => const [
@@ -90,14 +106,13 @@ class BaseGameTechnologyBuyer extends TechnologyBuyer {
   List<int> get shipSizeRollTable => SHIP_SIZE_ROLL_TABLE;
 
   @override
-  void buyOptionalTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
-    AlienPlayer ap = fleet.ap;
+  void buyOptionalTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     buyPointDefenseIfNeeded(ap);
     buyMineSweepIfNeeded(ap);
     buyScannerIfNeeded(ap);
     buyShipSizeIfRolled(ap);
     buyFightersIfNeeded(ap);
-    buyCloakingIfNeeded(fleet);
+    buyCloakingIfNeeded(ap, fleet);
   }
 }
 

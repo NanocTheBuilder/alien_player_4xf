@@ -24,6 +24,7 @@ import 'package:alienplayer4xf/widgets/seen_techs_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../game_model.dart';
 import '../main.dart';
 import 'alien_player_view.dart';
 import 'econ_phase_result_dialog.dart';

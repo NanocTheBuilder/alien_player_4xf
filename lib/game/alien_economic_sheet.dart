@@ -17,10 +17,15 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
+import 'package:json_annotation/json_annotation.dart';
+
 import 'alien_player.dart';
 import 'dice_roller.dart';
 import 'enums.dart';
 import 'fleet.dart';
+
+part 'alien_economic_sheet.g.dart';
 
 class EconRollResult {
   int fleetCP = 0;
@@ -44,6 +49,8 @@ class EconPhaseResult extends EconRollResult {
   EconPhaseResult(this.alienPlayer);
 }
 
+@JsonSerializable(explicitToJson: true)
+@DifficultyConverter()
 class AlienEconomicSheet {
   static const int RESULT_FLEET = 0;
   static const int RESULT_TECH = 1;
@@ -83,9 +90,26 @@ class AlienEconomicSheet {
   var fleetCP = 0;
   var techCP = 0;
   var defCP = 0;
-  var extraEcon = [for(int i = 0; i < 21; i++) 0];
+  List<int> extraEcon;
 
-  AlienEconomicSheet(this.difficulty);
+  AlienEconomicSheet(this.difficulty, {extraEcon}) : this.extraEcon = extraEcon ?? [for(int i = 0; i < 21; i++) 0];
+
+  factory AlienEconomicSheet.fromJson(Map<String, dynamic> json) {
+    String type = json["type"];
+    switch(type){
+      case "AlienEconomicSheet":
+        return _$AlienEconomicSheetFromJson(json);
+      case "VpEconomicSheet":
+        return VpEconomicSheet.fromJson(json);
+      default:
+        throw UnimplementedError();
+    }
+  }
+  Map<String, dynamic> toJson(){
+    var json = _$AlienEconomicSheetToJson(this);
+    json["type"] = "AlienEconomicSheet";
+    return json;
+  }
 
   EconRollResult makeRoll(int turn, DiceRoller roller) {
     EconRollResult result = EconRollResult();

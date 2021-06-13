@@ -22,6 +22,8 @@ import 'package:alienplayer4xf/main.dart';
 import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
 
+import '../game_model.dart';
+
 class NewGameDialog extends StatefulWidget {
   final GameModel game;
 

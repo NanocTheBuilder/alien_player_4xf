@@ -17,12 +17,43 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:alienplayer4xf/game/scenarios/base_game.dart';
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
+import 'package:json_annotation/json_annotation.dart';
+
 abstract class Difficulty {
   final String name;
   final int cpPerEcon;
   final int numberOfAlienPlayers;
 
   const Difficulty(this.name, this.cpPerEcon, this.numberOfAlienPlayers);
+}
+
+class DifficultyConverter implements JsonConverter<Difficulty, String>{
+  const DifficultyConverter();
+
+  @override
+  Difficulty fromJson(String json) {
+    var split = json.split("\.");
+    var value = split[1];
+    switch(split[0]){
+      case "VpSoloDifficulty":
+        return VpSoloDifficultyConverter().fromJson(value);
+      case "Vp2pDifficulty":
+        return Vp2pDifficultyConverter().fromJson(value);
+      case "Vp3pDifficulty":
+        return Vp3pDifficultyConverter().fromJson(value);
+      case "BaseGameDificulty":
+        return BaseGameDifficultyConverter().fromJson(value);
+      default:
+        throw UnimplementedError();
+    }
+  }
+
+  @override
+  String toJson(Difficulty object) {
+    return object.runtimeType.toString() + "." + object.name;
+  }
 }
 
 class FleetType {
@@ -45,6 +76,29 @@ class FleetType {
   const FleetType(this.name, this.sequence);
 
   bool isSameNameSequence(FleetType other) => sequence == other.sequence;
+}
+
+class FleetTypeConverter implements JsonConverter<FleetType, String> {
+  const FleetTypeConverter();
+
+  static const List<FleetType> values = [
+    FleetType.REGULAR_FLEET,
+    FleetType.RAIDER_FLEET,
+    FleetType.DEFENSE_FLEET,
+    FleetType.EXPANSION_FLEET,
+    FleetType.EXTERMINATION_FLEET_GALACTIC_CAPITAL,
+    FleetType.EXTERMINATION_FLEET_HOME_WORLD
+  ];
+
+  @override
+  FleetType fromJson(String json) {
+    return values.firstWhere((element) => element.name == json);
+  }
+
+  @override
+  String toJson(FleetType object) {
+    return object.name;
+  }
 }
 
 enum FleetNameSequence { BASIC, DEFENSE, RAIDER }
@@ -131,5 +185,40 @@ class ShipType {
     return cheapToExpensive.reversed.firstWhere(
         (type) => type.canBeBuilt(availableCP, shipSizeLevel),
         orElse: () => null as ShipType);
+  }
+}
+
+class ShipTypeConverter implements JsonConverter<ShipType, String> {
+  const ShipTypeConverter();
+
+  static const List<ShipType> values = [
+    ShipType.RAIDER,
+    ShipType.CARRIER,
+    ShipType.FIGHTER,
+    ShipType.BASE,
+    ShipType.MINE,
+    ShipType.SCOUT,
+    ShipType.DESTROYER,
+    ShipType.CRUISER,
+    ShipType.BATTLECRUISER,
+    ShipType.BATTLESHIP,
+    ShipType.DREADNAUGHT,
+    ShipType.TITAN,
+    ShipType.TRANSPORT,
+    ShipType.INFANTRY,
+    ShipType.MARINE,
+    ShipType.HEAVY_INFANTRY,
+    ShipType.GRAV_ARMOR,
+    ShipType.BOARDING_SHIP,
+  ];
+
+  @override
+  ShipType fromJson(String json) {
+    return values.firstWhere((element) => element.name == json);
+  }
+
+  @override
+  String toJson(ShipType object) {
+    return object.name;
   }
 }

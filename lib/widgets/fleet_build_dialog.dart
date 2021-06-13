@@ -17,30 +17,34 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../game_model.dart';
 import '../main.dart';
 import 'fleet_view.dart';
 
 class FleetBuildDialog extends StatefulWidget {
+  final AlienPlayer ap;
   final Fleet fleet;
 
-  FleetBuildDialog(this.fleet, {Key? key}) : super(key: key);
+  FleetBuildDialog(this.ap, this.fleet, {Key? key}) : super(key: key);
 
   @override
-  FleetBuildOptionsState createState() => FleetBuildOptionsState(fleet);
+  FleetBuildOptionsState createState() => FleetBuildOptionsState(ap, fleet);
 }
 
 class FleetBuildOptionsState extends State<FleetBuildDialog> {
+  final AlienPlayer ap;
   final Fleet fleet;
   bool combatAbovePlanet = false;
   bool enemyIsNpa = false;
 
-  FleetBuildOptionsState(this.fleet);
+  FleetBuildOptionsState(this.ap, this.fleet);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,7 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
             setState(() => combatAbovePlanet = value as bool);
           })),
     ]));
-    if (fleet.ap is VpAlienPlayer) {
+    if (ap is VpAlienPlayer) {
       rows.add(Row(children: [
         Expanded(child:
         CheckboxListTile(
@@ -80,14 +84,14 @@ class FleetBuildOptionsState extends State<FleetBuildDialog> {
                 if(combatAbovePlanet) options.add(FleetBuildOption.COMBAT_IS_ABOVE_PLANET);
                 if(enemyIsNpa) options.add(FleetBuildOption.COMBAT_WITH_NPAS);
                 Navigator.of(context).pop();
-                FleetView.buildFleet(context, game, fleet, options);
+                FleetView.buildFleet(context, game, ap, fleet, options);
               },
             ),
           ],
           content: Container(
             width: double.maxFinite,
             child: Card(
-                color: PlayerColors[fleet.ap.color],
+                color: PlayerColors[ap.color],
                 child: Column(mainAxisSize: MainAxisSize.min, children: rows)),
           ));
     });

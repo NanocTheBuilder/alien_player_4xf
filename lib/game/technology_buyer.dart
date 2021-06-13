@@ -35,15 +35,15 @@ abstract class TechnologyPrices {
   }
 
   int getStartingLevel(Technology technology) {
-    return map[technology]![0];
+    return (map[technology] as List)[0];
   }
 
   int getCost(Technology technology, int level) {
-    return map[technology]![level];
+    return (map[technology] as List)[level];
   }
 
   int getMaxLevel(Technology technology) {
-    return map[technology]!.length - 1;
+    return (map[technology] as List).length - 1;
   }
 }
 
@@ -58,9 +58,9 @@ abstract class TechnologyBuyer {
     initRollTable();
   }
 
-  void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const []]) {
-    buyOptionalTechs(fleet, options);
-    spendRemainingTechCP(fleet, options);
+  void buyTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
+    buyOptionalTechs(ap, fleet, options);
+    spendRemainingTechCP(ap, fleet, options);
   }
 
   void initRollTable();
@@ -69,14 +69,14 @@ abstract class TechnologyBuyer {
     TECHNOLOGY_ROLL_TABLE[technology] = values;
   }
 
-  void buyOptionalTechs(Fleet fleet, [List<FleetBuildOption> options]);
+  void buyOptionalTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options]);
 
-  void spendRemainingTechCP(Fleet fleet, [List<FleetBuildOption> options = const []]) {
+  void spendRemainingTechCP(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
     while (true) {
-      List<Technology> buyable = findBuyableTechs(fleet, options);
+      List<Technology> buyable = findBuyableTechs(ap, fleet, options);
       if (buyable.isEmpty) break;
       int roll = game.roller.roll(buyable.length);
-      buyRolledTech(fleet.ap, buyable[roll - 1]);
+      buyRolledTech(ap, buyable[roll - 1]);
     }
   }
 
@@ -133,31 +133,31 @@ abstract class TechnologyBuyer {
             game.scenario.getCost(technology, currentLevel + 1);
   }
 
-  bool fleetCanBuyNextLevel(
+  bool fleetCanBuyNextLevel(AlienPlayer ap,
       Fleet fleet, Technology technology, [List<FleetBuildOption> options = const []]) {
     if (technology == Technology.MINE_SWEEPER &&
         options.contains(FleetBuildOption.HOME_DEFENSE))
       return false;
     else
-      return apCanBuyNextLevel(fleet.ap, technology);
+      return apCanBuyNextLevel(ap, technology);
   }
 
-  List<Technology> findBuyableTechs(
+  List<Technology> findBuyableTechs(AlienPlayer ap,
       Fleet fleet, [List<FleetBuildOption> options = const []]) {
     List<Technology> buyable = [];
     for (Technology technology in TECHNOLOGY_ROLL_TABLE.keys) {
-      if (fleetCanBuyNextLevel(fleet, technology, options)) {
-        for (int i = 0; i < TECHNOLOGY_ROLL_TABLE[technology]!; i++)
+      if (fleetCanBuyNextLevel(ap, fleet, technology, options)) {
+        for (int i = 0; i < (TECHNOLOGY_ROLL_TABLE[technology] as int); i++)
           buyable.add(technology);
       }
     }
     return buyable;
   }
 
-  void buyCloakingIfNeeded(Fleet fleet) {
+  void buyCloakingIfNeeded(AlienPlayer ap, Fleet fleet) {
     if (fleet.fleetType == FleetType.RAIDER_FLEET &&
-        fleet.ap.getLevel(Technology.CLOAKING) == 1) {
-      if (game.roller.roll() <= 6) buyNextLevel(fleet.ap, Technology.CLOAKING);
+        ap.getLevel(Technology.CLOAKING) == 1) {
+      if (game.roller.roll() <= 6) buyNextLevel(ap, Technology.CLOAKING);
     }
   }
 

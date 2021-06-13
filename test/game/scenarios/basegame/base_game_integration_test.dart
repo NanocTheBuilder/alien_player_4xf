@@ -58,7 +58,7 @@ void main() {
 
   test('economyRollStartsNewFleet', () {
     MockRoller roller = MockRoller();
-    var game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,
+    var game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
         [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);
     game.roller = roller;
     ap = game.aliens[0];

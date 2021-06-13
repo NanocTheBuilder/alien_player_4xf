@@ -18,11 +18,11 @@
  */
 
 import 'package:alienplayer4xf/game/alien_player.dart';
-import 'package:alienplayer4xf/main.dart';
 import 'package:alienplayer4xf/widgets/seen_techs_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../game_model.dart';
 import 'alien_player_view.dart';
 import 'fleet_view.dart';
 
@@ -56,7 +56,7 @@ class AlienPlayerPage extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   itemCount: alienPlayer.fleets.length,
                   itemBuilder: (context, index) {
-                    return FleetView(alienPlayer.fleets[index]);
+                    return FleetView(alienPlayer, alienPlayer.fleets[index]);
                   },
                 ))
               ])),

@@ -17,6 +17,7 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
@@ -26,17 +27,19 @@ import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../game_model.dart';
 import '../main.dart';
 
 class FleetView extends StatelessWidget {
+  final AlienPlayer ap;
   final Fleet fleet;
-  FleetView(this.fleet, {Key? key}) : super(key: key);
+  FleetView(this.ap, this.fleet, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         child: Card(
-            color: PlayerColors[fleet.ap.color],
+            color: PlayerColors[ap.color],
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Consumer<GameModel>(builder: (context, game, child) {
@@ -50,17 +53,17 @@ class FleetView extends StatelessWidget {
                       trailing: (fleet.hadFirstCombat
                           ? IconButton(
                               icon: Icon(Icons.delete),
-                              onPressed: () => game.deleteFleet(fleet))
+                              onPressed: () => game.deleteFleet(ap, fleet))
                           : IconButton(
                               icon: Icon(Icons.visibility),
                               onPressed: () {
-                                if (fleet.ap is Scenario4Player) {
+                                if (ap is Scenario4Player) {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) =>
-                                          FleetBuildDialog(fleet));
+                                          FleetBuildDialog(ap, fleet));
                                 } else {
-                                  buildFleet(context, game, fleet);
+                                  buildFleet(context, game, ap, fleet);
                                 }
                               },
                             )),
@@ -69,8 +72,8 @@ class FleetView extends StatelessWidget {
                 }))));
   }
 
-  static void buildFleet(BuildContext context, GameModel game, Fleet fleet, [List<FleetBuildOption> options = const []]) {
-    var result = game.firstCombat(fleet, options);
+  static void buildFleet(BuildContext context, GameModel game, AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
+    var result = game.firstCombat(ap, fleet, options);
     showDialog(
         context: context,
         builder: (BuildContext context) => FleetBuildResultDialog(result)

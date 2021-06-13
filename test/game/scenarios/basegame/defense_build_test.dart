@@ -52,7 +52,7 @@ void main() {
   //tests
 
   setUp(() {
-    var game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,
+    var game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
         [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);
     ap = game.aliens[0];
     sheet = ap.economicSheet;

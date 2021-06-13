@@ -76,7 +76,7 @@ void main() {
   }
 
   setUp(() {
-    game = Game(BaseGameScenario(), BaseGameDifficulty.NORMAL,
+    game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
         [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);
     roller = MockRoller();
     game.roller = roller;

@@ -19,12 +19,20 @@
 
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'fleet.g.dart';
+
+@JsonSerializable()
+@ShipTypeConverter()
 class Group {
   int size;
   ShipType shipType;
 
   Group(this.shipType, this.size);
+
+  factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
+  Map<String, dynamic> toJson() => _$GroupToJson(this);
 
   int addShips(int ships) {
     return size += ships;
@@ -48,24 +56,29 @@ class Group {
   String toString() {
     return 'Group{size: $size, shipType: $shipType}';
   }
-
-//
 }
 
+@JsonSerializable(explicitToJson: true)
+@FleetTypeConverter()
 class Fleet {
-  FleetType _fleetType;
-  late String _name;
+  FleetType fleetType; //TODO READ-ONLY
+  String name;
 
   int fleetCP;
   List<Group> groups = [];
   List<Group> freeGroups = [];
-  AlienPlayer ap;
   var hadFirstCombat = false;
 
-  Fleet(this.ap, this._fleetType, this.fleetCP) {
-    this._name = ap.findFleetName(fleetType);
-    ap.fleets.add(this);
+  Fleet(this.name, this.fleetType, this.fleetCP);
+
+  factory Fleet.ofAlienPlayer(AlienPlayer ap, FleetType fleetType, int fleetCP){
+    var fleet = Fleet(ap.findFleetName(fleetType), fleetType, fleetCP);
+    ap.fleets.add(fleet);
+    return fleet;
   }
+
+  factory Fleet.fromJson(Map<String, dynamic> json) => _$FleetFromJson(json);
+  Map<String, dynamic> toJson() => _$FleetToJson(this);
 
   int get buildCost => allGroupCost - freeGroupCost;
 
@@ -77,15 +90,11 @@ class Fleet {
 
   bool get canBuyMoreShips => remainingCP >= ShipType.SCOUT.cost;
 
-  String get name => _name;
-
-  FleetType get fleetType => _fleetType;
-
-  set fleetType(FleetType fleetType) {
-    if (!_fleetType.isSameNameSequence(fleetType)) {
-      _name = ap.findFleetName(fleetType);
+  void setFleetType(AlienPlayer ap, FleetType newFleetType) {
+    if (!fleetType.isSameNameSequence(newFleetType)) {
+      name = ap.findFleetName(newFleetType);
     }
-    _fleetType = fleetType;
+    fleetType = newFleetType;
   }
 
   void addFleetCp(int amount) {
@@ -117,6 +126,4 @@ class Fleet {
   int sumGroupCost(List<Group> groups) {
     return groups.fold(0, (prev, group) => prev + group.cost);
   }
-
-  int get index => ap.fleets.indexOf(this);
 }

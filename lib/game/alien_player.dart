@@ -20,14 +20,21 @@
 import 'dart:core';
 
 import 'package:alienplayer4xf/game/game.dart';
+import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
+import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'alien_economic_sheet.dart';
 import 'enums.dart';
 import 'fleet.dart';
 import 'fleet_builders.dart';
 
+part 'alien_player.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class AlienPlayer {
-  Game game;
+  @JsonKey(ignore: true)
+  Game? game;
   PlayerColor color;
   AlienEconomicSheet economicSheet;
   List<Fleet> fleets = [];
@@ -36,21 +43,44 @@ class AlienPlayer {
   var purchasedCloakThisTurn = false;
   var isEliminated = false;
 
-  AlienPlayer(this.economicSheet, this.game, this.color) {
+  AlienPlayer(this.economicSheet, this.color);
+
+  void init(Game game) {
+    this.game = game;
     for (Technology technology in game.scenario.availableTechs) {
       var startingLevel = game.scenario.getStartingLevel(technology);
       technologyLevels[technology] = startingLevel;
     }
   }
 
+  factory AlienPlayer.fromJson(Map<String, dynamic> json){
+    String type = json["type"];
+    switch(type){
+      case "AlienPlayer":
+        return _$AlienPlayerFromJson(json);
+      case "Scenario4Player":
+        return Scenario4Player.fromJson(json);
+      case "VpAlienPlayer":
+        return VpAlienPlayer.fromJson(json);
+      default:
+        throw UnimplementedError();
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    var json = _$AlienPlayerToJson(this);
+    json["type"] = "AlienPlayer";
+    return json;
+  }
+
   EconPhaseResult makeEconRoll(int turn) {
     var result = EconPhaseResult(this);
     var econRolls = economicSheet.getEconRolls(turn) + getExtraEconRoll(turn);
     for (int i = 0; i < econRolls; i++) {
-      EconRollResult rollResult = economicSheet.makeRoll(turn, game.roller);
+      EconRollResult rollResult = economicSheet.makeRoll(turn, game!.roller);
       result.add(rollResult);
     }
-    var newFleet = game.scenario.rollFleetLaunch(this, turn);
+    var newFleet = game!.scenario.rollFleetLaunch(this, turn);
     if (newFleet != null) {
       result.fleet = newFleet;
       result.moveTechRolled = buyNextMoveLevel();
@@ -62,21 +92,21 @@ class AlienPlayer {
 
   void buyTechs(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     purchasedCloakThisTurn = false;
-    game.scenario.buyTechs(fleet, options);
+    game!.scenario.buyTechs(this, fleet, options);
   }
 
   FleetBuildResult firstCombat(Fleet fleet, [List<FleetBuildOption> options = const []]) {
     var result = FleetBuildResult(this);
-    var oldTechValues = Map.fromIterable(game.scenario.availableTechs,
+    var oldTechValues = Map.fromIterable(game!.scenario.availableTechs,
         key: (tech) => tech, value: (tech) => technologyLevels[tech]);
     buyTechs(fleet, options);
     if (FleetType.RAIDER_FLEET != fleet.fleetType) {
-      game.scenario.buildFleet(fleet, options);
+      game!.scenario.buildFleet(this, fleet, options);
       economicSheet.addFleetCP(fleet.fleetCP - fleet.buildCost);
       result.newFleets.add(fleet);
     }
     fleet.hadFirstCombat = true;
-    for (Technology technology in game.scenario.availableTechs) {
+    for (Technology technology in game!.scenario.availableTechs) {
       if (oldTechValues[technology] != getLevel(technology)) {
         result.newTechs[technology] = getLevel(technology);
       }
@@ -88,8 +118,8 @@ class AlienPlayer {
 
   FleetBuildResult buildHomeDefense() {
     var result = FleetBuildResult(this);
-    Fleet? fleet = game.scenario.fleetLauncher
-        .launchFleet(this, game.currentTurn, [FleetBuildOption.HOME_DEFENSE]);
+    Fleet? fleet = game!.scenario.fleetLauncher
+        .launchFleet(this, game!.currentTurn, [FleetBuildOption.HOME_DEFENSE]);
     if (fleet != null) {
       result = firstCombat(fleet, [
         FleetBuildOption.HOME_DEFENSE,
@@ -97,7 +127,7 @@ class AlienPlayer {
       ]);
     }
 
-    Fleet? defenseFleet = game.scenario.buildHomeDefense(this);
+    Fleet? defenseFleet = game!.scenario.buildHomeDefense(this);
     if (defenseFleet != null) {
       economicSheet.spendDefCP(defenseFleet.buildCost);
       defenseFleet.hadFirstCombat = true;
@@ -109,8 +139,8 @@ class AlienPlayer {
 
   bool buyNextMoveLevel() {
     int oldLevel = technologyLevels[Technology.MOVE]!;
-    if (game.roller.roll() <= 4) {
-      game.scenario.buyNextLevel(this, Technology.MOVE);
+    if (game!.roller.roll() <= 4) {
+      game!.scenario.buyNextLevel(this, Technology.MOVE);
     }
     return technologyLevels[Technology.MOVE] != oldLevel;
   }

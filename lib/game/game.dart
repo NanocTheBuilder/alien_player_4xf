@@ -25,8 +25,13 @@ import 'package:json_annotation/json_annotation.dart';
 import 'alien_economic_sheet.dart';
 import 'dice_roller.dart';
 
-@JsonSerializable()
+part 'game.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+@ScenarioConverter()
+@DifficultyConverter()
 class Game {
+  @JsonKey(ignore: true)
   late DiceRoller roller;
   late Scenario scenario;
   late List<AlienPlayer> aliens;
@@ -34,17 +39,24 @@ class Game {
   Set<Seeable> seenThings = {};
   int currentTurn = 1;
   late Difficulty difficulty;
+  
+  Game(this.scenario, this.difficulty, this.aliens);
 
-  Game(this.scenario, this.difficulty, List playerColors) {
+  static Game newGame(Scenario scenario, Difficulty difficulty, List<PlayerColor> playerColors){
+    var newGame = Game(scenario, difficulty, playerColors.map((color) => scenario.newPlayer(difficulty, color)).toList());
+    newGame.init();
+    return newGame;
+  }
+
+  void init(){
     scenario.init(this);
-    aliens = [];
-    for (int i = 0; i < difficulty.numberOfAlienPlayers; i++) {
-      aliens.add(scenario.newPlayer(this, difficulty, playerColors[i]));
-    }
-
+    aliens.forEach((element) => element.init(this));
     resetSeenLevels();
     currentTurn = 1;
   }
+
+  factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
+  Map<String, dynamic> toJson() => _$GameToJson(this);
 
   void resetSeenLevels() {
     seenThings = {};

@@ -17,6 +17,8 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../alien_economic_sheet.dart';
 import '../alien_player.dart';
 import '../enums.dart';
@@ -27,6 +29,8 @@ import '../game.dart';
 import '../scenario.dart';
 import '../technology_buyer.dart';
 import 'base_game.dart';
+
+part 'scenario_4.g.dart';
 
 class Scenario4 extends Scenario {
   @override
@@ -39,8 +43,8 @@ class Scenario4 extends Scenario {
   }
 
   @override
-  AlienPlayer newPlayer(Game game, Difficulty difficulty, PlayerColor color) {
-    return Scenario4Player(AlienEconomicSheet(difficulty), game, color);
+  AlienPlayer newPlayer(Difficulty difficulty, PlayerColor color) {
+    return Scenario4Player(AlienEconomicSheet(difficulty), color);
   }
 
   static List<Difficulty> difficulties() => const [
@@ -58,19 +62,29 @@ class Scenario4 extends Scenario {
   }
 }
 
+@JsonSerializable(explicitToJson: true)
 class Scenario4Player extends AlienPlayer {
-  Scenario4Player(AlienEconomicSheet sheet, Game game, PlayerColor color)
-      : super(sheet, game, color);
+  Scenario4Player(AlienEconomicSheet economicSheet, PlayerColor color)
+      : super(economicSheet, color);
 
   FleetBuildResult buildColonyDefense() {
     FleetBuildResult result = FleetBuildResult(this);
-    Fleet? fleet = (game.scenario as Scenario4).buildColonyDefense(this);
+    Fleet? fleet = (game!.scenario as Scenario4).buildColonyDefense(this);
     if (fleet != null) {
       economicSheet.spendDefCP(fleet.buildCost);
       fleet.hadFirstCombat = true;
       result.addNewFleet(fleet);
     }
     return result;
+  }
+
+  factory Scenario4Player.fromJson(Map<String, dynamic> json) => _$Scenario4PlayerFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    var json = _$Scenario4PlayerToJson(this);
+    json["type"] = "Scenario4Player";
+    return json;
   }
 }
 
@@ -99,9 +113,8 @@ class Scenario4TechnologyBuyer extends TechnologyBuyer {
   List<int> get shipSizeRollTable => SHIP_SIZE_ROLL_TABLE;
 
   @override
-  void buyOptionalTechs(Fleet fleet,
+  void buyOptionalTechs(AlienPlayer ap, Fleet fleet,
       [List<FleetBuildOption> options = const []]) {
-    AlienPlayer ap = fleet.ap;
     buyPointDefenseIfNeeded(ap);
     buyMineSweepIfNeeded(ap);
     buySecurityIfNeeded(ap);
@@ -113,7 +126,7 @@ class Scenario4TechnologyBuyer extends TechnologyBuyer {
     buyBoardingIfNeeded(ap);
     buyShipSizeIfRolled(ap);
     buyFightersIfNeeded(ap);
-    buyCloakingIfNeeded(fleet);
+    buyCloakingIfNeeded(ap, fleet);
   }
 }
 
@@ -143,22 +156,22 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
   Scenario4DefenseBuilder(Game game) : super(game);
 
   @override
-  void buyHomeDefenseUnits(Fleet fleet) {
+  void buyHomeDefenseUnits(AlienPlayer ap, Fleet fleet) {
     if (fleet.remainingCP > 25) {
-      buyGravArmor(fleet);
-      buyHeavyInfantry(fleet);
+      buyGravArmor(ap, fleet);
+      buyHeavyInfantry(ap, fleet);
     }
-    super.buyHomeDefenseUnits(fleet);
+    super.buyHomeDefenseUnits(ap, fleet);
   }
 
-  void buyGravArmor(Fleet fleet) {
-    if (fleet.ap.getLevel(Technology.GROUND_COMBAT) == 3) {
+  void buyGravArmor(AlienPlayer ap, Fleet fleet) {
+    if (ap.getLevel(Technology.GROUND_COMBAT) == 3) {
       buildGroup(fleet, ShipType.GRAV_ARMOR, 2);
     }
   }
 
-  void buyHeavyInfantry(Fleet fleet) {
-    if (fleet.ap.getLevel(Technology.GROUND_COMBAT) >= 2) {
+  void buyHeavyInfantry(AlienPlayer ap, Fleet fleet) {
+    if (ap.getLevel(Technology.GROUND_COMBAT) >= 2) {
       int howManyHI = game.roller.roll();
       buildGroup(fleet, ShipType.HEAVY_INFANTRY, howManyHI);
     }
@@ -169,7 +182,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
     if (defCP >= ShipType.INFANTRY.cost) {
       int maxCP = game.roller.roll() + game.roller.roll();
       maxCP = maxCP < defCP ? maxCP : defCP;
-      Fleet fleet = Fleet(ap, FleetType.DEFENSE_FLEET, maxCP);
+      Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.DEFENSE_FLEET, maxCP);
       addBasesOrMines(fleet);
       addGroundTroops(ap, fleet);
       return fleet;
@@ -197,23 +210,24 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
 class Scenario4FleetBuilder extends FleetBuilder {
   Scenario4FleetBuilder(Game game) : super(game);
 
-  void buildFleet(Fleet fleet, [List<FleetBuildOption> options = const[]]) {
+  @override
+  void buildFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const[]]) {
     if (fleet.fleetType == FleetType.RAIDER_FLEET ||
-        shouldBuildRaiderFleet(fleet, options)) {
-      buildRaiderFleet(fleet);
+        shouldBuildRaiderFleet(ap, fleet, options)) {
+      buildRaiderFleet(ap, fleet);
     } else {
-      buildOneFullyLoadedTransport(fleet, options);
-      buyBoardingShips(fleet);
+      buildOneFullyLoadedTransport(ap, fleet, options);
+      buyBoardingShips(ap, fleet);
       buyScoutsIfSeenMines(fleet);
-      buyFullCarriers(fleet, options);
-      buildFlagship(fleet);
-      buildPossibleDD(fleet);
-      buildRemainderFleet(fleet);
+      buyFullCarriers(ap, fleet, options);
+      buildFlagship(ap, fleet);
+      buildPossibleDD(ap, fleet);
+      buildRemainderFleet(ap, fleet);
     }
   }
 
-  void buyBoardingShips(Fleet fleet) {
-    if (fleet.ap.getLevel(Technology.BOARDING) != 0) {
+  void buyBoardingShips(AlienPlayer ap, Fleet fleet) {
+    if (ap.getLevel(Technology.BOARDING) != 0) {
       buildGroup(fleet, ShipType.BOARDING_SHIP, 2);
     }
   }
@@ -224,15 +238,15 @@ class Scenario4FleetBuilder extends FleetBuilder {
     }
   }
 
-  void buildOneFullyLoadedTransport(Fleet fleet,
+  void buildOneFullyLoadedTransport(AlienPlayer ap, Fleet fleet,
       [List<FleetBuildOption> options = const[]]) {
     fleet.addFreeGroup(Group(ShipType.TRANSPORT, 1));
-    buildGroundUnits(fleet).forEach((group) => fleet.addFreeGroup(group));
+    buildGroundUnits(ap, fleet).forEach((group) => fleet.addFreeGroup(group));
   }
 
-  List<Group> buildGroundUnits(Fleet fleet) {
+  List<Group> buildGroundUnits(AlienPlayer ap, Fleet fleet) {
     List<Group> groups = [];
-    switch (fleet.ap.getLevel(Technology.GROUND_COMBAT)) {
+    switch (ap.getLevel(Technology.GROUND_COMBAT)) {
       case 1:
         groups.add(Group(ShipType.INFANTRY, 6));
         break;

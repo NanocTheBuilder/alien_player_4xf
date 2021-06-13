@@ -19,9 +19,10 @@
 
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/scenarios/scenario_4.dart';
-import 'package:alienplayer4xf/main.dart';
 import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
+
+import '../game_model.dart';
 
 class SeenTechsDialog extends StatefulWidget {
   final GameModel game;
