@@ -165,6 +165,8 @@ class AlienEconomicSheet {
     techCP -= amount;
   }
 
+  int getDefCP() => defCP;
+
   void spendDefCP(int amount) {
     defCP -= amount;
   }

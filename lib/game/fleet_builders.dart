@@ -190,7 +190,7 @@ class DefenseBuilder extends GroupBuilder {
   }
 
   Fleet? buildHomeDefense(AlienPlayer ap) {
-    if (ap.economicSheet.defCP >= ShipType.MINE.cost) {
+    if (ap.economicSheet.getDefCP() >= ShipType.MINE.cost) {
       Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.DEFENSE_FLEET, ap.economicSheet.defCP);
       buyHomeDefenseUnits(ap, fleet);
       return fleet;

@@ -232,6 +232,7 @@ class VpEconomicSheet extends AlienEconomicSheet {
 
     int maxDefenseCp = (difficulty as VpDifficulty).maxDefenseCp;
     if (defCP > maxDefenseCp) {
+      bank += defCP - maxDefenseCp;
       defCP = maxDefenseCp;
     }
     return result;
