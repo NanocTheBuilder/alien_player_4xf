@@ -43,7 +43,7 @@ class DifficultyConverter implements JsonConverter<Difficulty, String>{
         return Vp2pDifficultyConverter().fromJson(value);
       case "Vp3pDifficulty":
         return Vp3pDifficultyConverter().fromJson(value);
-      case "BaseGameDificulty":
+      case "BaseGameDifficulty":
         return BaseGameDifficultyConverter().fromJson(value);
       default:
         throw UnimplementedError();

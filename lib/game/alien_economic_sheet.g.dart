@@ -9,7 +9,7 @@ part of 'alien_economic_sheet.dart';
 AlienEconomicSheet _$AlienEconomicSheetFromJson(Map<String, dynamic> json) {
   return AlienEconomicSheet(
     const DifficultyConverter().fromJson(json['difficulty'] as String),
-    extraEcon: json['extraEcon'],
+    extraEcon: List<int>.from(json['extraEcon']),
   )
     ..fleetCP = json['fleetCP'] as int
     ..techCP = json['techCP'] as int
