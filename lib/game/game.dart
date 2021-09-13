@@ -39,23 +39,35 @@ class Game {
   Set<Seeable> seenThings = {};
   int currentTurn = 1;
   late Difficulty difficulty;
-  
+
   Game(this.scenario, this.difficulty, this.aliens);
 
-  static Game newGame(Scenario scenario, Difficulty difficulty, List<PlayerColor> playerColors){
-    var newGame = Game(scenario, difficulty, playerColors.map((color) => scenario.newPlayer(difficulty, color)).toList());
+  static Game newGame(Scenario scenario, Difficulty difficulty,
+      List<PlayerColor> playerColors) {
+    var newGame = Game(
+        scenario,
+        difficulty,
+        playerColors
+            .map((color) => scenario.newPlayer(difficulty, color))
+            .toList());
     newGame.init();
     return newGame;
   }
 
-  void init(){
+  void init() {
     scenario.init(this);
     aliens.forEach((element) => element.init(this));
     resetSeenLevels();
     currentTurn = 1;
   }
 
-  factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
+  factory Game.fromJson(Map<String, dynamic> json) {
+    var game = _$GameFromJson(json);
+    game.scenario.init(game);
+    game.aliens.forEach((element) => element.init(game));
+    return game;
+  }
+
   Map<String, dynamic> toJson() => _$GameToJson(this);
 
   void resetSeenLevels() {

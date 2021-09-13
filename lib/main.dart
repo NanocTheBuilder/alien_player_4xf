@@ -19,6 +19,7 @@
 
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/widgets/game_page.dart';
+import 'package:alienplayer4xf/widgets/main_menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
                   image: AssetImage("assets/smc_wing_full_2560.png",
                       bundle: DefaultAssetBundle.of(context)),
                   fit: BoxFit.cover)),
-          child: GamePage('Alien Player 4X'),
+          child: MainMenuPage(),
         ));
   }
 }

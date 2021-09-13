@@ -9,7 +9,8 @@ import 'package:test/test.dart';
 void main(){
   test('Base game serialization', (){
       var orig = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.BLUE, PlayerColor.RED, PlayerColor.YELLOW]);
-      var decoded = Game.fromJson(jsonDecode(jsonEncode(orig)));
+      var encode = jsonEncode(orig);
+      var decoded = Game.fromJson(jsonDecode(encode));
       expect(decoded.runtimeType, Game);
 
       var yellow = orig.aliens[2];
@@ -25,6 +26,7 @@ void main(){
       yellow.technologyLevels[Technology.ATTACK] = 4;
       yellow.technologyLevels[Technology.DEFENSE] = 5;
       yellow.technologyLevels[Technology.MINE_SWEEPER] = 7;
+
       decoded = Game.fromJson(jsonDecode(jsonEncode(orig)));
       expect(decoded.aliens.length, 3);
       expect(decoded.aliens[2].economicSheet.defCP, 100);
@@ -42,6 +44,19 @@ void main(){
       expect(decoded.aliens[2].fleets[0].freeGroups.length, 1);
       expect(decoded.aliens[2].fleets[0].freeGroups[0].shipType, ShipType.MINE);
       expect(decoded.aliens[2].fleets[0].freeGroups[0].size, 55);
+
+      orig.currentTurn = 10;
+      orig.addSeenThing(Seeable.FIGHTERS);
+      orig.seenLevels[Technology.CLOAKING] = 2;
+
+      decoded = Game.fromJson(jsonDecode(jsonEncode(orig)));
+      expect(decoded.currentTurn, 10);
+      expect(decoded.isSeenThing(Seeable.FIGHTERS), true);
+      expect(decoded.seenLevels[Technology.CLOAKING], 2);
+      expect(decoded.seenThings, orig.seenThings);
+      expect(decoded.seenLevels, orig.seenLevels);
+      expect(decoded.scenario.techPrices.availableTechs, orig.scenario.techPrices.availableTechs);
+      expect(decoded.scenario.techPrices.map, orig.scenario.techPrices.map);
 
   });
 }

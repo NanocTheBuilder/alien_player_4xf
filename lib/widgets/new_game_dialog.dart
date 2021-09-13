@@ -21,8 +21,10 @@ import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/main.dart';
 import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../game_model.dart';
+import 'game_page.dart';
 
 class NewGameDialog extends StatefulWidget {
   final GameModel game;
@@ -119,11 +121,13 @@ class NewGameDialogState extends State<NewGameDialog> {
           child: Text('OK'),
           onPressed: valid()
               ? () {
-                  Navigator.of(context).pop();
                   game.newGame(
                       Strings.scenarioBuildData[scenario]!.constructor.call(),
                       difficulty,
                       selectedPlayers());
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => GamePage('Alien Player 4X')));
                 }
               : null,
         ),
@@ -140,12 +144,12 @@ class NewGameDialogState extends State<NewGameDialog> {
     return selectedPlayers().length == difficulty.numberOfAlienPlayers;
   }
 
-  List<PlayerColor> selectedPlayers(){
+  List<PlayerColor> selectedPlayers() {
     List<PlayerColor> selectedPlayers = [];
-    if(green) selectedPlayers.add(PlayerColor.GREEN);
-    if(yellow) selectedPlayers.add(PlayerColor.YELLOW);
-    if(red) selectedPlayers.add(PlayerColor.RED);
-    if(blue) selectedPlayers.add(PlayerColor.BLUE);
+    if (green) selectedPlayers.add(PlayerColor.GREEN);
+    if (yellow) selectedPlayers.add(PlayerColor.YELLOW);
+    if (red) selectedPlayers.add(PlayerColor.RED);
+    if (blue) selectedPlayers.add(PlayerColor.BLUE);
     return selectedPlayers;
   }
 
