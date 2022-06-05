@@ -3,27 +3,29 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "4d5355e94888298ac573c6c7bf671651",
+  "assets/AssetManifest.json": "881735d3ca1be2375b35208c5fd8f178",
 "assets/assets/smc_wing_full_2560.png": "3375619c954c52951962cc0421034ca7",
-"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"assets/NOTICES": "1dd6f69bd87b8709acba913c5e6b5d80",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
+"assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
+"assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
+"assets/NOTICES": "44357a5e59a018434c72e24dc9ffaada",
+"canvaskit/canvaskit.js": "c2b4e5f3d7a3d82aed024e7249a78487",
+"canvaskit/canvaskit.wasm": "4b83d89d9fecbea8ca46f2f760c5a9ba",
+"canvaskit/profiling/canvaskit.js": "ae2949af4efc61d28a4a80fffa1db900",
+"canvaskit/profiling/canvaskit.wasm": "95e736ab31147d1b2c7b25f11d4c32cd",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"index.html": "3d580c49927f9f502368b100802e9b89",
-"/": "3d580c49927f9f502368b100802e9b89",
-"main.dart.js": "865e4a3b19be5ae2fbb365a2ec3ed21c",
-"manifest.json": "aa7e305a5c85349c5de33ddb075be6fc",
-"version.json": "c450d006c1587c055c7d5f8a73f6c256"
+"flutter.js": "0816e65a103ba8ba51b174eeeeb2cb67",
+"icons/icon.png": "1d871a28e09e986e71bcb388dcd81a56",
+"index.html": "b4e3e2fd78e37254063d44b37631f5eb",
+"/": "b4e3e2fd78e37254063d44b37631f5eb",
+"main.dart.js": "30ec8211bc57b51d1e90795cf081cac1",
+"manifest.json": "f4cfcb9b791f7164f0ce1851c208d9c8",
+"version.json": "d4d28aa0ffd9ba1fdf722b9ebd1279b3"
 };
 
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = [
-  "/",
-"main.dart.js",
+  "main.dart.js",
 "index.html",
 "assets/NOTICES",
 "assets/AssetManifest.json",
