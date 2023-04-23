@@ -23,6 +23,7 @@ import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../game/scenarios/base_game.dart';
 import '../game_model.dart';
 import 'game_page.dart';
 
@@ -46,8 +47,8 @@ class NewGameDialogState extends State<NewGameDialog> {
   @override
   void initState() {
     super.initState();
-    scenario = game.scenario.runtimeType;
-    difficulty = game.difficulty;
+    scenario = BaseGameScenario;
+    difficulty = BaseGameDifficulty.NORMAL;
     initCheckboxes();
   }
 

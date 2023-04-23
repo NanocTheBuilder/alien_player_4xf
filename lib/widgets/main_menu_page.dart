@@ -31,14 +31,13 @@ class MainMenuPage extends StatelessWidget {
                           : null),
                   TextButton(
                       child: Text("New Game"),
-                      onPressed: game.started
-                          ? () {
+                      onPressed:  () {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) =>
                                       NewGameDialog(game));
                             }
-                          : null),
+                        ),
                   TextButton(
                       child: Text("Settings"),
                       onPressed: () {
