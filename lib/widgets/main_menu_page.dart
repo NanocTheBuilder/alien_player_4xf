@@ -1,3 +1,4 @@
+import 'package:alienplayer4xf/widgets/help_dialog.dart';
 import 'package:alienplayer4xf/widgets/settings_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,14 @@ class MainMenuPage extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) =>
                                 SettingsDialog(game));
+                      }),
+                  TextButton(
+                      child: Text("Help"),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                HelpDialog());
                       }),
                 ],
               ));
