@@ -59,7 +59,7 @@ class AlienPlayerView extends StatelessWidget {
           children: [
             Expanded(
                 child: TextButton(
-                    style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple.shade400)),
+                    style: ButtonStyle(foregroundColor: WidgetStateProperty.all<Color>(Colors.deepPurple.shade400)),
                     child: Text("Home Defense"),
                     onPressed: () {
                       var result = game.buildHomeDefense(alien);
@@ -70,7 +70,7 @@ class AlienPlayerView extends StatelessWidget {
             (alien.game!.scenario is Scenario4
                 ? Expanded(
                     child: TextButton(
-                        style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple.shade400)),
+                        style: ButtonStyle(foregroundColor: WidgetStateProperty.all<Color>(Colors.deepPurple.shade400)),
                         child: Text("Colony Defense"),
                         onPressed: () {
                           var result =
@@ -111,7 +111,7 @@ class AlienPlayerView extends StatelessWidget {
                 child: Text(
               'Fleet CP: ${alien.economicSheet.fleetCP}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.labelLarge,
             ))),
         Expanded(
             flex: 1,
@@ -119,7 +119,7 @@ class AlienPlayerView extends StatelessWidget {
                 child: Text(
               'Tech CP: ${alien.economicSheet.techCP}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.labelLarge,
             ))),
         Expanded(
             flex: 1,
@@ -127,7 +127,7 @@ class AlienPlayerView extends StatelessWidget {
                 child: Text(
               'Def CP: ${alien.economicSheet.defCP}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.labelLarge,
             ))),
       ]));
     }

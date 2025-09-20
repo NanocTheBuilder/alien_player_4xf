@@ -17,9 +17,7 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
 import 'package:alienplayer4xf/game/scenarios/vp_scenarios.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:test/test.dart';
 
 import '../../mock_roller.dart';

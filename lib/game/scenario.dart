@@ -19,7 +19,6 @@
 
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:alienplayer4xf/game/technology_buyer.dart';
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'alien_player.dart';

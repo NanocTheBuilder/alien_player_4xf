@@ -21,7 +21,6 @@ import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/main.dart';
 import 'package:alienplayer4xf/widgets/string_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../game/scenarios/base_game.dart';
 import '../game_model.dart';

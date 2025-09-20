@@ -18,7 +18,6 @@
  */
 
 import 'package:alienplayer4xf/game/enums.dart';
-import 'package:alienplayer4xf/widgets/game_page.dart';
 import 'package:alienplayer4xf/widgets/main_menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,11 +48,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textTheme: TextTheme(
-              bodyText2: TextStyle(
+              bodyMedium: TextStyle(
                   fontSize:
-                      Theme.of(context).textTheme.bodyText2!.fontSize! * 1.3),
-              button: TextStyle(
-                  fontSize: Theme.of(context).textTheme.button!.fontSize! * 1.3),
+                      Theme.of(context).textTheme.bodyMedium!.fontSize! * 1.3),
+              labelLarge: TextStyle(
+                  fontSize: Theme.of(context).textTheme.labelLarge!.fontSize! * 1.3),
             )),
         home: Container(
           decoration: BoxDecoration(
