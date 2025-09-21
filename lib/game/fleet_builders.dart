@@ -1,20 +1,20 @@
 /*
  *  Copyright (C) 2021 Balázs Péter
  *
- *  This file is part of Alien Player 4X.
+ *  This file is part of Alien Player 4XF.
  *
  *  Alien Player 4XF is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Alien Player 4X is distributed in the hope that it will be useful,
+ *  Alien Player 4XF is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Alien Player 4XF.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import 'dart:math';
@@ -86,10 +86,10 @@ class FleetBuilder extends GroupBuilder {
       }
 
       if (fleetCompositionRoll <= 3) {
-        buildBallanced(ap, fleet, 1);
+        buildBalanced(ap, fleet, 1);
       } else if (fleetCompositionRoll <= 6) {
         if (fleet.canBuyMoreShips)
-          buildBallanced(ap,
+          buildBalanced(ap,
               fleet,
               max(ap.getLevel(Technology.ATTACK),
                   ap.getLevel(Technology.DEFENSE)));
@@ -117,7 +117,7 @@ class FleetBuilder extends GroupBuilder {
   }
 
   //TODO: FIND A READABLE ALGORITHM?
-  void buildBallanced(AlienPlayer ap, Fleet fleet, int minHullSize) {
+  void buildBalanced(AlienPlayer ap, Fleet fleet, int minHullSize) {
     int apShipSize = ap.getLevel(Technology.SHIP_SIZE);
     for (int i = minHullSize; i >= 0; i--) {
       ShipType cheapestType = ShipType.findCheapest(i);
@@ -139,10 +139,8 @@ class FleetBuilder extends GroupBuilder {
 
   void buildPossibleDD(AlienPlayer ap, Fleet fleet) {
     if (fleet.remainingCP >= ShipType.RAIDER.cost) {
-      if (ShipType.DESTROYER.canBeBuilt(
-              fleet.remainingCP, ap.getLevel(Technology.SHIP_SIZE)) &&
-          game.getSeenLevel(Technology.CLOAKING) <=
-              ap.getLevel(Technology.SCANNER) &&
+      if (ShipType.DESTROYER.canBeBuilt(fleet.remainingCP, ap.getLevel(Technology.SHIP_SIZE)) &&
+          game.getSeenLevel(Technology.CLOAKING) <= ap.getLevel(Technology.SCANNER) &&
           fleet.findGroup(ShipType.DESTROYER) == null)
         fleet.addGroup(Group(ShipType.DESTROYER, 1));
     }
@@ -166,8 +164,7 @@ class FleetBuilder extends GroupBuilder {
         ap.getLevel(Technology.FIGHTERS) == 0 ||
         options.contains(FleetBuildOption.COMBAT_WITH_NPAS)) return false;
     return game.getSeenLevel(Technology.POINT_DEFENSE) == 0 &&
-            !game.isSeenThing(Seeable.MINES) ||
-        game.roller.roll() < 5;
+            !game.isSeenThing(Seeable.MINES) || game.roller.roll() < 5;
   }
 
   bool shouldBuildRaiderFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
