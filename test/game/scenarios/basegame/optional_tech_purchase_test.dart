@@ -17,131 +17,28 @@
  *  along with Alien Player 4X.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
-import 'package:alienplayer4xf/game/fleet.dart';
-import 'package:alienplayer4xf/game/game.dart';
-import 'package:alienplayer4xf/game/scenarios/base_game.dart';
-import 'package:alienplayer4xf/game/technology_buyer.dart';
 import 'package:test/test.dart';
 
-import '../../mock_roller.dart';
+import '../../fixture.dart';
+import '../../technology_buyer_test_base.dart';
+import 'base_game_test_base.dart';
 
 void main() {
   //extends BasegameTechnologyBuyerTestBase
   //extends TechnologyBuyerTestBase
   //extends Fixture
 
-  late Game game;
-  late AlienPlayer ap;
-  //late DefenseBuilder defBuilder;
-  late MockRoller roller;
-  late AlienEconomicSheet sheet;
-  //late FleetBuilder fleetBuilder;
-  late TechnologyBuyer techBuyer;
-  //late FleetLauncher fleetLauncher;
-
-  late Fleet fleet;
-
-  void assertLevels(Map<Technology, int> expectedLevels) {
-    var errors = [];
-    for (var technology in game.scenario.availableTechs) {
-      var expectedLevel = expectedLevels[technology] ?? game.scenario.getStartingLevel(technology);
-      if(expectedLevel != ap.getLevel(technology)){
-        errors.add('$technology: expected $expectedLevel but was ${ap.getLevel(technology)}');
-      }
-    }
-    if(errors.isNotEmpty){
-      fail('Level assertions failed:\n${errors.join('\n')}');
-    }
-  }
-
-  void assertLevel(Technology technology, int expectedLevel) {
-    assertLevels({technology: expectedLevel});
-  }
-
-  void assertRoller() {
-    roller.assertAllUsed();
-  }
-
   setUp(() {
     //Fixture
-    game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL, [
-      PlayerColor.GREEN,
-      PlayerColor.YELLOW,
-      PlayerColor.RED,
-    ]);
-    roller = MockRoller();
-    game.roller = roller;
-    //defBuilder = game.scenario.defenseBuilder;
-    //fleetBuilder = game.scenario.fleetBuilder;
-    //fleetLauncher = game.scenario.fleetLauncher;
-    techBuyer = game.scenario.techBuyer;
-    ap = game.aliens[0];
-    sheet = ap.economicSheet;
+    setupFixture(newGame());
 
     //TechnologyBuyerTestBase
-    for (Technology t in game.scenario.availableTechs) {
-      assertLevel(t, game.scenario.getStartingLevel(t));
-    }
-    fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, -1);
+    setupTechnologyBuyerTestBase();
   });
 
-  tearDown(assertRoller);
-
-  void assertOptionalBuy(
-    Technology technology,
-    int newLevel,
-    int remainingCP,
-    Function(AlienPlayer) buyAction,
-    {int initialCP = 100}
-  ) {
-    sheet.techCP = initialCP;
-    buyAction(ap);
-    assertLevel(technology, newLevel);
-    expect(sheet.techCP, remainingCP);
-  }
-
-  void assertBuyOptional(
-    int expectedLevel,
-    Technology technology,
-    Function(AlienPlayer) buyAction,
-  ) {
-    assertOptionalBuy(
-      technology,
-      expectedLevel,
-      100 - game.scenario.getCost(technology, expectedLevel),
-      buyAction,
-    );
-  }
-
-  void assertDontBuyOptional(
-    int expectedLevel,
-    Technology technology,
-    Function(AlienPlayer) buyAction,
-  ) {
-    assertOptionalBuy(technology, expectedLevel - 1, 100, buyAction);
-  }
-
-  void assertDontBuyShipSize(int expectedLevel) {
-    assertDontBuyOptional(expectedLevel, Technology.SHIP_SIZE, (AlienPlayer ap) {
-      techBuyer.buyShipSizeIfRolled(ap);
-    });
-  }
-
-  void assertBuyShipSize(int newLevel, {int rollNeeded = -1}) {
-    if(rollNeeded != -1){
-      roller.mockRoll("Ship size", rollNeeded + 1);
-      assertDontBuyShipSize(newLevel);
-      roller.mockRoll("Ship size", rollNeeded);
-    }
-    assertBuyOptional(newLevel, Technology.SHIP_SIZE, (AlienPlayer ap) {
-      techBuyer.buyShipSizeIfRolled(ap);
-    });
-  }
-
-  //Tests
+  tearDown(assertAllRollsUsed);
 
   //TODO tests what happens if CP is not enough
 
