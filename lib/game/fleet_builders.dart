@@ -75,7 +75,7 @@ class FleetBuilder extends GroupBuilder {
 
   void buildRemainderFleet(AlienPlayer ap, Fleet fleet) {
     if (fleet.canBuyMoreShips) {
-      int fleetCompositionRoll = game.roller.roll();
+      int fleetCompositionRoll = game.roller.roll("Fleet composition");
       bool canUsePD = ap.getLevel(Technology.POINT_DEFENSE) > 0 &&
           game.isSeenThing(Seeable.FIGHTERS);
       if (canUsePD) {
@@ -164,7 +164,7 @@ class FleetBuilder extends GroupBuilder {
         ap.getLevel(Technology.FIGHTERS) == 0 ||
         options.contains(FleetBuildOption.COMBAT_WITH_NPAS)) return false;
     return game.getSeenLevel(Technology.POINT_DEFENSE) == 0 &&
-            !game.isSeenThing(Seeable.MINES) || game.roller.roll() < 5;
+            !game.isSeenThing(Seeable.MINES) || game.roller.roll("Carrier fleet") < 5;
   }
 
   bool shouldBuildRaiderFleet(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
@@ -196,7 +196,7 @@ class DefenseBuilder extends GroupBuilder {
   }
 
   void buyHomeDefenseUnits(AlienPlayer ap, Fleet fleet) {
-    int roll = game.roller.roll();
+    int roll = game.roller.roll("Home defense units");
     if (roll < 4) {
       buildGroup(fleet, ShipType.MINE);
     } else if (roll < 8) {

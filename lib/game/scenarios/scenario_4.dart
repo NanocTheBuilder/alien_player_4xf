@@ -172,7 +172,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
 
   void buyHeavyInfantry(AlienPlayer ap, Fleet fleet) {
     if (ap.getLevel(Technology.GROUND_COMBAT) >= 2) {
-      int howManyHI = game.roller.roll();
+      int howManyHI = game.roller.roll("Heavy infantry");
       buildGroup(fleet, ShipType.HEAVY_INFANTRY, howManyHI);
     }
   }
@@ -180,7 +180,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
   Fleet? buildColonyDefense(AlienPlayer ap) {
     int defCP = getDefCp(ap);
     if (defCP >= ShipType.INFANTRY.cost) {
-      int maxCP = game.roller.roll() + game.roller.roll();
+      int maxCP = game.roller.roll("Max CP 1") + game.roller.roll("Max CP 2");
       maxCP = maxCP < defCP ? maxCP : defCP;
       Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.DEFENSE_FLEET, maxCP);
       addBasesOrMines(fleet);
@@ -200,7 +200,7 @@ class Scenario4DefenseBuilder extends DefenseBuilder {
   }
 
   void addBasesOrMines(Fleet fleet) {
-    if (game.roller.roll() < 6 && fleet.remainingCP >= ShipType.BASE.cost)
+    if (game.roller.roll("Base or mine") < 6 && fleet.remainingCP >= ShipType.BASE.cost)
       buildGroup(fleet, ShipType.BASE, 1);
     else
       buildGroup(fleet, ShipType.MINE, 2);

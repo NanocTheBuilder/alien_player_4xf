@@ -88,7 +88,7 @@ void main() {
 
   void makeRoll(AlienEconomicSheet sheet, int turn, int result) {
     var roller = MockRoller();
-    roller.mockRoll(result);
+    roller.mockRoll("Econ roll", result);
     sheet.makeRoll(turn, roller);
   }
 

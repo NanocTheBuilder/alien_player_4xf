@@ -55,7 +55,7 @@ void main() {
   }
 
   void assertRoller() {
-    expect(roller.rolls.length, 0);
+    roller.assertAllUsed();
   }
 
   void setCPs(int fleetCP, int techCP, int defCP) {
@@ -98,16 +98,16 @@ void main() {
   }
 
   void mock2Fleet1Tech1DefRoll() {
-    roller.mockRoll(3);
-    roller.mockRoll(6);
-    roller.mockRoll(8);
-    roller.mockRoll(10);
+    roller.mockRoll("Econ roll", 3);
+    roller.mockRoll("Econ roll", 6);
+    roller.mockRoll("Econ roll", 8);
+    roller.mockRoll("Econ roll", 10);
   }
 
   void assertRegularFirstCombat(int fleetCompositionRoll) {
-    roller.mockRoll(5); //Ship size
-    roller.mockRoll2(10, 1); //Attack
-    roller.mockRoll(fleetCompositionRoll); //fleet composition
+    roller.mockRoll("Ship size", 5); //Ship size
+    roller.mockRoll("Tech roll", 1); //Attack
+    roller.mockRoll("Fleet composition", fleetCompositionRoll); //fleet composition
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 5);
     assertLevel(Technology.ATTACK, 2);
@@ -125,8 +125,8 @@ void main() {
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 1);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(3); //fleet launch
-    roller.mockRoll(7); //move tech
+    roller.mockRoll("Fleet launch", 3);
+    roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(70);
     assertEquals(10, result.fleetCP);
@@ -177,17 +177,17 @@ void main() {
     setLevel(Technology.FIGHTERS, 1);
     game.setSeenLevel(Technology.POINT_DEFENSE, 0);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(7); //fleet launch
-    roller.mockRoll(7); //move tech
+    roller.mockRoll("Fleet launch", 7);
+    roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 50, 10);
     assertRoller();
 
-    roller.mockRoll(8); //Ship size
-    roller.mockRoll(6); //Buy next fighter level
-    roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
-    roller.mockRoll(3); //fleet composition
+    roller.mockRoll("Ship size", 8);
+    roller.mockRoll("Fighters", 6); //Buy next fighter level
+    roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
+    roller.mockRoll("Fleet composition", 3);
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
@@ -209,17 +209,17 @@ void main() {
     setLevel(Technology.FIGHTERS, 2);
     game.setSeenLevel(Technology.POINT_DEFENSE, 1);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(7); //fleet launch
-    roller.mockRoll(7); //move tech
+    roller.mockRoll("Fleet launch", 7);
+    roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 25, 10);
     assertRoller();
 
-    roller.mockRoll(8); //Ship size
-    roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
-    roller.mockRoll(4); //Has seen PD, but buy only full cariers
-    roller.mockRoll(6); //fleet composition
+    roller.mockRoll("Ship size", 8);
+    roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
+    roller.mockRoll("Carrier fleet", 4); //Has seen PD, but buy only full cariers
+    roller.mockRoll("Fleet composition", 6); //fleet composition
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
@@ -241,16 +241,16 @@ void main() {
     setLevel(Technology.FIGHTERS, 0);
     game.setSeenLevel(Technology.POINT_DEFENSE, 0);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(5); //fleet launch
-    roller.mockRoll(7); //move tech
+    roller.mockRoll("Fleet launch", 5);
+    roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 25, 10);
     assertRoller();
 
-    roller.mockRoll(8); //Ship size
-    roller.mockRoll2(7, 5); //Fighters (no attack & cloak)
-    roller.mockRoll(8); //fleet composition
+    roller.mockRoll("Ship size", 8);
+    roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
+    roller.mockRoll("Fleet composition", 8); //fleet composition
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 2);
     assertLevel(Technology.ATTACK, 1);
@@ -269,14 +269,14 @@ void main() {
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 1);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(3); //fleet launch
-    roller.mockRoll(7); //move tech
+    roller.mockRoll("Fleet launch", 3);
+    roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(70);
     assertCPs(0, 50, 10);
     assertRoller();
-    roller.mockRoll(5); //Ship size
-    roller.mockRoll2(10, 6); //Cloak
+    roller.mockRoll("Ship size", 5);
+    roller.mockRoll("Tech roll", 6, bound: 10); //Cloak
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.SHIP_SIZE, 5);
     assertLevel(Technology.CLOAKING, 1);
@@ -292,8 +292,8 @@ void main() {
     setLevel(Technology.ATTACK, 1);
     setLevel(Technology.CLOAKING, 1);
     mock2Fleet1Tech1DefRoll();
-    roller.mockRoll(7); //fleet launch
-    roller.mockRoll(4); //move tech
+    roller.mockRoll("Fleet launch", 7);
+    roller.mockRoll("Buy move", 4);
     result = ap.makeEconRoll(10);
     assertEquals(FleetType.RAIDER_FLEET, result.fleet!.fleetType);
     assertCPs(10, 30, 10);
@@ -302,8 +302,8 @@ void main() {
     assertGroups([Group(ShipType.RAIDER, 1)]);
     assertRoller();
 
-    roller.mockRoll(6); //Ship size
-    roller.mockRoll(6); //next cloak
+    roller.mockRoll("Ship size", 6);
+    roller.mockRoll("Cloaking", 6); //next cloak
     ap.firstCombat(result.fleet!);
     assertLevel(Technology.CLOAKING, 2);
     assertCPs(10, 0, 10);
@@ -313,10 +313,10 @@ void main() {
     setCPs(70, 50, 30);
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 2);
-    roller.mockRoll(5); //Ship size
-    roller.mockRoll2(9, 6); //Cloak
-    roller.mockRoll(4); //balanced fleet
-    roller.mockRoll(7); //bases, then mines
+    roller.mockRoll("Ship size", 5);
+    roller.mockRoll("Tech roll", 6, bound: 9); //Cloak
+    roller.mockRoll("Fleet composition", 4); //balanced fleet
+    roller.mockRoll("Home defense units", 7); //bases, then mines
     FleetBuildResult result = ap.buildHomeDefense();
     List<Fleet> fleets = result.newFleets;
     assertEquals(FleetType.REGULAR_FLEET, fleets[0].fleetType);

@@ -215,7 +215,7 @@ class VpEconomicSheet extends AlienEconomicSheet {
       limit = requiredRoll(turn, AlienEconomicSheet.RESULT_DEF) - 1;
     }
 
-    int roll = roller.roll(limit);
+    int roll = roller.roll("Econ roll", bound: limit);
     if (roll >= requiredRoll(turn, AlienEconomicSheet.RESULT_DEF)) {
       int defCP = 2 * difficulty.cpPerEcon;
       this.defCP += defCP;
@@ -337,7 +337,7 @@ class VpFleetBuilder extends Scenario4FleetBuilder {
     if (fleet.fleetType == FleetType.EXPANSION_FLEET) {
       super.buildOneFullyLoadedTransport(ap, fleet);
     } else if (fleet.remainingCP >= 40) {
-      int roll = game.roller.roll();
+      int roll = game.roller.roll("Fully loaded transport");
       if (options.contains(FleetBuildOption.COMBAT_IS_ABOVE_PLANET)) roll -= 2;
       if (roll <= 5) {
         fleet.addGroup(Group(ShipType.TRANSPORT, 1));
@@ -379,7 +379,7 @@ class VpSoloFleetLauncher extends FleetLauncher {
   void setFleetType(AlienPlayer ap, Fleet fleet, int turn) {
     var sheet = ap.economicSheet as VpEconomicSheet;
     if (fleet.fleetType == FleetType.REGULAR_FLEET) {
-      int roll = game.roller.roll();
+      int roll = game.roller.roll("Fleet type");
       if (turn > 7) roll += 2;
       if (turn > 10) roll += 2;
       if (roll < 8) {
@@ -396,7 +396,7 @@ class VpSoloFleetLauncher extends FleetLauncher {
   }
 
   FleetType getExterminationFleetType(int turn) {
-    if (game.roller.roll(2) == 1)
+    if (game.roller.roll("Extermination Fleet Type", bound: 2) == 1)
       return FleetType.EXTERMINATION_FLEET_HOME_WORLD;
     else
       return FleetType.EXTERMINATION_FLEET_GALACTIC_CAPITAL;

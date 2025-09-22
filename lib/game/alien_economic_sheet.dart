@@ -113,7 +113,7 @@ class AlienEconomicSheet {
 
   EconRollResult makeRoll(int turn, DiceRoller roller) {
     EconRollResult result = EconRollResult();
-    int roll = roller.roll();
+    int roll = roller.roll("Econ roll");
     if (roll >= requiredRoll(turn, RESULT_DEF)) {
       int defCP = 2 * difficulty.cpPerEcon;
       this.defCP += defCP;

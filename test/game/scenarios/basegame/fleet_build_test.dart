@@ -52,7 +52,7 @@ void main() {
   }
 
   void assertBuiltFleet(int fleetTypeRoll, int fleetCP, List<FleetBuildOption> options, List<Group> expectedGroups) {
-    roller.mockRoll(fleetTypeRoll);
+    roller.mockRoll("Fleet composition", fleetTypeRoll);
     Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, fleetCP);
     assertBuiltGroups(ap, fleet, options, expectedGroups);
   }
@@ -96,14 +96,14 @@ void main() {
   test('dontBuildCarrierFleetIfSeenPDAndFailedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
   ap.game!.setSeenLevel(Technology.POINT_DEFENSE, 1);
-  roller.mockRoll(5);
+  roller.mockRoll("Carrier fleet", 5);
   assertBuiltFleet(1, 27, [], [Group(ShipType.SCOUT, 4)]);
   });
 
   test('dontBuildCarrierFleetIfSeenMinesAndFailedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
   ap.game!.addSeenThing(Seeable.MINES);
-  roller.mockRoll(5);
+  roller.mockRoll("Carrier fleet", 5);
   assertBuiltFleet(1, 27, [], [Group(ShipType.SCOUT, 4)]);
   });
 
@@ -121,7 +121,7 @@ void main() {
   test('buildCarrierFleetIfSeenPDAndPassedRoll', () {
   ap.setLevel(Technology.FIGHTERS, 1);
   ap.game!.setSeenLevel(Technology.POINT_DEFENSE, 1);
-  roller.mockRoll(4);
+  roller.mockRoll("Carrier fleet", 4);
   Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 27);
   assertBuiltGroups(ap, fleet, [], [Group(ShipType.CARRIER, 1), Group(ShipType.FIGHTER, 3)]);
   });

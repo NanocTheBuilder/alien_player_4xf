@@ -62,7 +62,7 @@ void main() {
   }
 
   void assertRoller() {
-    expect(roller.rolls.length, 0);
+    roller.assertAllUsed();
   }
 
   setUp(() {
@@ -132,9 +132,9 @@ void main() {
 
   void assertBuyShipSize(int newLevel, {int rollNeeded = -1}) {
     if(rollNeeded != -1){
-      roller.mockRoll(rollNeeded + 1);
+      roller.mockRoll("Ship size", rollNeeded + 1);
       assertDontBuyShipSize(newLevel);
-      roller.mockRoll(rollNeeded);
+      roller.mockRoll("Ship size", rollNeeded);
     }
     assertBuyOptional(newLevel, Technology.SHIP_SIZE, (AlienPlayer ap) {
       techBuyer.buyShipSizeIfRolled(ap);
@@ -224,20 +224,20 @@ void main() {
 
   test('buyOptionalScan', () {
     game.setSeenLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(4);
+    roller.mockRoll("Scanner", 4);
     assertBuyScanner(1);
     assertDontBuyScanner(2);
 
     game.setSeenLevel(Technology.CLOAKING, 2);
-    roller.mockRoll(5);
+    roller.mockRoll("Scanner", 5);
     assertDontBuyScanner(2);
 
-    roller.mockRoll(4);
+    roller.mockRoll("Scanner", 4);
     assertBuyScanner(2);
 
     game.setSeenLevel(Technology.CLOAKING, 2);
     ap.setLevel(Technology.SCANNER, 0);
-    roller.mockRoll(4);
+    roller.mockRoll("Scanner", 4);
     assertOptionalBuy(Technology.SCANNER, 1, 10, (AlienPlayer ap) {
       techBuyer.buyScannerIfNeeded(ap);
     }, initialCP: 30);
@@ -249,7 +249,7 @@ void main() {
   // Roll needed to purchase next level: 1-10 1-7 1-6 1-5 1-3
 
   test('buyOptionalShipSize', () {
-       roller.mockRoll(10);
+       roller.mockRoll("Ship size", 10);
        assertBuyShipSize(2);
        assertBuyShipSize(3, rollNeeded: 7);
        assertBuyShipSize(4, rollNeeded: 6);
@@ -279,17 +279,17 @@ void main() {
       assertDontBuyFighters(1);
 
       ap.setLevel(Technology.FIGHTERS, 1);
-      roller.mockRoll(6);
+      roller.mockRoll("Fighters", 6);
       assertBuyFighters(2);
 
       game.setSeenLevel(Technology.POINT_DEFENSE, 1);
       assertDontBuyFighters(3);
 
       game.setSeenLevel(Technology.POINT_DEFENSE, 0);
-      roller.mockRoll(7);
+      roller.mockRoll("Fighters", 7);
       assertDontBuyFighters(3);
 
-      roller.mockRoll(6);
+      roller.mockRoll("Fighters", 6);
       assertBuyFighters(3);
   });
 
@@ -312,10 +312,10 @@ void main() {
 
        fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
        ap.setLevel(Technology.CLOAKING, 1);
-       roller.mockRoll(7);
+       roller.mockRoll("Cloaking", 7);
        assertDontBuyCloaking(2);
 
-       roller.mockRoll(6);
+       roller.mockRoll("Cloaking", 6);
        assertBuyCloaking(2);
 
        fleet.setFleetType(ap, FleetType.REGULAR_FLEET);
@@ -344,9 +344,9 @@ void main() {
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(1); //Scanners roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Fighters roll, but should not be used TODO add description to roll for testing
+    roller.mockRoll("Scanner", 1);
+    roller.mockRoll("Ship size", 1);
+    roller.mockRoll("Fighters", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 3, Technology.FIGHTERS: 1, Technology.CLOAKING: 1});
     expect(sheet.techCP, 0);
@@ -360,64 +360,64 @@ void main() {
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(1); //Scanners roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Fighters roll, but should not be used TODO add description to roll for testing
+    roller.mockRoll("Scanner", 1);
+    roller.mockRoll("Ship size", 1);
+    roller.mockRoll("Fighters", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 3, Technology.FIGHTERS: 1, Technology.CLOAKING: 1});
     expect(sheet.techCP, 10);
   });
 
   test('buyScannerThird', () {
-    sheet.techCP = 40; //game.scenario.getCost(Technology.SCANNER, 1);
+    sheet.techCP = 40;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
     game.setSeenLevel(Technology.CLOAKING, 2);
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(1); //Scanner roll
-    roller.mockRoll(1); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Fighters roll, but should not be used TODO add description to roll for testing
+    roller.mockRoll("Scanner", 1);
+    roller.mockRoll("Ship size", 1);
+    roller.mockRoll("Fighters", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.SCANNER: 2, Technology.SHIP_SIZE: 3, Technology.FIGHTERS: 1, Technology.CLOAKING: 1});
     expect(sheet.techCP, 0); //Scanner 1 + Scanner 2
   });
 
   test('buyShipSizeFourth', () {
-    sheet.techCP = 40; //game.scenario.getCost(Technology.SCANNER, 1);
+    sheet.techCP = 40;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
     game.setSeenLevel(Technology.CLOAKING, 2);
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(10); //Scanner roll
-    roller.mockRoll(1); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Fighters roll, but should not be used TODO add description to roll for testing
+    roller.mockRoll("Scanner", 10);
+    roller.mockRoll("Ship size", 1);
+    roller.mockRoll("Fighters", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.SHIP_SIZE: 4, Technology.FIGHTERS: 1, Technology.CLOAKING: 1});
     expect(sheet.techCP, 20); //Ship size 4
   });
 
   test('buyFightersFifth', () {
-    sheet.techCP = 45; //game.scenario.getCost(Technology.SCANNER, 1);
+    sheet.techCP = 45;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
     game.setSeenLevel(Technology.CLOAKING, 2);
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(10); //Scanner roll
-    roller.mockRoll(10); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Fighters roll
+    roller.mockRoll("Scanner", 10);
+    roller.mockRoll("Ship size", 10);
+    roller.mockRoll("Fighters", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.SHIP_SIZE: 3, Technology.FIGHTERS: 2, Technology.CLOAKING: 1});
     expect(sheet.techCP, 20); //Fighters 2
   });
 
   test('buyCloakingLast', () {
-    sheet.techCP = 50; //game.scenario.getCost(Technology.SCANNER, 1);
+    sheet.techCP = 50;
     fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
@@ -425,10 +425,10 @@ void main() {
     ap.setLevel(Technology.SHIP_SIZE, 3);
     ap.setLevel(Technology.FIGHTERS, 1);
     ap.setLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(10); //Scanner roll
-    roller.mockRoll(10); //Ship size roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(10); //Fighters roll, but should not be used TODO add description to roll for testing
-    roller.mockRoll(1); //Cloaking roll
+    roller.mockRoll("Scanner", 10);
+    roller.mockRoll("Ship size", 10);
+    roller.mockRoll("Fighters", 10);
+    roller.mockRoll("Cloaking", 1);
     techBuyer.buyOptionalTechs(ap, fleet);
     assertLevels({Technology.SHIP_SIZE: 3, Technology.FIGHTERS: 1, Technology.CLOAKING: 2});
     expect(sheet.techCP, 20); //Cloaking 2

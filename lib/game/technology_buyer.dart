@@ -75,7 +75,7 @@ abstract class TechnologyBuyer {
     while (true) {
       List<Technology> buyable = findBuyableTechs(ap, fleet, options);
       if (buyable.isEmpty) break;
-      int roll = game.roller.roll(buyable.length);
+      int roll = game.roller.roll("Tech roll", bound: buyable.length);
       buyRolledTech(ap, buyable[roll - 1]);
     }
   }
@@ -157,20 +157,20 @@ abstract class TechnologyBuyer {
   void buyCloakingIfNeeded(AlienPlayer ap, Fleet fleet) {
     if (fleet.fleetType == FleetType.RAIDER_FLEET &&
         ap.getLevel(Technology.CLOAKING) == 1) {
-      if (game.roller.roll() <= 6) buyNextLevel(ap, Technology.CLOAKING);
+      if (game.roller.roll("Cloaking") <= 6) buyNextLevel(ap, Technology.CLOAKING);
     }
   }
 
   void buyFightersIfNeeded(AlienPlayer ap) {
     if (game.getSeenLevel(Technology.POINT_DEFENSE) == 0 &&
-        ap.getLevel(Technology.FIGHTERS) != 0) if (game.roller.roll() <= 6)
+        ap.getLevel(Technology.FIGHTERS) != 0) if (game.roller.roll("Fighters") <= 6)
       buyNextLevel(ap, Technology.FIGHTERS);
   }
 
   void buyShipSizeIfRolled(AlienPlayer ap) {
     if (ap.getLevel(Technology.SHIP_SIZE) <
         game.scenario.getMaxLevel(Technology.SHIP_SIZE)) if (game.roller
-            .roll() <=
+            .roll("Ship size") <=
         shipSizeRollTable[ap.getLevel(Technology.SHIP_SIZE)])
       buyNextLevel(ap, Technology.SHIP_SIZE);
   }
@@ -178,7 +178,7 @@ abstract class TechnologyBuyer {
   void buyScannerIfNeeded(AlienPlayer ap) {
     if (game.getSeenLevel(Technology.CLOAKING) >
         ap.getLevel(Technology.SCANNER)) {
-      if (game.roller.roll() <= 4) {
+      if (game.roller.roll("Scanner") <= 4) {
         int levelsNeeded = game.getSeenLevel(Technology.CLOAKING) -
             ap.getLevel(Technology.SCANNER);
         for (int i = 0; i < levelsNeeded; i++)
@@ -212,13 +212,13 @@ abstract class TechnologyBuyer {
   }
 
   void buyMilitaryAcademyIfNeeded(AlienPlayer ap) {
-    if (game.isSeenThing(Seeable.VETERANS)) if (game.roller.roll() <= 6)
+    if (game.isSeenThing(Seeable.VETERANS)) if (game.roller.roll("Military Academy") <= 6)
       buyNextLevel(ap, Technology.MILITARY_ACADEMY);
   }
 
   void buyBoardingIfNeeded(AlienPlayer ap) {
     if (game.isSeenThing(Seeable.SIZE_3_SHIPS) &&
-        ap.getLevel(Technology.BOARDING) == 0) if (game.roller.roll() <= 4)
+        ap.getLevel(Technology.BOARDING) == 0) if (game.roller.roll("Boarding") <= 4)
       buyNextLevel(ap, Technology.BOARDING);
   }
 }

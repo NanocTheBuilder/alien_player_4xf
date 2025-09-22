@@ -64,49 +64,49 @@ void main() {
     ap = game.aliens[0];
     sheet = ap.economicSheet;
 
-    roller.mockRoll(1); //extra econ
-    roller.mockRoll(1); //launch
+    roller.mockRoll("Econ roll", 1); //extra econ
+    roller.mockRoll("Fleet launch", 1);
     assertNoFleetLaunch(ap.makeEconRoll(1));
     assertEquals(1, sheet.getExtraEcon(4));
     assertCPs(0, 0, 0);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(5);
-    roller.mockRoll(1); //launch
+    roller.mockRoll("Econ roll",5);
+    roller.mockRoll("Fleet launch", 1); //launch
     assertNoFleetLaunch(ap.makeEconRoll(2));
     assertCPs(0, 5, 0);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(4);
-    roller.mockRoll(3);
-    roller.mockRoll(2);
-    roller.mockRoll(7);
+    roller.mockRoll("Econ roll", 4);
+    roller.mockRoll("Econ roll", 3);
+    roller.mockRoll("Fleet launch", 2);
+    roller.mockRoll("Buy move", 7);
     EconPhaseResult result = ap.makeEconRoll(3);
     assertRegularFleetLaunch(result, 10);
     assertEquals(1, ap.getLevel(Technology.MOVE));
     assertCPs(0, 5, 0);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(4);
-    roller.mockRoll(3);
-    roller.mockRoll(3);
-    roller.mockRoll(6);
+    roller.mockRoll("Econ roll", 4);
+    roller.mockRoll("Econ roll", 3);
+    roller.mockRoll("Econ roll", 3);
+    roller.mockRoll("Fleet launch", 6);
     result = ap.makeEconRoll(4);
     assertNoFleetLaunch(result);
     assertCPs(15, 5, 0);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(7);
-    roller.mockRoll(10);
-    roller.mockRoll(10);
-    roller.mockRoll(10);
+    roller.mockRoll("Econ roll", 7);
+    roller.mockRoll("Econ roll", 10);
+    roller.mockRoll("Econ roll", 10);
+    roller.mockRoll("Fleet launch", 10);
     result = ap.makeEconRoll(5);
     assertNoFleetLaunch(result);
     assertCPs(15, 10, 20);
     assertEquals(0, roller.rolls.length);
 
     fleet = ap.fleets[0];
-    roller.mockRoll(9); // ShipSize
+    roller.mockRoll("Ship size", 9);
     ap.firstCombat(fleet);
     assertEquals(2, ap.getLevel(Technology.SHIP_SIZE));
     assertGroups(fleet, [Group(ShipType.DESTROYER, 1)]);
@@ -116,41 +116,41 @@ void main() {
     ap.removeFleet(fleet);
     assertEquals(0, ap.fleets.length);
 
-    roller.mockRoll(6);
-    roller.mockRoll(6);
-    roller.mockRoll(9);
-    roller.mockRoll(7);
-    roller.mockRoll(5);
+    roller.mockRoll("Econ roll", 6);
+    roller.mockRoll("Econ roll", 6);
+    roller.mockRoll("Econ roll", 9);
+    roller.mockRoll("Econ roll", 7);
+    roller.mockRoll("Fleet launch", 5);
     result = ap.makeEconRoll(6);
     assertNoFleetLaunch(result);
     assertCPs(26, 10, 20);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(6);
-    roller.mockRoll(9);
-    roller.mockRoll(8);
-    roller.mockRoll(3);
-    roller.mockRoll(4);
-    roller.mockRoll(8);
+    roller.mockRoll("Econ roll", 6);
+    roller.mockRoll("Econ roll", 9);
+    roller.mockRoll("Econ roll", 8);
+    roller.mockRoll("Econ roll", 3);
+    roller.mockRoll("Fleet launch", 4);
+    roller.mockRoll("Buy move", 8);
     result = ap.makeEconRoll(7);
     assertRegularFleetLaunch(result, 31);
     assertEquals(1, ap.getLevel(Technology.MOVE));
     assertCPs(0, 25, 20);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(1);
-    roller.mockRoll(4);
-    roller.mockRoll(7);
-    roller.mockRoll(9);
-    roller.mockRoll(7);
+    roller.mockRoll("Econ roll", 1);
+    roller.mockRoll("Econ roll", 4);
+    roller.mockRoll("Econ roll", 7);
+    roller.mockRoll("Econ roll", 9);
+    roller.mockRoll("Fleet launch", 7);
     result = ap.makeEconRoll(8);
     assertNoFleetLaunch(result);
     assertCPs(10, 35, 20);
     assertEquals(0, roller.rolls.length);
 
     fleet = ap.fleets[0];
-    roller.mockRoll(9); // ShipSize
-    roller.mockRoll(6); // Cloaking
+    roller.mockRoll("Ship size", 9);
+    roller.mockRoll("Tech roll", 6);
     ap.firstCombat(fleet);
     assertEquals(2, ap.getLevel(Technology.SHIP_SIZE));
     assertEquals(1, ap.getLevel(Technology.CLOAKING));
@@ -159,11 +159,11 @@ void main() {
     assertCPs(17, 5, 20);
     assertEquals(0, roller.rolls.length);
 
-    roller.mockRoll(2);
-    roller.mockRoll(9);
-    roller.mockRoll(7);
-    roller.mockRoll(7);
-    roller.mockRoll(8);
+    roller.mockRoll("Econ roll", 2);
+    roller.mockRoll("Econ roll", 9);
+    roller.mockRoll("Econ roll", 7);
+    roller.mockRoll("Econ roll", 7);
+    roller.mockRoll("Fleet launch", 8);
 
     result = ap.makeEconRoll(9);
     assertNoFleetLaunch(result);
@@ -171,10 +171,10 @@ void main() {
     assertEquals(0, roller.rolls.length);
 
     game.setSeenLevel(Technology.CLOAKING, 1);
-    roller.mockRoll(1); // Scanners
-    roller.mockRoll(9); // ShipSize (Ignored)
-    roller.mockRoll(1); // Max number of ships
-    roller.mockRoll(10); // Max bases
+    roller.mockRoll("Scanner", 1);
+    roller.mockRoll("Ship size", 9);
+    roller.mockRoll("Fleet composition", 1); // Max number of ships
+    roller.mockRoll("Home defense units", 10); // Max bases
     ap.buildHomeDefense();
     assertEquals(2, ap.getLevel(Technology.SHIP_SIZE));
     assertEquals(1, ap.getLevel(Technology.SCANNER));

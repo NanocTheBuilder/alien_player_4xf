@@ -50,7 +50,7 @@ class FleetLauncher {
     }
 
     int getFleetLaunchRoll(AlienPlayer ap) {
-        int roll = game.roller.roll();
+        int roll = game.roller.roll("Fleet launch");
         if ((ap.economicSheet.fleetCP >= 27
                 && ap.getLevel(Technology.FIGHTERS) > game.getSeenLevel(Technology.POINT_DEFENSE))
                 || shouldLaunchRaiderFleet(ap))

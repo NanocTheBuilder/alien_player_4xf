@@ -139,7 +139,7 @@ class AlienPlayer {
 
   bool buyNextMoveLevel() {
     int oldLevel = technologyLevels[Technology.MOVE]!;
-    if (game!.roller.roll() <= 4) {
+    if (game!.roller.roll("Buy move") <= 4) {
       game!.scenario.buyNextLevel(this, Technology.MOVE);
     }
     return technologyLevels[Technology.MOVE] != oldLevel;

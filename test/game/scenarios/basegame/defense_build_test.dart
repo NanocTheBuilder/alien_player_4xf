@@ -38,7 +38,7 @@ void main() {
   //utils come first
   void assertBuiltGroups(int defCP, int roll, List<Group> expectedGroups) {
     sheet.defCP = defCP;
-    roller.mockRoll(roll);
+    roller.mockRoll("Home defense units", roll);
     var fleet = defBuilder.buildHomeDefense(ap);
     var expectedCost = 0;
     for (Group g in expectedGroups) {

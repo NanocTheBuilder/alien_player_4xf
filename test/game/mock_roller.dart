@@ -19,28 +19,29 @@
 
 import 'dart:collection';
 import 'dart:core';
+import 'package:test/test.dart';
 
 import 'package:alienplayer4xf/game/dice_roller.dart';
 
+typedef RollMock = ({String description, int bound, int result}); 
+
 class MockRoller extends DiceRoller {
 
-  static const int limit = 0;
-  static const int result = 1;
-  Queue<List<int>> rolls = Queue();
+  Queue<RollMock> rolls = Queue();
 
-  void mockRoll(int roll) {
-    mockRoll2(10, roll);
-  }
-
-void mockRoll2(int limit, int roll) {
-    rolls.add([limit, roll]);
+  void mockRoll(String description, int result, {int bound = 10}) {
+    rolls.add((description: description, bound: bound, result: result));
   }
 
   @override
-  int roll([int bound = 10]) {
+  int roll(String description, {int bound = 10}) {
     var call = rolls.removeFirst();
-    assert(call[limit] == bound);
-    return call[result];
+    expect(call.bound, equals(bound));
+    expect(call.description, equals(description));
+    return call.result;
   }
 
+  void assertAllUsed() {
+    expect(rolls.isEmpty, isTrue, reason: "Not all mocked rolls were used! Remaining: $rolls");
+  }
 }

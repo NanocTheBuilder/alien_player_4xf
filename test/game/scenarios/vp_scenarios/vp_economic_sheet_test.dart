@@ -55,7 +55,7 @@ void main() {
 
   void makeRoll(VpEconomicSheet sheet, int turn, int result) {
     var roller = MockRoller();
-    roller.mockRoll(result);
+    roller.mockRoll("Econ roll",result);
     sheet.makeRoll(turn, roller);
   }
 
@@ -82,7 +82,7 @@ void main() {
     sheet.defCP = 50;
 
     MockRoller roller = new MockRoller();
-    roller.mockRoll2(9, 9);
+    roller.mockRoll("Econ roll",9, bound: 9);
     sheet.makeRoll(5, roller);
     expect(sheet.defCP, 50);
     expect(sheet.techCP, 5);
