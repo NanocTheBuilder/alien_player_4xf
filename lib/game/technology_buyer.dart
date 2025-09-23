@@ -18,7 +18,6 @@
  */
 
 import 'dart:collection';
-import 'dart:math';
 
 import 'alien_player.dart';
 import 'enums.dart';
@@ -115,12 +114,9 @@ abstract class TechnologyBuyer {
   bool apCanBuyNextLevel(AlienPlayer ap, Technology technology) {
     int currentLevel = ap.getLevel(technology);
     if (technology == Technology.TACTICS) {
-      int lesser =
-          min(ap.getLevel(Technology.ATTACK), ap.getLevel(Technology.DEFENSE));
-      if (lesser < 2) {
-        return apCanBuyNextLevel(ap, Technology.ATTACK) |
-            apCanBuyNextLevel(ap, Technology.DEFENSE);
-      }
+      if(ap.getLevel(Technology.ATTACK) < 2 && apCanBuyNextLevel(ap, Technology.ATTACK)) return true;
+      if(ap.getLevel(Technology.DEFENSE) < 2 && apCanBuyNextLevel(ap, Technology.DEFENSE)) return true;
+      if(ap.getLevel(Technology.ATTACK) < 2 || ap.getLevel(Technology.DEFENSE) < 2) return false;
     }
     if (technology == Technology.CLOAKING &&
         game.getSeenLevel(Technology.SCANNER) ==
