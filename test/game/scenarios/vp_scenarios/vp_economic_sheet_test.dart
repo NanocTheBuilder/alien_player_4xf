@@ -63,21 +63,21 @@ void main() {
     return resultTable[turn][index];
   }
 
-  test('testMaxDefense', (){
+  test('vp_scenarios/vp_economic_sheet_test.testMaxDefense', (){
     var sheet = new VpEconomicSheet(VpSoloDifficulty.EASY);
     sheet.defCP = 49;
     makeRoll(sheet, 3, 10);
     expect(sheet.defCP, 50);
   });
 
-  test('testIsMaxDefense', (){
+  test('vp_scenarios/vp_economic_sheet_test.testIsMaxDefense', (){
     var sheet = new VpEconomicSheet(VpSoloDifficulty.EASY);
     expect(sheet.isMaxDefCP, false);
     sheet.defCP = 50;
     expect(sheet.isMaxDefCP, true);
   });
 
-  test('rerollDefIfIsMaxDefense', (){
+  test('vp_scenarios/vp_economic_sheet_test.rerollDefIfIsMaxDefense', (){
     var sheet = new VpEconomicSheet(VpSoloDifficulty.EASY);
     sheet.defCP = 50;
 
@@ -88,7 +88,7 @@ void main() {
     expect(sheet.techCP, 5);
   });
 
-  test('testStartingBank', (){
+  test('vp_scenarios/vp_economic_sheet_test.testStartingBank', (){
     expect(new VpEconomicSheet(VpSoloDifficulty.EASY).bank, 0);
     expect(new VpEconomicSheet(VpSoloDifficulty.NORMAL).bank, 100);
     expect(new VpEconomicSheet(VpSoloDifficulty.HARD).bank, 100);
@@ -102,7 +102,7 @@ void main() {
     expect(new VpEconomicSheet(Vp3pDifficulty.HARD).bank, 200);
   });
 
-  test('spendDefCPFromBankIfAble', (){
+  test('vp_scenarios/vp_economic_sheet_test.spendDefCPFromBankIfAble', (){
     var sheet = new VpEconomicSheet(VpSoloDifficulty.NORMAL);
     sheet.defCP = 50;
     expect(sheet.bank, 100);
@@ -125,7 +125,7 @@ void main() {
     expect(sheet.bank, 0);
   });
 
-  test('defCP is added to bank',(){
+  test('vp_scenarios/vp_economic_sheet_test.defCP is added to bank',(){
     var sheet = VpEconomicSheet(VpSoloDifficulty.NORMAL);
     sheet.bank = 0;
     sheet.defCP = 45;

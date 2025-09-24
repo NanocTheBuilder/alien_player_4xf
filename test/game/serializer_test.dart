@@ -7,7 +7,7 @@ import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:test/test.dart';
 
 void main(){
-  test('Base game serialization', (){
+  test('serializer_test.Base game serialization', (){
       var orig = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL, [PlayerColor.BLUE, PlayerColor.RED, PlayerColor.YELLOW]);
       var encode = jsonEncode(orig);
       var decoded = Game.fromJson(jsonDecode(encode));

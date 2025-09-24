@@ -56,7 +56,7 @@ void main() {
     assertEquals(expectedGroups, fleet.groups);
   }
 
-  test('economyRollStartsNewFleet', () {
+  test('basegame/base_game_integration_test.economyRollStartsNewFleet', () {
     MockRoller roller = MockRoller();
     var game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
         [PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.RED]);

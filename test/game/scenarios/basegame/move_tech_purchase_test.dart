@@ -41,7 +41,7 @@ void main() {
     expect(sheet.techCP, newTechCP);
   }
 
-  test('buyNextMoveAtFleetLaunch', () {
+  test('basegame/move_tech_purchase_test.buyNextMoveAtFleetLaunch', () {
     expect(ap.getLevel(Technology.MOVE), 1);
     assertMovePurchase(1, 20, 2, 0);
     assertMovePurchase(2, 25, 3, 0);
@@ -52,11 +52,11 @@ void main() {
     assertMovePurchase(7, 100, 7, 100);
   });
 
-  test('dontBuyMoveIfNoCP', () {
+  test('basegame/move_tech_purchase_test.dontBuyMoveIfNoCP', () {
     assertMovePurchase(2, 10, 2, 10);
   });
 
-  test('dontBuyMoveIfRollFails', () {
+  test('basegame/move_tech_purchase_test.dontBuyMoveIfRollFails', () {
     ap.setLevel(Technology.MOVE, 3);
     sheet.techCP = 10;
     roller.mockRoll("Buy move", 5);

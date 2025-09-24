@@ -129,7 +129,7 @@ void main() {
     }
   }
 
-  test('testCPResults', () {
+  test('alien_economic_sheet_test.testCPResults', () {
     for (int turn = 1; turn < 23; turn++) {
       for (var diff in BaseGameDifficulty.values) {
         assertFleetResults(turn, diff);
@@ -139,7 +139,7 @@ void main() {
     }
   });
 
-  test('testEconResult', () {
+  test('alien_economic_sheet_test.testEconResult', () {
     AlienEconomicSheet sheet = AlienEconomicSheet(BaseGameDifficulty.EASY);
     expect(sheet.getExtraEcon(4), 0);
     makeRoll(sheet, 1, 1);
@@ -153,13 +153,13 @@ void main() {
     expect(sheet.getExtraEcon(99), 2);
   });
 
-  test('testEconRollsColumn', () {
+  test('alien_economic_sheet_test.testEconRollsColumn', () {
     AlienEconomicSheet sheet = AlienEconomicSheet(BaseGameDifficulty.EASY);
     for (int turn = 1; turn < 23; turn++)
       expect(sheet.getEconRolls(turn), econRolls[turn]);
   });
 
-  test('testFleetLaunch', () {
+  test('alien_economic_sheet_test.testFleetLaunch', () {
     AlienEconomicSheet sheet = AlienEconomicSheet(BaseGameDifficulty.EASY);
     for (int turn = 1; turn < 23; turn++)
       expect(sheet.getFleetLaunch(turn), fleetLaunchValues[turn]);

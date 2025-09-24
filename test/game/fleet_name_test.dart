@@ -33,14 +33,14 @@ void main() {
     ap = game.aliens[0];
   });
 
-  test('firstFleetIsCalledOneSecondIsTwo', () {
+  test('fleet_name_test.firstFleetIsCalledOneSecondIsTwo', () {
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     expect(fleet.name, "1");
     fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     expect(fleet.name, "2");
   });
 
-  test('namesFillHoles', () {
+  test('fleet_name_test.namesFillHoles', () {
     var fleet1 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     var fleet2 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     ap.removeFleet(fleet1);
@@ -49,13 +49,13 @@ void main() {
     expect(fleet.name, "1");
   });
 
-  test('raiderFleetsAreDifferent', () {
+  test('fleet_name_test.raiderFleetsAreDifferent', () {
     var fleet1 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.RAIDER_FLEET, 0);
     expect(fleet.name, "1");
   });
 
-  test('setTypeChangesName', () {
+  test('fleet_name_test.setTypeChangesName', () {
     var fleet1 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     expect(fleet.name, "2");
@@ -64,7 +64,7 @@ void main() {
     expect(fleet.name, "1");
   });
 
-  test('setTypeFromRegularToExDontChangeName', () {
+  test('fleet_name_test.setTypeFromRegularToExDontChangeName', () {
     var fleet1 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     expect(fleet.name, "2");
@@ -79,7 +79,7 @@ void main() {
     expect(fleet.name, "2");
   });
 
-  test('setTypeFromRegularToRaiderRenames', () {
+  test('fleet_name_test.setTypeFromRegularToRaiderRenames', () {
     var fleet1 = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
 
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);

@@ -50,7 +50,6 @@ void main() {
 
   // Whenever a fleet is launched, roll for Movement Technology. On
   // a roll of 1-4, the AP will purchase the next Movement Technology available if it has enough CPs
-  // TODO convert MovePurchaseTest and add a new case to BaseGameIntegration test
 
   //• All available technology points will be spent in the following order: (Integration test at the end)
 
@@ -72,7 +71,7 @@ void main() {
     });
   }
 
-  test('buyOptionalPontDefense', () {
+  test('basegame/optional_tech_purchase_test.buyOptionalPointDefense', () {
     assertDontBuyPD(1);
     game.addSeenThing(Seeable.FIGHTERS);
     assertBuyPD(1);
@@ -95,7 +94,7 @@ void main() {
     });
   }
 
-  test('buyOptionalMineSweep', () {
+  test('basegame/optional_tech_purchase_test.buyOptionalMineSweep', () {
     assertDontBuyMS(1);
     game.addSeenThing(Seeable.MINES);
     assertBuyMS(1);
@@ -119,7 +118,7 @@ void main() {
     });
   }
 
-  test('buyOptionalScan', () {
+  test('basegame/optional_tech_purchase_test.buyOptionalScan', () {
     game.setSeenLevel(Technology.CLOAKING, 1);
     roller.mockRoll("Scanner", 4);
     assertBuyScanner(1);
@@ -145,7 +144,7 @@ void main() {
   // Current Ship Size:                   1    2   3   4   5
   // Roll needed to purchase next level: 1-10 1-7 1-6 1-5 1-3
 
-  test('buyOptionalShipSize', () {
+  test('basegame/optional_tech_purchase_test.buyOptionalShipSize', () {
        roller.mockRoll("Ship size", 10);
        assertBuyShipSize(2);
        assertBuyShipSize(3, rollNeeded: 7);
@@ -171,7 +170,7 @@ void main() {
       });
   }
 
-  test('buyOptionalFighterLevel',() {
+  test('basegame/optional_tech_purchase_test.buyOptionalFighterLevel',() {
       game.setSeenLevel(Technology.POINT_DEFENSE, 0);
       assertDontBuyFighters(1);
 
@@ -204,8 +203,8 @@ void main() {
       techBuyer.buyCloakingIfNeeded(ap, fleet);
     });
   }
-  
-  test('buyOptionalCloak', () {
+
+  test('basegame/optional_tech_purchase_test.buyOptionalCloak', () {
 
        fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
        ap.setLevel(Technology.CLOAKING, 1);
@@ -233,7 +232,7 @@ void main() {
 • If the AP has researched Fighter Technology and the human player has not shown Point Defense, then the AP will buy the next level of Fighter Technology on a roll of 1-6.
 • If this is a Raider Fleet with Cloak 1 the AP will first buy Cloak 2 on a roll of 1-6 if it has the tech points to make the purchase.
   */
-  test('buyPointDefenseFirst', () {
+  test('basegame/optional_tech_purchase_test.buyPointDefenseFirst', () {
     sheet.techCP = 30;
     game.addSeenThing(Seeable.FIGHTERS);
     game.addSeenThing(Seeable.MINES);
@@ -249,7 +248,7 @@ void main() {
     expect(sheet.techCP, 0);
   });
 
-  test('buyMineSweepSecond', () {
+  test('basegame/optional_tech_purchase_test.buyMineSweepSecond', () {
     sheet.techCP = 20;
     //game.addSeenThing(Seeable.FIGHTERS);
     game.addSeenThing(Seeable.MINES);
@@ -265,7 +264,7 @@ void main() {
     expect(sheet.techCP, 10);
   });
 
-  test('buyScannerThird', () {
+  test('basegame/optional_tech_purchase_test.buyScannerThird', () {
     sheet.techCP = 40;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
@@ -281,7 +280,7 @@ void main() {
     expect(sheet.techCP, 0); //Scanner 1 + Scanner 2
   });
 
-  test('buyShipSizeFourth', () {
+  test('basegame/optional_tech_purchase_test.buyShipSizeFourth', () {
     sheet.techCP = 40;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
@@ -297,7 +296,7 @@ void main() {
     expect(sheet.techCP, 20); //Ship size 4
   });
 
-  test('buyFightersFifth', () {
+  test('basegame/optional_tech_purchase_test.buyFightersFifth', () {
     sheet.techCP = 45;
     //game.addSeenThing(Seeable.FIGHTERS);
     //game.addSeenThing(Seeable.MINES);
@@ -313,7 +312,7 @@ void main() {
     expect(sheet.techCP, 20); //Fighters 2
   });
 
-  test('buyCloakingLast', () {
+  test('basegame/optional_tech_purchase_test.buyCloakingLast', () {
     sheet.techCP = 50;
     fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
     //game.addSeenThing(Seeable.FIGHTERS);

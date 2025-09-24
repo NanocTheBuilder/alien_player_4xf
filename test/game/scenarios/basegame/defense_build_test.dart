@@ -61,17 +61,17 @@ void main() {
     defBuilder = game.scenario.defenseBuilder;
   });
 
-  test('spendNoDefenseCPBuildNothings', () {
+  test('basegame/defense_build_test.spendNoDefenseCPBuildNothings', () {
     sheet.defCP = 0;
     expect(defBuilder.buildHomeDefense(ap), null);
   });
 
-  test('spendAllOnMines', () {
+  test('basegame/defense_build_test.spendAllOnMines', () {
     assertBuiltGroups(5, 1, [Group(ShipType.MINE, 1)]);
     assertBuiltGroups(10, 1, [Group(ShipType.MINE, 2)]);
   });
 
-  test('spendAllOnBases', () {
+  test('basegame/defense_build_test.spendAllOnBases', () {
     assertBuiltGroups(12, 8, [Group(ShipType.BASE, 1)]);
     assertBuiltGroups(24, 8, [Group(ShipType.BASE, 2)]);
     assertBuiltGroups(36, 8, [Group(ShipType.BASE, 3)]);
@@ -87,7 +87,7 @@ void main() {
     assertBuiltGroups(5, 1, [Group(ShipType.MINE, 1)]);
   });
 
-  test('spendBalanced', () {
+  test('basegame/defense_build_test.spendBalanced', () {
     assertBuiltGroups(12, 5, [Group(ShipType.BASE, 1)]);
     assertBuiltGroups(
         17, 5, [Group(ShipType.BASE, 1), Group(ShipType.MINE, 1)]);

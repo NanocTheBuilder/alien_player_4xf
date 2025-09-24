@@ -137,7 +137,7 @@ void main() {
     assertRoller();
   }
 
-  test('launchRegularFleetThenBuildLargestFleet', () {
+  test('basegame/alien_player_test.launchRegularFleetThenBuildLargestFleet', () {
     launchRegularFleet();
     assertRegularFirstCombat(3);
     assertGroups([
@@ -148,7 +148,7 @@ void main() {
     assertCPs(2, 0, 10);
   });
 
-  test('launchRegularFleetThenBuildBalancedWith2SC', () {
+  test('basegame/alien_player_test.launchRegularFleetThenBuildBalancedWith2SC', () {
     setLevel(Technology.POINT_DEFENSE, 1);
     game.addSeenThing(Seeable.FIGHTERS);
     launchRegularFleet();
@@ -163,14 +163,14 @@ void main() {
     assertCPs(2, 0, 10);
   });
 
-  test('launchRegularFleetThenBuildLargestShips', () {
+  test('basegame/alien_player_test.launchRegularFleetThenBuildLargestShips', () {
     launchRegularFleet();
     assertRegularFirstCombat(8);
     assertGroups([Group(ShipType.BATTLESHIP, 3), Group(ShipType.DESTROYER, 1)]);
     assertCPs(1, 0, 10);
   });
 
-  test('launchCarrierFleetThenBuildLargestFleet', () {
+  test('basegame/alien_player_test.launchCarrierFleetThenBuildLargestFleet', () {
     setCPs(65, 45, 0);
     setLevel(Technology.SHIP_SIZE, 2);
     setLevel(Technology.ATTACK, 1);
@@ -202,7 +202,7 @@ void main() {
     assertCPs(0, 0, 10);
   });
 
-  test('launchCarrierFleetThenBuildBalancedFleet', () {
+  test('basegame/alien_player_test.launchCarrierFleetThenBuildBalancedFleet', () {
     setCPs(65, 20, 0);
     setLevel(Technology.SHIP_SIZE, 2);
     setLevel(Technology.ATTACK, 1);
@@ -234,7 +234,7 @@ void main() {
     assertCPs(0, 0, 10);
   });
 
-  test('launchRegularFleetThenCarrierWithLargestShips', () {
+  test('basegame/alien_player_test.launchRegularFleetThenCarrierWithLargestShips', () {
     setCPs(65, 20, 0);
     setLevel(Technology.SHIP_SIZE, 2);
     setLevel(Technology.ATTACK, 1);
@@ -264,7 +264,7 @@ void main() {
     assertCPs(3, 0, 10);
   });
 
-  test('launchRegularButBuildRaider', () {
+  test('basegame/alien_player_test.launchRegularButBuildRaider', () {
     setCPs(60, 45, 0);
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 1);
@@ -286,7 +286,7 @@ void main() {
     assertCPs(10, 0, 10);
   });
 
-  test('launchRaiderBuyTechs', () {
+  test('basegame/alien_player_test.launchRaiderBuyTechs', () {
     setCPs(12, 45, 0);
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 1);
@@ -309,7 +309,7 @@ void main() {
     assertCPs(10, 0, 10);
   });
 
-  test('buildHomeDefenseNoRaiderFleetNoMineSweep', () {
+  test('basegame/alien_player_test.buildHomeDefenseNoRaiderFleetNoMineSweep', () {
     setCPs(70, 50, 30);
     setLevel(Technology.SHIP_SIZE, 4);
     setLevel(Technology.ATTACK, 2);

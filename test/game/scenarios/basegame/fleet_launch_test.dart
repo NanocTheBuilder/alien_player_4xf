@@ -57,47 +57,47 @@ void main() {
     expect(ap.fleets, isEmpty);
   }
 
-  test('noLaunchInTurn1', () {
+  test('basegame/fleet_launch_test.noLaunchInTurn1', () {
     turn = 1;
     roll = 1;
     assertFleetDoesNotLaunch();
   });
 
-  test('noLaunchUnder6', () {
+  test('basegame/fleet_launch_test.noLaunchUnder6', () {
     sheet.fleetCP = 5;
     turn = 2;
     roll = 1;
     assertFleetDoesNotLaunch();
   });
 
-  test('alwaysLaunchInTurn2', () {
+  test('basegame/fleet_launch_test.alwaysLaunchInTurn2', () {
     turn = 2;
     roll = 10;
     assertFleetLaunches();
   });
 
-  test('dontLaunchIfRollFails', () {
+  test('basegame/fleet_launch_test.dontLaunchIfRollFails', () {
     assertFleetDoesNotLaunch();
   });
 
-  test('subtract2ForFighters', () {
+  test('basegame/fleet_launch_test.subtract2ForFighters', () {
     ap.setLevel(Technology.FIGHTERS, 1);
     assertFleetLaunches();
   });
 
-  test('onlySubtract2ForFightersIfPDNotSeen', () {
+  test('basegame/fleet_launch_test.onlySubtract2ForFightersIfPDNotSeen', () {
     ap.setLevel(Technology.FIGHTERS, 1);
     game.setSeenLevel(Technology.POINT_DEFENSE, 1);
     assertFleetDoesNotLaunch();
   });
 
-  test('onlySubtract2ForFightersIfHasEnoughCP', () {
+  test('basegame/fleet_launch_test.onlySubtract2ForFightersIfHasEnoughCP', () {
     sheet.fleetCP = 26;
     ap.setLevel(Technology.FIGHTERS, 1);
     assertFleetDoesNotLaunch();
   });
 
-  test('testRaiderFleetLaunch', () {
+  test('basegame/fleet_launch_test.testRaiderFleetLaunch', () {
     ap.setLevel(Technology.CLOAKING, 1);
     sheet.fleetCP = 13;
     roller.mockRoll("Fleet launch", roll);
@@ -109,13 +109,13 @@ void main() {
     expect(fleet.buildCost, 12);
   });
 
-  test('onlySubtract2ForCloakingIfScannerNotSeen', () {
+  test('basegame/fleet_launch_test.onlySubtract2ForCloakingIfScannerNotSeen', () {
     ap.setLevel(Technology.FIGHTERS, 1);
     game.setSeenLevel(Technology.POINT_DEFENSE, 1);
     assertFleetDoesNotLaunch();
   });
 
-  test('noRaiderUnder12', () {
+  test('basegame/fleet_launch_test.noRaiderUnder12', () {
     ap.setLevel(Technology.CLOAKING, 1);
     sheet.fleetCP = 11;
     roller.mockRoll("Fleet launch", 3);
@@ -127,7 +127,7 @@ void main() {
     expect(fleet.buildCost, 0);
   });
 
-  test('noRaiderFleetForHomeDefense', () {
+  test('basegame/fleet_launch_test.noRaiderFleetForHomeDefense', () {
     ap.setLevel(Technology.CLOAKING, 1);
     sheet.fleetCP = 12;
     fleetLauncher.launchFleet(ap, turn, [FleetBuildOption.HOME_DEFENSE]);

@@ -67,7 +67,7 @@ void main() {
     expect(sheet.techCP, 0);
   }
 
-  test('assertAvailableTechs', () {
+  test('basegame/remaining_tech_purchase_test.assertAvailableTechs', () {
     assertAvailableTechs([
       (technology: Technology.MOVE, startingLevel: 1, maxLevel: 7),
       (technology: Technology.SHIP_SIZE, startingLevel: 1, maxLevel: 6),
@@ -82,19 +82,19 @@ void main() {
     ]);
   });
 
-  test('buyAttack', () {
+  test('basegame/remaining_tech_purchase_test.buyAttack', () {
     assertBuysNextRemaining(Technology.ATTACK, 0, 2, 8);
     assertBuysNextRemaining(Technology.ATTACK, 1, 2, 10);
     assertBuysNextRemaining(Technology.ATTACK, 2, 2, 9);
   });
 
-  test('buyDefense', () {
+  test('basegame/remaining_tech_purchase_test.buyDefense', () {
     assertBuysNextRemaining(Technology.DEFENSE, 0, 4, 8);
     assertBuysNextRemaining(Technology.DEFENSE, 1, 4, 10);
     assertBuysNextRemaining(Technology.DEFENSE, 2, 4, 9);
   });
 
-  test('buyTacticsOrAttackOrDefense', () {
+  test('basegame/remaining_tech_purchase_test.buyTacticsOrAttackOrDefense', () {
     ap.setLevel(Technology.ATTACK, 1);
     ap.setLevel(Technology.DEFENSE, 1);
 
@@ -136,7 +136,7 @@ void main() {
     expect(ap.getLevel(Technology.TACTICS), 0);
   });
 
-  test('cantBuyTacticsIfHasNoAttackAndDefense', () {
+  test('basegame/remaining_tech_purchase_test.cantBuyTacticsIfHasNoAttackAndDefense', () {
     sheet.techCP = 15; //Not ehnough for ATTACK or DEFENSE, only TACTICS
     ap.setLevel(Technology.ATTACK, 0);
     ap.setLevel(Technology.DEFENSE, 0);
@@ -160,7 +160,7 @@ void main() {
     expect(techBuyer.apCanBuyNextLevel(ap, Technology.TACTICS), true);
   });
 
-  test('buyTactics', () {
+  test('basegame/remaining_tech_purchase_test.buyTactics', () {
     ap.setLevel(Technology.ATTACK, 2);
     ap.setLevel(Technology.DEFENSE, 2);
     assertBuysNextRemaining(Technology.TACTICS, 0, 1, 2, {Technology.ATTACK: 2, Technology.DEFENSE: 2});
@@ -168,40 +168,40 @@ void main() {
     assertBuysNextRemaining(Technology.TACTICS, 2, 1, 2, {Technology.ATTACK: 2, Technology.DEFENSE: 2});
   });
 
-  test('buyCloaking', () {
+  test('basegame/remaining_tech_purchase_test.buyCloaking', () {
     assertBuysNextRemaining(Technology.CLOAKING, 0, 6, 10);
     assertBuysNextRemaining(Technology.CLOAKING, 1, 6, 10);
   });
 
-  test('cantBuyCloakingIfSeenScanner2', () {
+  test('basegame/remaining_tech_purchase_test.cantBuyCloakingIfSeenScanner2', () {
     game.setSeenLevel(Technology.SCANNER, 2);
     sheet.techCP = 100;
     expect(techBuyer.apCanBuyNextLevel(ap, Technology.CLOAKING), false);
   });
 
-  test('buyScanner', () {
+  test('basegame/remaining_tech_purchase_test.buyScanner', () {
     assertBuysNextRemaining(Technology.SCANNER, 0, 6, 8); //CLOAK AND FIGHTERS ARE TOO EXPENSIVE
     assertBuysNextRemaining(Technology.SCANNER, 1, 6, 8);
   });
 
-  test('buyFighters', () {
+  test('basegame/remaining_tech_purchase_test.buyFighters', () {
     assertBuysNextRemaining(Technology.FIGHTERS, 0, 7, 9); //CLOAK IS TOO EXPENSIVE
     assertBuysNextRemaining(Technology.FIGHTERS, 1, 7, 9);
     assertBuysNextRemaining(Technology.FIGHTERS, 2, 7, 9);
   });
 
-  test('buyPointDefense', () {
+  test('basegame/remaining_tech_purchase_test.buyPointDefense', () {
       assertBuysNextRemaining(Technology.POINT_DEFENSE, 0, 7, 8); //FIGHTER AND CLOAK ARE TOO EXPENSIVE
       assertBuysNextRemaining(Technology.POINT_DEFENSE, 1, 7, 8);
       assertBuysNextRemaining(Technology.POINT_DEFENSE, 2, 7, 8);
   });
 
-  test('buyMineSweep', () {
+  test('basegame/remaining_tech_purchase_test.buyMineSweep', () {
       assertBuysNextRemaining(Technology.MINE_SWEEPER, 0, 1, 1); //EVERYTHING ELSE IS TOO EXPENSIVE
       assertBuysNextRemaining(Technology.MINE_SWEEPER, 1, 1, 1);
   });
 
-  test('dontBuyMineSweepForDefenseFleet', () {
+  test('basegame/remaining_tech_purchase_test.dontBuyMineSweepForDefenseFleet', () {
       sheet.techCP = 100;
       expect(techBuyer.fleetCanBuyNextLevel(ap, fleet, Technology.MINE_SWEEPER), true);
       expect(techBuyer.fleetCanBuyNextLevel(ap, fleet, Technology.MINE_SWEEPER, [FleetBuildOption.HOME_DEFENSE]), false);
