@@ -58,6 +58,10 @@ void main() {
   var fleetLaunchValues = [0, -99, 10, 10, 5, 3, 4, 4, 4, 5, 5, 3, 3, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10];
   //@formatter:on
 
+  var roller = MockRoller();
+
+  tearDown(roller.assertAllUsed);
+
   List getResult(int turn, int index) {
     return resultTable[turn][index];
   }
@@ -87,7 +91,6 @@ void main() {
   }
 
   void makeRoll(AlienEconomicSheet sheet, int turn, int result) {
-    var roller = MockRoller();
     roller.mockRoll("Econ roll", result);
     sheet.makeRoll(turn, roller);
   }

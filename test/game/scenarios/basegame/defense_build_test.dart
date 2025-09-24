@@ -61,6 +61,8 @@ void main() {
     defBuilder = game.scenario.defenseBuilder;
   });
 
+  tearDown(roller.assertAllUsed);
+  
   test('basegame/defense_build_test.spendNoDefenseCPBuildNothings', () {
     sheet.defCP = 0;
     expect(defBuilder.buildHomeDefense(ap), null);

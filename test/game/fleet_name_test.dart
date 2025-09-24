@@ -24,6 +24,8 @@ import 'package:alienplayer4xf/game/game.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:test/test.dart';
 
+import 'fixture.dart';
+
 void main() {
   late AlienPlayer ap;
 
@@ -33,6 +35,8 @@ void main() {
     ap = game.aliens[0];
   });
 
+  tearDown(roller.assertAllUsed);
+  
   test('fleet_name_test.firstFleetIsCalledOneSecondIsTwo', () {
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 0);
     expect(fleet.name, "1");

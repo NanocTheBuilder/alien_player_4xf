@@ -188,5 +188,6 @@ void main() {
     assertEquals(0, roller.rolls.length);
 
     // TODO build raider fleet (isJustPurchasedCloaking)
+    roller.assertAllUsed();
   });
 }

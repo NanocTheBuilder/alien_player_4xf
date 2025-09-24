@@ -67,6 +67,8 @@ void main() {
     fleetBuilder = game.scenario.fleetBuilder;
   });
 
+  tearDown(roller.assertAllUsed);
+
   test('basegame/fleet_build_test.buildRaiderFleet', (){
     var fleet = Fleet.ofAlienPlayer(ap, FleetType.RAIDER_FLEET, 24);
     assertBuiltGroups(ap, fleet, [], [Group(ShipType.RAIDER, 2)]);

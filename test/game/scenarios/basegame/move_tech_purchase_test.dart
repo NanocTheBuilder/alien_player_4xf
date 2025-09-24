@@ -31,6 +31,8 @@ void main() {
     setupFixture(newGame());
   });
 
+  tearDown(assertAllRollsUsed);
+
   void assertMovePurchase(int level, int techCP, int newLevel, int newTechCP) {
     ap.setLevel(Technology.MOVE, level);
     sheet.techCP = techCP;
