@@ -51,8 +51,8 @@ void main() {
     assertBuiltGroups(ap, fleet, [], [Group(shipType, 1)]);
   }
 
-  void assertBuiltFleet(int fleetTypeRoll, int fleetCP, List<FleetBuildOption> options, List<Group> expectedGroups) {
-    roller.mockRoll("Fleet composition", fleetTypeRoll);
+  void assertBuiltFleet(int fleetCompositionRoll, int fleetCP, List<FleetBuildOption> options, List<Group> expectedGroups) {
+    roller.mockRoll("Fleet composition", fleetCompositionRoll);
     Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, fleetCP);
     assertBuiltGroups(ap, fleet, options, expectedGroups);
   }
