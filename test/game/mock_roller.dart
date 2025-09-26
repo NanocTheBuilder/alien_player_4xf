@@ -23,10 +23,9 @@ import 'package:test/test.dart';
 
 import 'package:alienplayer4xf/game/dice_roller.dart';
 
-typedef RollMock = ({String description, int bound, int result}); 
+typedef RollMock = ({String description, int bound, int result});
 
 class MockRoller extends DiceRoller {
-
   Queue<RollMock> rolls = Queue();
 
   void mockRoll(String description, int result, {int bound = 10}) {
@@ -35,10 +34,14 @@ class MockRoller extends DiceRoller {
 
   @override
   int roll(String description, {int bound = 10}) {
-    var call = rolls.removeFirst();
-    expect(call.bound, equals(bound));
-    expect(call.description, equals(description));
-    return call.result;
+    try {
+      var call = rolls.removeFirst();
+      expect(call.bound, equals(bound));
+      expect(call.description, equals(description));
+      return call.result;
+    } on StateError {
+      fail("No more mocked rolls available! Tried to roll '$description' with bound $bound");
+    }
   }
 
   void assertAllUsed() {

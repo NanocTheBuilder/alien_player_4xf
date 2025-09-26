@@ -86,7 +86,7 @@ class Strings {
     Seeable.MINES: "Mines",
     Seeable.BOARDING_SHIPS: "Boarding Ships",
     Seeable.VETERANS: "Veterans",
-    Seeable.SIZE_3_SHIPS: "Size 3 Ships"
+    Seeable.SIZE_3_SHIPS: "Ship Size > 3"
   };
 
   static String groups(Fleet fleet) {

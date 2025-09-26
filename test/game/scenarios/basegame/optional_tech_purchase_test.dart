@@ -55,88 +55,43 @@ void main() {
 
   //• If the human player has used Fighters in combat and the AP does not have Point Defense 1, it will purchase Point Defense 1.
 
-  void assertBuyPD(int expectedLevel) {
-    assertBuyOptional(expectedLevel, Technology.POINT_DEFENSE, (
-      AlienPlayer ap,
-    ) {
-      techBuyer.buyPointDefenseIfNeeded(ap);
-    });
-  }
-
-  void assertDontBuyPD(int expectedLevel) {
-    assertDontBuyOptional(expectedLevel, Technology.POINT_DEFENSE, (
-      AlienPlayer ap,
-    ) {
-      techBuyer.buyPointDefenseIfNeeded(ap);
-    });
-  }
-
   test('basegame/optional_tech_purchase_test.buyOptionalPointDefense', () {
-    assertDontBuyPD(1);
+    assertDontBuyOptional(1, Technology.POINT_DEFENSE, (AlienPlayer ap) => techBuyer.buyPointDefenseIfNeeded(ap));
     game.addSeenThing(Seeable.FIGHTERS);
-    assertBuyPD(1);
-    assertDontBuyPD(2);
+    assertBuyOptional(1, Technology.POINT_DEFENSE, (AlienPlayer ap) => techBuyer.buyPointDefenseIfNeeded(ap));
+    assertDontBuyOptional(2, Technology.POINT_DEFENSE, (AlienPlayer ap) => techBuyer.buyPointDefenseIfNeeded(ap));
   });
 
   //• Next, if the human player has shown Mines, and the AP does not have Minesweeper 1, the AP will purchase MS 1.
 
-  void assertBuyMS(int expectedLevel) {
-    assertBuyOptional(expectedLevel, Technology.MINE_SWEEPER, (AlienPlayer ap) {
-      techBuyer.buyMineSweepIfNeeded(ap);
-    });
-  }
-
-  void assertDontBuyMS(int expectedLevel) {
-    assertDontBuyOptional(expectedLevel, Technology.MINE_SWEEPER, (
-      AlienPlayer ap,
-    ) {
-      techBuyer.buyMineSweepIfNeeded(ap);
-    });
-  }
-
   test('basegame/optional_tech_purchase_test.buyOptionalMineSweep', () {
-    assertDontBuyMS(1);
+    assertDontBuyOptional(1, Technology.MINE_SWEEPER, (AlienPlayer ap) => techBuyer.buyMineSweepIfNeeded(ap));
     game.addSeenThing(Seeable.MINES);
-    assertBuyMS(1);
-    assertDontBuyMS(2);
+    assertBuyOptional(1, Technology.MINE_SWEEPER, (AlienPlayer ap) => techBuyer.buyMineSweepIfNeeded(ap));
+    assertDontBuyOptional(2, Technology.MINE_SWEEPER, (AlienPlayer ap) => techBuyer.buyMineSweepIfNeeded(ap));
   });
 
   //• Next, if the human player has used Raiders in combat, and the AP does not have a Scan level capable of detecting those Raiders, roll the die.
   // On a roll of 1-4 the AP will purchase Scanners to be able to detect the Raiders.
   // If the AP would need to purchase two levels of Scanning Technology, and it can only afford one,it will purchase one in an effort to work toward that goal.
   // On a roll of 5-10, the AP will not purchase Scanners at this point in his expenditures.
-
-  void assertBuyScanner(int expectedLevel) {
-    assertBuyOptional(expectedLevel, Technology.SCANNER, (AlienPlayer ap) {
-      techBuyer.buyScannerIfNeeded(ap);
-    });
-  }
-
-  void assertDontBuyScanner(int expectedLevel) {
-    assertDontBuyOptional(expectedLevel, Technology.SCANNER, (AlienPlayer ap) {
-      techBuyer.buyScannerIfNeeded(ap);
-    });
-  }
-
   test('basegame/optional_tech_purchase_test.buyOptionalScan', () {
     game.setSeenLevel(Technology.CLOAKING, 1);
     roller.mockRoll("Scanner", 4);
-    assertBuyScanner(1);
-    assertDontBuyScanner(2);
+    assertBuyOptional(1, Technology.SCANNER, (AlienPlayer ap) => techBuyer.buyScannerIfNeeded(ap));
+    assertDontBuyOptional(2, Technology.SCANNER, (AlienPlayer ap) => techBuyer.buyScannerIfNeeded(ap));
 
     game.setSeenLevel(Technology.CLOAKING, 2);
     roller.mockRoll("Scanner", 5);
-    assertDontBuyScanner(2);
+    assertDontBuyOptional(2, Technology.SCANNER, (AlienPlayer ap) => techBuyer.buyScannerIfNeeded(ap));
 
     roller.mockRoll("Scanner", 4);
-    assertBuyScanner(2);
+    assertBuyOptional(2, Technology.SCANNER, (AlienPlayer ap) => techBuyer.buyScannerIfNeeded(ap));
 
     game.setSeenLevel(Technology.CLOAKING, 2);
     ap.setLevel(Technology.SCANNER, 0);
     roller.mockRoll("Scanner", 4);
-    assertOptionalBuy(Technology.SCANNER, 1, 10, (AlienPlayer ap) {
-      techBuyer.buyScannerIfNeeded(ap);
-    }, initialCP: 30);
+    assertOptionalBuy(Technology.SCANNER, 1, 10, (AlienPlayer ap) => techBuyer.buyScannerIfNeeded(ap), initialCP: 30);
   });
 
   //• Next the AP will determine if it will spend on ship size. This depends on its current ship size level.
@@ -158,65 +113,41 @@ void main() {
   // the next level of Fighter Technology if it has the tech points to make the purchase on a roll of 1-6.
   // On a roll of 7-10 the AP will proceed to the chart below.
 
-  void assertBuyFighters(int expectedLevel) {
-      assertBuyOptional(expectedLevel, Technology.FIGHTERS, (AlienPlayer ap) {
-          techBuyer.buyFightersIfNeeded(ap);
-      });
-  }
-
-  void assertDontBuyFighters(int expectedLevel) {
-      assertDontBuyOptional(expectedLevel, Technology.FIGHTERS, (AlienPlayer ap) {
-          techBuyer.buyFightersIfNeeded(ap);
-      });
-  }
-
   test('basegame/optional_tech_purchase_test.buyOptionalFighterLevel',() {
       game.setSeenLevel(Technology.POINT_DEFENSE, 0);
-      assertDontBuyFighters(1);
+      assertDontBuyOptional(1, Technology.FIGHTERS, (AlienPlayer ap) => techBuyer.buyFightersIfNeeded(ap));
 
       ap.setLevel(Technology.FIGHTERS, 1);
       roller.mockRoll("Fighters", 6);
-      assertBuyFighters(2);
+      assertBuyOptional(2, Technology.FIGHTERS, (AlienPlayer ap) => techBuyer.buyFightersIfNeeded(ap));
 
       game.setSeenLevel(Technology.POINT_DEFENSE, 1);
-      assertDontBuyFighters(3);
+      assertDontBuyOptional(3, Technology.FIGHTERS, (AlienPlayer ap) => techBuyer.buyFightersIfNeeded(ap));
 
       game.setSeenLevel(Technology.POINT_DEFENSE, 0);
       roller.mockRoll("Fighters", 7);
-      assertDontBuyFighters(3);
+      assertDontBuyOptional(3, Technology.FIGHTERS, (AlienPlayer ap) => techBuyer.buyFightersIfNeeded(ap));
 
       roller.mockRoll("Fighters", 6);
-      assertBuyFighters(3);
+      assertBuyOptional(3, Technology.FIGHTERS, (AlienPlayer ap) => techBuyer.buyFightersIfNeeded(ap));
   });
 
   //• If this is a Raider Fleet with Cloak 1 the AP will first buy Cloak 2 on a roll of 1-6 if it has the tech points to make the purchase.
   // On a roll of 7-10 the AP will proceed to the chart below.
-
-  void assertBuyCloaking(int expectedLevel) {
-    assertBuyOptional(expectedLevel, Technology.CLOAKING, (AlienPlayer ap) {
-      techBuyer.buyCloakingIfNeeded(ap, fleet);
-    });
-  }
-
-  void assertDontBuyCloaking(int expectedLevel) {
-    assertDontBuyOptional(expectedLevel, Technology.CLOAKING, (AlienPlayer ap) {
-      techBuyer.buyCloakingIfNeeded(ap, fleet);
-    });
-  }
 
   test('basegame/optional_tech_purchase_test.buyOptionalCloak', () {
 
        fleet.setFleetType(ap, FleetType.RAIDER_FLEET);
        ap.setLevel(Technology.CLOAKING, 1);
        roller.mockRoll("Cloaking", 7);
-       assertDontBuyCloaking(2);
+       assertDontBuyOptional(2, Technology.CLOAKING, (AlienPlayer ap) => techBuyer.buyCloakingIfNeeded(ap, fleet));
 
        roller.mockRoll("Cloaking", 6);
-       assertBuyCloaking(2);
+       assertBuyOptional(2, Technology.CLOAKING, (AlienPlayer ap) => techBuyer.buyCloakingIfNeeded(ap, fleet));
 
        fleet.setFleetType(ap, FleetType.REGULAR_FLEET);
        ap.setLevel(Technology.CLOAKING, 1);
-       assertDontBuyCloaking(2);
+       assertDontBuyOptional(2, Technology.CLOAKING, (AlienPlayer ap) => techBuyer.buyCloakingIfNeeded(ap, fleet));
    });
 
 
