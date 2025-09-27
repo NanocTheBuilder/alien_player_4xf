@@ -54,3 +54,12 @@ void assertLevels(Map<Technology, int> expectedLevels) {
 void assertLevel(Technology technology, int expectedLevel) {
   assertLevels({technology: expectedLevel});
 }
+
+void resetLevels(Map<Technology, int> startingLevels) {
+  for (var technology in game.scenario.availableTechs) {
+    var resetLevel =
+        startingLevels[technology] ??
+        game.scenario.getStartingLevel(technology);
+    ap.setLevel(technology, resetLevel);
+  }
+}

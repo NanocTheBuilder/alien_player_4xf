@@ -29,6 +29,7 @@ class MockRoller extends DiceRoller {
   Queue<RollMock> rolls = Queue();
 
   void mockRoll(String description, int result, {int bound = 10}) {
+    //print("mockRoll: $description $result $bound");
     rolls.add((description: description, bound: bound, result: result));
   }
 
@@ -36,7 +37,7 @@ class MockRoller extends DiceRoller {
   int roll(String description, {int bound = 10}) {
     try {
       var call = rolls.removeFirst();
-      expect(call.bound, equals(bound));
+      expect(call.bound, equals(bound), reason: "bounds");
       expect(call.description, equals(description));
       return call.result;
     } on StateError {

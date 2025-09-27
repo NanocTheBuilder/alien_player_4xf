@@ -49,27 +49,15 @@ void assertOptionalBuy(
   expect(sheet.techCP, remainingCP);
 }
 
-void assertBuyOptional(
-  int expectedLevel,
-  Technology technology,
-  Function(AlienPlayer) buyAction,
-) {
-  assertOptionalBuy(
-    technology,
-    expectedLevel,
-    100 - game.scenario.getCost(technology, expectedLevel),
-    buyAction,
-  );
+void assertBuyOptional(int expectedLevel, Technology technology, Function(AlienPlayer) buyAction) {
+  assertOptionalBuy(technology, expectedLevel, 100 - game.scenario.getCost(technology, expectedLevel), buyAction);
 }
 
-void assertDontBuyOptional(
-  int expectedLevel,
-  Technology technology,
-  Function(AlienPlayer) buyAction,
-) {
+void assertDontBuyOptional(int expectedLevel, Technology technology, Function(AlienPlayer) buyAction) {
   assertOptionalBuy(technology, expectedLevel - 1, 100, buyAction);
 }
 
+// TODO inline this too
 void assertDontBuyShipSize(int expectedLevel) {
   assertDontBuyOptional(expectedLevel, Technology.SHIP_SIZE, (AlienPlayer ap) {
     techBuyer.buyShipSizeIfRolled(ap);
@@ -87,38 +75,67 @@ void assertBuyShipSize(int newLevel, {int rollNeeded = -1}) {
   });
 }
 
-  void assertAvailableTechs(
-    List<({Technology technology, int startingLevel, int maxLevel})>
-    expectedTechs,
-  ) {
-    ap.economicSheet.techCP = 1000;
-    for (var technology in Technology.values) {
-      var expected = expectedTechs.firstWhereOrNull(
-        (e) => e.technology == technology,
-      );
-//      print("Checking technology ${technology.name}");
-      if (expected == null) {
-        //Should not be available
-        try {
-          techBuyer.apCanBuyNextLevel(ap, technology);
-          fail(
-            "Technology ${technology.name} should not be available for purchase!",
-          );
-        } on TypeError catch (e) {
-          if(e.toString() == "Null check operator used on a null value") {
-            //Expected
-//            print("Not available, as expected.");
-          } else {
-            rethrow;
-          };
+void assertAvailableTechs(List<({Technology technology, int startingLevel, int maxLevel})> expectedTechs) {
+  ap.economicSheet.techCP = 1000;
+  for (var technology in Technology.values) {
+    var expected = expectedTechs.firstWhereOrNull((e) => e.technology == technology);
+    //      print("Checking technology ${technology.name}");
+    if (expected == null) {
+      //Should not be available
+      try {
+        techBuyer.apCanBuyNextLevel(ap, technology);
+        fail("Technology ${technology.name} should not be available for purchase!");
+      } on TypeError catch (e) {
+        if (e.toString() == "Null check operator used on a null value") {
+          //Expected
+          //            print("Not available, as expected.");
+        } else {
+          rethrow;
         }
-      } else {
-        expect(
-          game.scenario.getStartingLevel(technology),
-          expected.startingLevel,
-        );
-        expect(game.scenario.getMaxLevel(technology), expected.maxLevel);
+        ;
       }
+    } else {
+      expect(game.scenario.getStartingLevel(technology), expected.startingLevel);
+      expect(game.scenario.getMaxLevel(technology), expected.maxLevel);
     }
   }
+}
 
+
+const List<FleetBuildOption> noFleetBuildOptions = [];
+
+void assertRemainingBuys(
+  Map<Technology, int> startingLevels,
+  int startingCP,
+  List<List<int>> rolls, //[roll from, to roll to, bound] or [roll, bound] , then [roll, bound] ...
+  Map<Technology, int> expectLevels,
+  int finalCP,
+  [options = noFleetBuildOptions]
+) {
+  if(rolls.isEmpty){
+    _assertRemainingBuys(startingLevels, startingCP, [], expectLevels, finalCP, options);
+  }
+  else{
+    var firstRoll = rolls[0];
+    var remainingRolls = rolls.sublist(1);
+    var (rollFrom, rollTo, bound) = firstRoll.length == 3 ? (firstRoll[0], firstRoll[1], firstRoll[2]) : (firstRoll[0], firstRoll[0], firstRoll[1]);
+    var iwashere = 0;
+    for(var roll = rollFrom; roll <= rollTo; roll++){
+      iwashere++;
+      var allRolls = [[roll, bound]] + remainingRolls;
+      //print('all rolls: $allRolls');
+      _assertRemainingBuys(startingLevels, startingCP, allRolls, expectLevels, finalCP, options);
+    }
+    //print("iwashere: $iwashere");
+    expect(rollTo - rollFrom + 1, iwashere);
+  }
+}
+
+void _assertRemainingBuys(Map<Technology, int> startingLevels, int startingCP, List<List<dynamic>> rolls, Map<Technology, int> expectLevels, int finalCP, options) {
+  resetLevels(startingLevels);
+  sheet.techCP = startingCP;
+  for(var roll in rolls) roller.mockRoll("Tech roll", roll[0], bound: roll[1]);
+  techBuyer.spendRemainingTechCP(ap, fleet, options);
+  assertLevels(expectLevels);
+  expect(sheet.techCP, finalCP);
+}
