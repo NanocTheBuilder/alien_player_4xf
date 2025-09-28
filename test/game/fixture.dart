@@ -63,3 +63,20 @@ void resetLevels(Map<Technology, int> startingLevels) {
     ap.setLevel(technology, resetLevel);
   }
 }
+
+void setLevel(Technology technology, int level) {
+  ap.technologyLevels[technology] = level;
+}
+
+void setCPs(int fleetCP, int techCP, int defCP) {
+  sheet.fleetCP = fleetCP;
+  sheet.techCP = techCP;
+  sheet.defCP = defCP;
+}
+
+void assertCPs(int fleetCP, int techCP, int defCP) {
+  expect(sheet.fleetCP, fleetCP);
+  expect(sheet.techCP, techCP);
+  expect(sheet.defCP, defCP);
+}
+

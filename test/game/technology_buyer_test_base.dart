@@ -108,12 +108,12 @@ void assertRemainingBuys(
   Map<Technology, int> startingLevels,
   int startingCP,
   List<List<int>> rolls, //[roll from, to roll to, bound] or [roll, bound] , then [roll, bound] ...
-  Map<Technology, int> expectLevels,
+  Map<Technology, int> newLevels,
   int finalCP,
   [options = noFleetBuildOptions]
 ) {
   if(rolls.isEmpty){
-    _assertRemainingBuys(startingLevels, startingCP, [], expectLevels, finalCP, options);
+    _assertRemainingBuys(startingLevels, startingCP, [], newLevels, finalCP, options);
   }
   else{
     var firstRoll = rolls[0];
@@ -124,18 +124,21 @@ void assertRemainingBuys(
       iwashere++;
       var allRolls = [[roll, bound]] + remainingRolls;
       //print('all rolls: $allRolls');
-      _assertRemainingBuys(startingLevels, startingCP, allRolls, expectLevels, finalCP, options);
+      _assertRemainingBuys(startingLevels, startingCP, allRolls, newLevels, finalCP, options);
     }
     //print("iwashere: $iwashere");
     expect(rollTo - rollFrom + 1, iwashere);
   }
 }
 
-void _assertRemainingBuys(Map<Technology, int> startingLevels, int startingCP, List<List<dynamic>> rolls, Map<Technology, int> expectLevels, int finalCP, options) {
+void _assertRemainingBuys(Map<Technology, int> startingLevels, int startingCP, List<List<dynamic>> rolls, Map<Technology, int> newLevels, int finalCP, options) {
   resetLevels(startingLevels);
   sheet.techCP = startingCP;
   for(var roll in rolls) roller.mockRoll("Tech roll", roll[0], bound: roll[1]);
   techBuyer.spendRemainingTechCP(ap, fleet, options);
-  assertLevels(expectLevels);
+  Map<Technology, int> expectedLevels = {};
+  expectedLevels.addAll(startingLevels);
+  expectedLevels.addAll(newLevels);
+  assertLevels(expectedLevels);
   expect(sheet.techCP, finalCP);
 }

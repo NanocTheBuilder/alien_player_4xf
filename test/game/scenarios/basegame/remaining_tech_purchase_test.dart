@@ -46,34 +46,36 @@ void main() {
   // 10 Mine Sweeper
 
   test('basegame/remaining_tech_purchase_test.allTechAvailable', () {
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[1, 2, 10]], {Technology.ATTACK: 3, Technology.DEFENSE: 2}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[3, 4, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 3}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[5, 10],[1, 2]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.TACTICS: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[6, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.CLOAKING: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[7, 10], [1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[8, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.FIGHTERS: 1}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[9, 10], [1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[10, 10], [4, 4]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.MINE_SWEEPER: 2}, 5);
+    var startingLevels = {Technology.ATTACK: 2, Technology.DEFENSE: 2};
+    assertRemainingBuys(startingLevels, 30, [[1, 2, 10]], {Technology.ATTACK: 3}, 5);
+    assertRemainingBuys(startingLevels, 30, [[3, 4, 10]], {Technology.DEFENSE: 3}, 5);
+    assertRemainingBuys(startingLevels, 30, [[5, 10],[1, 2]], {Technology.TACTICS: 2}, 0);
+    assertRemainingBuys(startingLevels, 30, [[6, 10]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingLevels, 30, [[7, 10], [1, 1]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingLevels, 30, [[8, 10]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingLevels, 30, [[9, 10], [1, 1]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingLevels, 30, [[10, 10], [4, 4]], {Technology.MINE_SWEEPER: 2}, 5);
   });
 
   
   test('basegame/remaining_tech_purchase_test.rerollMineSweepersInHomeDefense', () {
+    var startingLevels = {Technology.ATTACK: 2, Technology.DEFENSE: 2};
     var options = [FleetBuildOption.HOME_DEFENSE];
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[1, 2, 9]], {Technology.ATTACK: 3, Technology.DEFENSE: 2}, 5, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[3, 4, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 3}, 5, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[5, 9],[1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.TACTICS: 2}, 0, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[6, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.CLOAKING: 1}, 0, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[7, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SCANNER: 1}, 10, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[8, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.FIGHTERS: 1}, 5, options);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[9, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.POINT_DEFENSE: 1}, 10, options);
+    assertRemainingBuys(startingLevels, 30, [[1, 2, 9]], {Technology.ATTACK: 3, Technology.DEFENSE: 2}, 5, options);
+    assertRemainingBuys(startingLevels, 30, [[3, 4, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 3}, 5, options);
+    assertRemainingBuys(startingLevels, 30, [[5, 9],[1, 1]], {Technology.TACTICS: 2}, 0, options);
+    assertRemainingBuys(startingLevels, 30, [[6, 9]], {Technology.CLOAKING: 1}, 0, options);
+    assertRemainingBuys(startingLevels, 30, [[7, 9]], {Technology.SCANNER: 1}, 10, options);
+    assertRemainingBuys(startingLevels, 30, [[8, 9]], {Technology.FIGHTERS: 1}, 5, options);
+    assertRemainingBuys(startingLevels, 30, [[9, 9]], {Technology.POINT_DEFENSE: 1}, 10, options);
   });
 
   test('basegame/remaining_tech_purchase_test.buyAttackOrDefenseInsteadOfTactics', () {
-    assertRemainingBuys({Technology.ATTACK: 0, Technology.DEFENSE: 2}, 30, [[5, 10], [1, 1]], {Technology.ATTACK: 1, Technology.DEFENSE: 2, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 2}, 30, [[5, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 0}, 30, [[5, 10], [1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 1}, 30, [[5, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 1}, 30, [[5, 10]], {Technology.ATTACK: 2, Technology.DEFENSE: 1}, 0);
+    assertRemainingBuys({Technology.ATTACK: 0, Technology.DEFENSE: 2}, 30, [[5, 10], [1, 1]], {Technology.ATTACK: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 2}, 30, [[5, 10]], {Technology.ATTACK: 2}, 0);
+    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 0}, 30, [[5, 10], [1, 1]], {Technology.DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 1}, 30, [[5, 10]], {Technology.DEFENSE: 2}, 0);
+    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 1}, 30, [[5, 10]], {Technology.ATTACK: 2}, 0);
   });
 
   test('basegame/remaining_tech_purchase_test.cantBuyTacticsIfHasNoAttackAndDefense', () {
@@ -83,20 +85,22 @@ void main() {
   });
 
   test('basegame/remaining_tech_purchase_test.cantBuyCloakingIfSeenScanner2', () {
+    var startingLevels = {Technology.ATTACK: 2, Technology.DEFENSE: 2};
     game.setSeenLevel(Technology.SCANNER, 2);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[1, 2, 9]], {Technology.ATTACK: 3, Technology.DEFENSE: 2}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[3, 4, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 3}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[5, 9], [1, 2]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.TACTICS: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[6, 9], [1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[7, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.FIGHTERS: 1}, 5);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[8, 9], [1, 1]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[9, 9], [4, 4]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.MINE_SWEEPER: 2}, 5);
+    assertRemainingBuys(startingLevels, 30, [[1, 2, 9]], {Technology.ATTACK: 3, Technology.DEFENSE: 2}, 5);
+    assertRemainingBuys(startingLevels, 30, [[3, 4, 9]], {Technology.ATTACK: 2, Technology.DEFENSE: 3}, 5);
+    assertRemainingBuys(startingLevels, 30, [[5, 9], [1, 2]], {Technology.TACTICS: 2}, 0);
+    assertRemainingBuys(startingLevels, 30, [[6, 9], [1, 1]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingLevels, 30, [[7, 9]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingLevels, 30, [[8, 9], [1, 1]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingLevels, 30, [[9, 9], [4, 4]], {Technology.MINE_SWEEPER: 2}, 5);
   });
 
   test('basegame/remaining_tech_purchase_test.cantBuyCloakingOrMineSweeper', () {
+    var startingLevels = {Technology.ATTACK: 2, Technology.DEFENSE: 2};
     game.setSeenLevel(Technology.SCANNER, 2);
     var options = [FleetBuildOption.HOME_DEFENSE];
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 2}, 30, [[8, 8]], {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.POINT_DEFENSE: 1}, 10, options);
+    assertRemainingBuys(startingLevels, 30, [[8, 8]], {Technology.POINT_DEFENSE: 1}, 10, options);
   });
 
 }

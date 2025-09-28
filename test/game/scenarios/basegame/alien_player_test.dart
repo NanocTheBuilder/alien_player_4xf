@@ -18,62 +18,18 @@
  */
 
 import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
-import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/fleet.dart';
 import 'package:alienplayer4xf/game/fleet_builders.dart';
-import 'package:alienplayer4xf/game/fleet_launcher.dart';
 import 'package:alienplayer4xf/game/game.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
-import 'package:alienplayer4xf/game/technology_buyer.dart';
 import 'package:test/test.dart';
 
+import '../../fixture.dart';
 import '../../mock_roller.dart';
 
 void main() {
 //extends BasegameFixture {
-
-  late Game game;
-  late AlienPlayer ap;
-  late DefenseBuilder defBuilder;
-  late MockRoller roller;
-  late AlienEconomicSheet sheet;
-  late FleetBuilder fleetBuilder;
-  late TechnologyBuyer techBuyer;
-  late FleetLauncher fleetLauncher;
-
-  void assertEquals(expected, actual) {
-    expect(actual, expected);
-  }
-
-  void setLevel(Technology technology, int level) {
-    ap.technologyLevels[technology] = level;
-  }
-
-  void assertLevel(Technology technology, int expected) {
-    expect(ap.technologyLevels[technology], expected);
-  }
-
-  void assertRoller() {
-    roller.assertAllUsed();
-  }
-
-  void setCPs(int fleetCP, int techCP, int defCP) {
-    sheet.fleetCP = fleetCP;
-    sheet.techCP = techCP;
-    sheet.defCP = defCP;
-  }
-
-  void assertCPs(int fleetCP, int techCP, int defCP) {
-    expect(sheet.fleetCP, fleetCP);
-    expect(sheet.techCP, techCP);
-    expect(sheet.defCP, defCP);
-  }
-
-  //assertGroups
-  void assertFleet(Fleet fleet, List<Group> expectedGroups) {
-    assertEquals(expectedGroups, fleet.groups);
-  }
 
   setUp(() {
     game = Game.newGame(BaseGameScenario(), BaseGameDifficulty.NORMAL,
@@ -88,10 +44,13 @@ void main() {
     sheet = ap.economicSheet;
   });
 
-  tearDown(assertRoller);
-//BaseGameFixture
+  tearDown(assertAllRollsUsed);
 
   late EconPhaseResult result;
+
+  void assertFleet(Fleet fleet, List<Group> expectedGroups) {
+    expect(fleet.groups, expectedGroups);
+  }
 
   void assertGroups(List<Group> expectedGroups) {
     assertFleet(result.fleet!, expectedGroups);
@@ -104,42 +63,33 @@ void main() {
     roller.mockRoll("Econ roll", 10);
   }
 
-  void assertRegularFirstCombat(int fleetCompositionRoll) {
-    roller.mockRoll("Ship size", 5); //Ship size
-    roller.mockRoll("Tech roll", 1); //Attack
-    roller.mockRoll("Fleet composition", fleetCompositionRoll); //fleet composition
-    ap.firstCombat(result.fleet!);
-    assertLevel(Technology.SHIP_SIZE, 5);
-    assertLevel(Technology.ATTACK, 2);
-    assertRoller();
-  }
-
   void assertRegularFleetLaunch(int fleetCP) {
-    assertEquals(ap, result.alienPlayer);
-    assertEquals(fleetCP, result.fleet!.fleetCP);
-    assertEquals(FleetType.REGULAR_FLEET, result.fleet!.fleetType);
+    expect(result.alienPlayer, ap);
+    expect(result.fleet!.fleetCP, fleetCP);
+    expect(result.fleet!.fleetType, FleetType.REGULAR_FLEET);
   }
 
-  void launchRegularFleet() {
+  test('basegame/alien_player_test.launchRegularFleetThenBuildLargestFleet', () {
     setCPs(60, 45, 0);
-    setLevel(Technology.SHIP_SIZE, 4);
-    setLevel(Technology.ATTACK, 1);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1});
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 3);
     roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(70);
-    assertEquals(10, result.fleetCP);
-    assertEquals(5, result.techCP);
-    assertEquals(10, result.defCP);
-    assertEquals(ap.fleets[0], result.fleet);
+    expect(result.fleetCP, 10);
+    expect(result.techCP, 5);
+    expect(result.defCP, 10);
+    expect(result.fleet, ap.fleets[0]);
     assertCPs(0, 50, 10);
-    assertRoller();
-  }
+    assertAllRollsUsed();
 
-  test('basegame/alien_player_test.launchRegularFleetThenBuildLargestFleet', () {
-    launchRegularFleet();
-    assertRegularFirstCombat(3);
+    roller.mockRoll("Ship size", 5); //Ship size
+    roller.mockRoll("Tech roll", 1); //Attack
+    roller.mockRoll("Fleet composition", 3); //fleet composition
+    ap.firstCombat(result.fleet!);
+    assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2});
+    assertAllRollsUsed();
     assertGroups([
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 2),
@@ -149,10 +99,27 @@ void main() {
   });
 
   test('basegame/alien_player_test.launchRegularFleetThenBuildBalancedWith2SC', () {
-    setLevel(Technology.POINT_DEFENSE, 1);
+    setCPs(60, 45, 0);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1, Technology.POINT_DEFENSE: 1});
     game.addSeenThing(Seeable.FIGHTERS);
-    launchRegularFleet();
-    assertRegularFirstCombat(8);
+    mock2Fleet1Tech1DefRoll();
+    roller.mockRoll("Fleet launch", 3);
+    roller.mockRoll("Buy move", 7);
+    result = ap.makeEconRoll(10);
+    assertRegularFleetLaunch(70);
+    expect(result.fleetCP, 10);
+    expect(result.techCP, 5);
+    expect(result.defCP, 10);
+    expect(result.fleet, ap.fleets[0]);
+    assertCPs(0, 50, 10);
+    assertAllRollsUsed();
+
+    roller.mockRoll("Ship size", 5); //Ship size
+    roller.mockRoll("Tech roll", 1); //Attack
+    roller.mockRoll("Fleet composition", 8); //fleet composition
+    ap.firstCombat(result.fleet!);
+    assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2, Technology.POINT_DEFENSE: 1});
+    assertAllRollsUsed();
     assertGroups([
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 1),
@@ -164,17 +131,33 @@ void main() {
   });
 
   test('basegame/alien_player_test.launchRegularFleetThenBuildLargestShips', () {
-    launchRegularFleet();
-    assertRegularFirstCombat(8);
+    setCPs(60, 45, 0);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1});
+    mock2Fleet1Tech1DefRoll();
+    roller.mockRoll("Fleet launch", 3);
+    roller.mockRoll("Buy move", 7);
+    result = ap.makeEconRoll(10);
+    assertRegularFleetLaunch(70);
+    expect(result.fleetCP, 10);
+    expect(result.techCP, 5);
+    expect(result.defCP, 10);
+    expect(result.fleet, ap.fleets[0]);
+    assertCPs(0, 50, 10);
+    assertAllRollsUsed();
+
+    roller.mockRoll("Ship size", 5); //Ship size
+    roller.mockRoll("Tech roll", 1); //Attack
+    roller.mockRoll("Fleet composition", 8); //fleet composition
+    ap.firstCombat(result.fleet!);
+    assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2});
+    assertAllRollsUsed();
     assertGroups([Group(ShipType.BATTLESHIP, 3), Group(ShipType.DESTROYER, 1)]);
     assertCPs(1, 0, 10);
   });
 
   test('basegame/alien_player_test.launchCarrierFleetThenBuildLargestFleet', () {
     setCPs(65, 45, 0);
-    setLevel(Technology.SHIP_SIZE, 2);
-    setLevel(Technology.ATTACK, 1);
-    setLevel(Technology.FIGHTERS, 1);
+    resetLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 1});
     game.setSeenLevel(Technology.POINT_DEFENSE, 0);
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 7);
@@ -182,17 +165,15 @@ void main() {
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 50, 10);
-    assertRoller();
+    assertAllRollsUsed();
 
     roller.mockRoll("Ship size", 8);
     roller.mockRoll("Fighters", 6); //Buy next fighter level
     roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
     roller.mockRoll("Fleet composition", 3);
     ap.firstCombat(result.fleet!);
-    assertLevel(Technology.SHIP_SIZE, 2);
-    assertLevel(Technology.ATTACK, 1);
-    assertLevel(Technology.FIGHTERS, 3);
-    assertRoller();
+    assertLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 3});
+    assertAllRollsUsed();
     assertGroups([
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
@@ -204,9 +185,7 @@ void main() {
 
   test('basegame/alien_player_test.launchCarrierFleetThenBuildBalancedFleet', () {
     setCPs(65, 20, 0);
-    setLevel(Technology.SHIP_SIZE, 2);
-    setLevel(Technology.ATTACK, 1);
-    setLevel(Technology.FIGHTERS, 2);
+    resetLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 2});
     game.setSeenLevel(Technology.POINT_DEFENSE, 1);
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 7);
@@ -214,17 +193,15 @@ void main() {
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 25, 10);
-    assertRoller();
+    assertAllRollsUsed();
 
     roller.mockRoll("Ship size", 8);
     roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
     roller.mockRoll("Carrier fleet", 4); //Has seen PD, but buy only full cariers
     roller.mockRoll("Fleet composition", 6); //fleet composition
     ap.firstCombat(result.fleet!);
-    assertLevel(Technology.SHIP_SIZE, 2);
-    assertLevel(Technology.ATTACK, 1);
-    assertLevel(Technology.FIGHTERS, 3);
-    assertRoller();
+    assertLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 3});
+    assertAllRollsUsed();
     assertGroups([
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
@@ -236,9 +213,7 @@ void main() {
 
   test('basegame/alien_player_test.launchRegularFleetThenCarrierWithLargestShips', () {
     setCPs(65, 20, 0);
-    setLevel(Technology.SHIP_SIZE, 2);
-    setLevel(Technology.ATTACK, 1);
-    setLevel(Technology.FIGHTERS, 0);
+    resetLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1});
     game.setSeenLevel(Technology.POINT_DEFENSE, 0);
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 5);
@@ -246,16 +221,14 @@ void main() {
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(75);
     assertCPs(0, 25, 10);
-    assertRoller();
+    assertAllRollsUsed();
 
     roller.mockRoll("Ship size", 8);
     roller.mockRoll("Tech roll", 5, bound: 7); //Fighters (no attack & cloak)
     roller.mockRoll("Fleet composition", 8); //fleet composition
     ap.firstCombat(result.fleet!);
-    assertLevel(Technology.SHIP_SIZE, 2);
-    assertLevel(Technology.ATTACK, 1);
-    assertLevel(Technology.FIGHTERS, 1);
-    assertRoller();
+    resetLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 1});
+    assertAllRollsUsed();
     assertGroups([
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
@@ -266,73 +239,68 @@ void main() {
 
   test('basegame/alien_player_test.launchRegularButBuildRaider', () {
     setCPs(60, 45, 0);
-    setLevel(Technology.SHIP_SIZE, 4);
-    setLevel(Technology.ATTACK, 1);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1});
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 3);
     roller.mockRoll("Buy move", 7);
     result = ap.makeEconRoll(10);
     assertRegularFleetLaunch(70);
     assertCPs(0, 50, 10);
-    assertRoller();
+    assertAllRollsUsed();
+
     roller.mockRoll("Ship size", 5);
     roller.mockRoll("Tech roll", 6, bound: 10); //Cloak
     ap.firstCombat(result.fleet!);
-    assertLevel(Technology.SHIP_SIZE, 5);
-    assertLevel(Technology.CLOAKING, 1);
-    assertRoller();
+    resetLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 1});
+    assertAllRollsUsed();
     assertGroups([Group(ShipType.RAIDER, 5)]);
-    assertEquals(FleetType.RAIDER_FLEET, result.fleet!.fleetType);
+    expect(result.fleet!.fleetType, FleetType.RAIDER_FLEET);
     assertCPs(10, 0, 10);
   });
 
   test('basegame/alien_player_test.launchRaiderBuyTechs', () {
     setCPs(12, 45, 0);
-    setLevel(Technology.SHIP_SIZE, 4);
-    setLevel(Technology.ATTACK, 1);
-    setLevel(Technology.CLOAKING, 1);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1, Technology.CLOAKING: 1});
     mock2Fleet1Tech1DefRoll();
     roller.mockRoll("Fleet launch", 7);
     roller.mockRoll("Buy move", 4);
     result = ap.makeEconRoll(10);
-    assertEquals(FleetType.RAIDER_FLEET, result.fleet!.fleetType);
+    expect(result.fleet!.fleetType, FleetType.RAIDER_FLEET);
     assertCPs(10, 30, 10);
-    assertLevel(Technology.MOVE, 2);
-    assertEquals(true, result.moveTechRolled);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1, Technology.CLOAKING: 1, Technology.MOVE: 2});
+    expect(result.moveTechRolled, true);
     assertGroups([Group(ShipType.RAIDER, 1)]);
-    assertRoller();
+    assertAllRollsUsed();
 
     roller.mockRoll("Ship size", 6);
     roller.mockRoll("Cloaking", 6); //next cloak
     ap.firstCombat(result.fleet!);
-    assertLevel(Technology.CLOAKING, 2);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1, Technology.CLOAKING: 2, Technology.MOVE: 2});
     assertCPs(10, 0, 10);
   });
 
   test('basegame/alien_player_test.buildHomeDefenseNoRaiderFleetNoMineSweep', () {
     setCPs(70, 50, 30);
-    setLevel(Technology.SHIP_SIZE, 4);
-    setLevel(Technology.ATTACK, 2);
+    resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 2});
     roller.mockRoll("Ship size", 5);
-    roller.mockRoll("Tech roll", 6, bound: 9); //Cloak
+    roller.mockRoll("Tech roll", 6, bound: 9); //Cloak, no Mine Sweep
     roller.mockRoll("Fleet composition", 4); //balanced fleet
     roller.mockRoll("Home defense units", 7); //bases, then mines
     FleetBuildResult result = ap.buildHomeDefense();
     List<Fleet> fleets = result.newFleets;
-    assertEquals(FleetType.REGULAR_FLEET, fleets[0].fleetType);
+    expect(fleets[0].fleetType, FleetType.REGULAR_FLEET);
     assertFleet(fleets[0], [
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 1),
       Group(ShipType.BATTLECRUISER, 1),
       Group(ShipType.CRUISER, 2)
     ]);
-    assertEquals(FleetType.DEFENSE_FLEET, fleets[1].fleetType);
+    expect(fleets[1].fleetType, FleetType.DEFENSE_FLEET);
     assertFleet(fleets[1], [Group(ShipType.BASE, 2), Group(ShipType.MINE, 1)]);
-    assertRoller();
+    assertAllRollsUsed();
     assertCPs(2, 0, 1);
-    assertLevel(Technology.SHIP_SIZE, 5);
-    assertLevel(Technology.CLOAKING, 1);
-    assertEquals(true, fleets[0].hadFirstCombat);
-    assertEquals(true, fleets[1].hadFirstCombat);
+    assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2, Technology.CLOAKING: 1});
+    expect(fleets[0].hadFirstCombat, true);
+    expect(fleets[1].hadFirstCombat, true);
   });
 }
