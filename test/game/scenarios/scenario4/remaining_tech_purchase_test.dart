@@ -100,5 +100,17 @@ void main() {
     assertRemainingBuys(startingTechs, 30, [[87, 89, 97], [1, 24]], {Technology.SECURITY_FORCES: 1, Technology.TACTICS: 1}, 0);
     assertRemainingBuys(startingTechs, 30, [[90, 93, 97], [1, 49]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
     assertRemainingBuys(startingTechs, 30, [[94, 97, 97], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
-  });  
+  });
+
+  test('scenario4/remaining_tech_purchase_test.cantBuyWhenHaveEverything', (){
+    var startingLevels = {
+      Technology.SHIP_SIZE: 7, Technology.ATTACK: 3, Technology.DEFENSE: 3,
+      Technology.TACTICS: 3, Technology.CLOAKING: 2, Technology.SCANNER: 2,
+      Technology.FIGHTERS: 3, Technology.POINT_DEFENSE: 3, Technology.MINE_SWEEPER: 3, 
+      Technology.SECURITY_FORCES: 2, Technology.MILITARY_ACADEMY: 2, Technology.BOARDING: 2
+    };      
+    assertRemainingBuys(startingLevels, 1000, [], {}, 1000);
+  });
+
+  //TODO Test max Move somewhere
 }

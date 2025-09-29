@@ -48,14 +48,6 @@ void main() {
 
   late EconPhaseResult result;
 
-  void assertFleet(Fleet fleet, List<Group> expectedGroups) {
-    expect(fleet.groups, expectedGroups);
-  }
-
-  void assertGroups(List<Group> expectedGroups) {
-    assertFleet(result.fleet!, expectedGroups);
-  }
-
   void mock2Fleet1Tech1DefRoll() {
     roller.mockRoll("Econ roll", 3);
     roller.mockRoll("Econ roll", 6);
@@ -90,7 +82,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2});
     assertAllRollsUsed();
-    assertGroups([
+    assertGroups(result.fleet!, [
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 2),
       Group(ShipType.SCOUT, 5)
@@ -120,7 +112,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2, Technology.POINT_DEFENSE: 1});
     assertAllRollsUsed();
-    assertGroups([
+    assertGroups(result.fleet!, [
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 1),
       Group(ShipType.SCOUT, 2),
@@ -151,7 +143,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2});
     assertAllRollsUsed();
-    assertGroups([Group(ShipType.BATTLESHIP, 3), Group(ShipType.DESTROYER, 1)]);
+    assertGroups(result.fleet!, [Group(ShipType.BATTLESHIP, 3), Group(ShipType.DESTROYER, 1)]);
     assertCPs(1, 0, 10);
   });
 
@@ -174,7 +166,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     assertLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 3});
     assertAllRollsUsed();
-    assertGroups([
+    assertGroups(result.fleet!, [
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
       Group(ShipType.DESTROYER, 1),
@@ -202,7 +194,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     assertLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 3});
     assertAllRollsUsed();
-    assertGroups([
+    assertGroups(result.fleet!, [
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
       Group(ShipType.DESTROYER, 1),
@@ -229,7 +221,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     resetLevels({Technology.SHIP_SIZE: 2, Technology.ATTACK: 1, Technology.FIGHTERS: 1});
     assertAllRollsUsed();
-    assertGroups([
+    assertGroups(result.fleet!, [
       Group(ShipType.CARRIER, 2),
       Group(ShipType.FIGHTER, 6),
       Group(ShipType.DESTROYER, 2)
@@ -253,7 +245,7 @@ void main() {
     ap.firstCombat(result.fleet!);
     resetLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 1});
     assertAllRollsUsed();
-    assertGroups([Group(ShipType.RAIDER, 5)]);
+    assertGroups(result.fleet!, [Group(ShipType.RAIDER, 5)]);
     expect(result.fleet!.fleetType, FleetType.RAIDER_FLEET);
     assertCPs(10, 0, 10);
   });
@@ -269,7 +261,7 @@ void main() {
     assertCPs(10, 30, 10);
     resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 1, Technology.CLOAKING: 1, Technology.MOVE: 2});
     expect(result.moveTechRolled, true);
-    assertGroups([Group(ShipType.RAIDER, 1)]);
+    assertGroups(result.fleet!, [Group(ShipType.RAIDER, 1)]);
     assertAllRollsUsed();
 
     roller.mockRoll("Ship size", 6);
@@ -289,14 +281,14 @@ void main() {
     FleetBuildResult result = ap.buildHomeDefense();
     List<Fleet> fleets = result.newFleets;
     expect(fleets[0].fleetType, FleetType.REGULAR_FLEET);
-    assertFleet(fleets[0], [
+    assertGroups(fleets[0], [
       Group(ShipType.BATTLESHIP, 1),
       Group(ShipType.DESTROYER, 1),
       Group(ShipType.BATTLECRUISER, 1),
       Group(ShipType.CRUISER, 2)
     ]);
     expect(fleets[1].fleetType, FleetType.DEFENSE_FLEET);
-    assertFleet(fleets[1], [Group(ShipType.BASE, 2), Group(ShipType.MINE, 1)]);
+    assertGroups(fleets[1], [Group(ShipType.BASE, 2), Group(ShipType.MINE, 1)]);
     assertAllRollsUsed();
     assertCPs(2, 0, 1);
     assertLevels({Technology.SHIP_SIZE: 5, Technology.ATTACK: 2, Technology.CLOAKING: 1});

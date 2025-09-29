@@ -103,4 +103,14 @@ void main() {
     assertRemainingBuys(startingLevels, 30, [[8, 8]], {Technology.POINT_DEFENSE: 1}, 10, options);
   });
 
+  test('basegame/remaining_tech_purchase_test.cantBuyWhenHaveEverything', (){
+    var startingLevels = {
+      Technology.ATTACK: 3, Technology.DEFENSE: 3,
+      Technology.TACTICS: 3, Technology.CLOAKING: 2, Technology.SCANNER: 2,
+      Technology.FIGHTERS: 3, Technology.POINT_DEFENSE: 3, Technology.MINE_SWEEPER: 2
+    };      
+    assertRemainingBuys(startingLevels, 1000, [], {}, 1000);
+  });
+
+  //TODO Test Max Move and Ship Size somewhere
 }

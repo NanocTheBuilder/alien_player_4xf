@@ -1,6 +1,7 @@
 import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
 import 'package:alienplayer4xf/game/alien_player.dart';
 import 'package:alienplayer4xf/game/enums.dart';
+import 'package:alienplayer4xf/game/fleet.dart';
 import 'package:alienplayer4xf/game/fleet_builders.dart';
 import 'package:alienplayer4xf/game/fleet_launcher.dart';
 import 'package:alienplayer4xf/game/game.dart';
@@ -78,5 +79,9 @@ void assertCPs(int fleetCP, int techCP, int defCP) {
   expect(sheet.fleetCP, fleetCP);
   expect(sheet.techCP, techCP);
   expect(sheet.defCP, defCP);
+}
+
+void assertGroups(Fleet fleet, List<Group> expectedGroups) {
+      expect(fleet.groups, expectedGroups);
 }
 
