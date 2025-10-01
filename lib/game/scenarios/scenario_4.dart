@@ -128,6 +128,14 @@ class Scenario4TechnologyBuyer extends TechnologyBuyer {
     buyFightersIfNeeded(ap);
     buyCloakingIfNeeded(ap, fleet);
   }
+
+  @override
+  bool fleetCanBuyNextLevel(
+  AlienPlayer ap,
+  Fleet fleet,
+  Technology technology, [
+  List<FleetBuildOption> options = const [],
+  ]) => apCanBuyNextLevel(ap, technology);
 }
 
 class Scenario4TechnologyPrices extends TechnologyPrices {

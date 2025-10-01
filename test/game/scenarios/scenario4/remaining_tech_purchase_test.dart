@@ -73,6 +73,11 @@ void main() {
     assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
   });
 
+  test('scenario4/remaining_tech_purchase_test.dontRerollMineSweepersInHomeDefense', () {
+    var startingTechs = {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0, [FleetBuildOption.HOME_DEFENSE]);
+  });
+
   test('scenario4/remaining_tech_purchase_test.buyAttackOrDefenseInsteadOfTactics', () {
     assertRemainingBuys({Technology.ATTACK: 0, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100], [1, 9]], {Technology.ATTACK: 1, Technology.MINE_SWEEPER: 1}, 0);
     assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100]], {Technology.ATTACK: 2}, 0);

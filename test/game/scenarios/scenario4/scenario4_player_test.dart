@@ -39,7 +39,7 @@ void main() {
     setCPs(70, 60, 30);
     resetLevels({Technology.SHIP_SIZE: 4, Technology.ATTACK: 2, Technology.GROUND_COMBAT: 1});
     roller.mockRoll("Ship size", 5);
-    roller.mockRoll("Tech roll", 69, bound: 95); //Cloak
+    roller.mockRoll("Tech roll", 69, bound: 100); //Cloak
     roller.mockRoll("Fleet composition", 4); //balanced fleet
     roller.mockRoll("Heavy infantry", 4); //number of HI
     roller.mockRoll("Home defense units", 3); //bases, then mines
