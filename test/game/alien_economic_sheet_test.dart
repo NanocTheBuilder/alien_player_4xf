@@ -18,16 +18,16 @@
  */
 
 import 'package:alienplayer4xf/game/alien_economic_sheet.dart';
-import 'package:alienplayer4xf/game/enums.dart';
 import 'package:alienplayer4xf/game/scenarios/base_game.dart';
 import 'package:test/test.dart';
 
-import 'mock_roller.dart';
+
+import 'economic_sheet_test_base.dart';
 
 void main() {
 
   //@formatter:off
-  var resultTable = [
+  resultTable = [
     [[     ], [     ], [      ], [      ]],
     [[ 1, 2], [     ], [ 3, 10], [      ]],
     [[    1], [ 2, 3], [ 4, 10], [      ]],
@@ -51,93 +51,24 @@ void main() {
     [[     ], [ 1, 9], [    10], [      ]],
     [[     ], [ 1, 9], [    10], [      ]],
     [[     ], [ 1, 9], [    10], [      ]],
+    [[     ], [ 1, 9], [    10], [      ]],
   ];
 
-  var econRolls = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5];
+  econRolls = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5];
 
-  var fleetLaunchValues = [0, -99, 10, 10, 5, 3, 4, 4, 4, 5, 5, 3, 3, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10];
+  fleetLaunchValues = [0, -99, 10, 10, 5, 3, 4, 4, 4, 5, 5, 3, 3, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10];
   //@formatter:on
-
-  var roller = MockRoller();
 
   tearDown(roller.assertAllUsed);
 
-  List getResult(int turn, int index) {
-    return resultTable[turn][index];
-  }
-
-  List getRange(int turn, int index) {
-    var range = getResult(turn, index);
-    if (range.isNotEmpty) {
-      int lower = range[0];
-      int higher = range.length == 1 ? lower + 1 : range[1] + 1;
-      var result = List.generate(higher - lower, (int index) => index + lower);
-      return result;
-    } else {
-      return [];
-    }
-  }
-
-  List getFleetRange(int turn) {
-    return getRange(turn, 1);
-  }
-
-  List getTechRange(int turn) {
-    return getRange(turn, 2);
-  }
-
-  List getDefRange(int turn) {
-    return getRange(turn, 3);
-  }
-
-  void makeRoll(AlienEconomicSheet sheet, int turn, int result) {
-    roller.mockRoll("Econ roll", result);
-    sheet.makeRoll(turn, roller);
-  }
-
-  void assertIsFleet(int turn, Difficulty difficulty, int result) {
-    var sheet = AlienEconomicSheet(difficulty);
-    makeRoll(sheet, turn, result);
-    expect(sheet.fleetCP, difficulty.cpPerEcon,
-        reason: "turn $turn roll $result is not Fleet");
-  }
-
-  void assertFleetResults(int turn, Difficulty diff) {
-    for (var i in getFleetRange(turn)) {
-      assertIsFleet(turn, diff, i);
-    }
-  }
-
-  void assertIsTech(int turn, Difficulty diff, int result) {
-    var sheet = AlienEconomicSheet(diff);
-    makeRoll(sheet, turn, result);
-    expect(sheet.techCP, diff.cpPerEcon);
-  }
-
-  void assertTechResults(int turn, Difficulty diff) {
-    for (var i in getTechRange(turn)) {
-      assertIsTech(turn, diff, i);
-    }
-  }
-
-  void assertIsDef(int turn, Difficulty diff, int result) {
-    var sheet = AlienEconomicSheet(diff);
-    makeRoll(sheet, turn, result);
-    expect(sheet.defCP, 2 * diff.cpPerEcon);
-  }
-
-  void assertDefResults(int turn, Difficulty diff) {
-    for (var i in getDefRange(turn)) {
-      assertIsDef(turn, diff, i);
-    }
-  }
+  //TODO delete 'new' keywords everywhere
 
   test('alien_economic_sheet_test.testCPResults', () {
     for (int turn = 1; turn < 23; turn++) {
       for (var diff in BaseGameDifficulty.values) {
-        assertFleetResults(turn, diff);
-        assertTechResults(turn, diff);
-        assertDefResults(turn, diff);
+        assertFleetResults(turn, () => AlienEconomicSheet(diff));
+        assertTechResults(turn, () => AlienEconomicSheet(diff));
+        assertDefResults(turn, () => AlienEconomicSheet(diff));
       }
     }
   });
@@ -157,14 +88,10 @@ void main() {
   });
 
   test('alien_economic_sheet_test.testEconRollsColumn', () {
-    AlienEconomicSheet sheet = AlienEconomicSheet(BaseGameDifficulty.EASY);
-    for (int turn = 1; turn < 23; turn++)
-      expect(sheet.getEconRolls(turn), econRolls[turn]);
+    testEconRollsColumn(() => AlienEconomicSheet(BaseGameDifficulty.EASY));
   });
 
   test('alien_economic_sheet_test.testFleetLaunch', () {
-    AlienEconomicSheet sheet = AlienEconomicSheet(BaseGameDifficulty.EASY);
-    for (int turn = 1; turn < 23; turn++)
-      expect(sheet.getFleetLaunch(turn), fleetLaunchValues[turn]);
+    testFleetLaunch(() => AlienEconomicSheet(BaseGameDifficulty.EASY));
   });
 }

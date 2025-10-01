@@ -45,7 +45,6 @@ void main() {
     expect(fleet.fleetType, FleetType.REGULAR_FLEET);
   }
 
-  //void assertBuiltFleet(int fleetCP, List<Group> expectedGroups, {int fleetTypeRoll = -1}) {
   void assertBuiltFleet(
     int fleetCP,
     List<Group> expectedGroups, {

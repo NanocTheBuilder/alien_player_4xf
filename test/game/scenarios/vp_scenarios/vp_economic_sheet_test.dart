@@ -22,9 +22,11 @@ import 'package:test/test.dart';
 
 import '../../mock_roller.dart';
 
+import '../../economic_sheet_test_base.dart';
+
 void main() {
   //@formatter:off
-  var resultTable = [
+  resultTable = [
     [[     ], [     ], [      ], [      ]],
     [[     ], [    1], [ 2, 10], [      ]],
     [[     ], [ 1, 3], [ 4, 10], [      ]],
@@ -46,22 +48,15 @@ void main() {
     [[     ], [ 1, 8], [ 9, 10], [      ]],
     [[     ], [ 1, 9], [    10], [      ]],
     [[     ], [ 1, 9], [    10], [      ]],
+    [[     ], [ 1, 9], [    10], [      ]],
+    [[     ], [ 1, 9], [    10], [      ]],
+    [[     ], [ 1, 9], [    10], [      ]],
   ];
 
-  var econRolls = [0, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5];
+  econRolls = [0, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5];
 
-  var fleetLaunchValues = [0, -99, 10, 10, 5, 10, 4, 10, 4, 5, 6, 4, 6, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10];
+  fleetLaunchValues = [0, -99, 10, 10, 5, 10, 4, 10, 4, 5, 6, 4, 6, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10];
   //@formatter:on
-
-  void makeRoll(VpEconomicSheet sheet, int turn, int result) {
-    var roller = MockRoller();
-    roller.mockRoll("Econ roll",result);
-    sheet.makeRoll(turn, roller);
-  }
-
-  List getResult(int turn, int index) {
-    return resultTable[turn][index];
-  }
 
   test('vp_scenarios/vp_economic_sheet_test.testMaxDefense', (){
     var sheet = new VpEconomicSheet(VpSoloDifficulty.EASY);
@@ -78,10 +73,10 @@ void main() {
   });
 
   test('vp_scenarios/vp_economic_sheet_test.rerollDefIfIsMaxDefense', (){
-    var sheet = new VpEconomicSheet(VpSoloDifficulty.EASY);
+    var sheet = VpEconomicSheet(VpSoloDifficulty.EASY);
     sheet.defCP = 50;
 
-    MockRoller roller = new MockRoller();
+    MockRoller roller = MockRoller();
     roller.mockRoll("Econ roll",9, bound: 9);
     sheet.makeRoll(5, roller);
     expect(sheet.defCP, 50);
@@ -89,21 +84,21 @@ void main() {
   });
 
   test('vp_scenarios/vp_economic_sheet_test.testStartingBank', (){
-    expect(new VpEconomicSheet(VpSoloDifficulty.EASY).bank, 0);
-    expect(new VpEconomicSheet(VpSoloDifficulty.NORMAL).bank, 100);
-    expect(new VpEconomicSheet(VpSoloDifficulty.HARD).bank, 100);
+    expect(VpEconomicSheet(VpSoloDifficulty.EASY).bank, 0);
+    expect(VpEconomicSheet(VpSoloDifficulty.NORMAL).bank, 100);
+    expect(VpEconomicSheet(VpSoloDifficulty.HARD).bank, 100);
 
-    expect(new VpEconomicSheet(Vp2pDifficulty.EASY).bank, 150);
-    expect(new VpEconomicSheet(Vp2pDifficulty.NORMAL).bank, 150);
-    expect(new VpEconomicSheet(Vp2pDifficulty.HARD).bank, 150);
+    expect(VpEconomicSheet(Vp2pDifficulty.EASY).bank, 150);
+    expect(VpEconomicSheet(Vp2pDifficulty.NORMAL).bank, 150);
+    expect(VpEconomicSheet(Vp2pDifficulty.HARD).bank, 150);
 
-    expect(new VpEconomicSheet(Vp3pDifficulty.EASY).bank, 200);
-    expect(new VpEconomicSheet(Vp3pDifficulty.NORMAL).bank, 200);
-    expect(new VpEconomicSheet(Vp3pDifficulty.HARD).bank, 200);
+    expect(VpEconomicSheet(Vp3pDifficulty.EASY).bank, 200);
+    expect(VpEconomicSheet(Vp3pDifficulty.NORMAL).bank, 200);
+    expect(VpEconomicSheet(Vp3pDifficulty.HARD).bank, 200);
   });
 
   test('vp_scenarios/vp_economic_sheet_test.spendDefCPFromBankIfAble', (){
-    var sheet = new VpEconomicSheet(VpSoloDifficulty.NORMAL);
+    var sheet = VpEconomicSheet(VpSoloDifficulty.NORMAL);
     sheet.defCP = 50;
     expect(sheet.bank, 100);
 
@@ -132,5 +127,24 @@ void main() {
     makeRoll(sheet, 3, 9); //DEFENSE
     expect(sheet.defCP, 50);
     expect(sheet.bank, 15);
+  });
+
+  //basic stuff
+  test('vp_scenarios/vp_economic_sheet_test.testCPResults', () {
+    for (int turn = 1; turn < 23; turn++) {
+      for (var diff in Vp2pDifficulty.values) {
+        assertFleetResults(turn, () => VpEconomicSheet(diff));
+        assertTechResults(turn, () => VpEconomicSheet(diff));
+        assertDefResults(turn, () => VpEconomicSheet(diff));
+      }
+    }
+  });
+
+  test('vp_scenarios/vp_economic_sheet_test.testEconRollsColumn', () {
+    testEconRollsColumn(() => VpEconomicSheet(Vp2pDifficulty.EASY));
+  });
+
+  test('vp_scenarios/vp_economic_sheet_test.testFleetLaunch', () {
+    testFleetLaunch(() => VpEconomicSheet(Vp2pDifficulty.EASY));
   });
 }
