@@ -79,11 +79,107 @@ void main() {
   });
 
   test('scenario4/remaining_tech_purchase_test.buyAttackOrDefenseInsteadOfTactics', () {
-    assertRemainingBuys({Technology.ATTACK: 0, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100], [1, 9]], {Technology.ATTACK: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100]], {Technology.ATTACK: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 0, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100], [1, 9]], {Technology.DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
-    assertRemainingBuys({Technology.ATTACK: 2, Technology.DEFENSE: 1, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100]], {Technology.DEFENSE: 2}, 0);
-    assertRemainingBuys({Technology.ATTACK: 1, Technology.DEFENSE: 1, Technology.SHIP_SIZE: 3}, 30, [[57, 68, 100]], {Technology.ATTACK: 2}, 0);
+    var startingTechs = {Technology.ATTACK: 0, Technology.DEFENSE: 0, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 48, 100], [1, 9]], {Technology.ATTACK: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[49, 68, 100], [1, 9]], {Technology.DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 89]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 89]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    startingTechs = {Technology.ATTACK: 0, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 48, 100], [1, 9]], {Technology.ATTACK: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[49, 68, 100]], {Technology.DEFENSE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 69]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 69]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    startingTechs = {Technology.ATTACK: 1, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 48, 100]], {Technology.ATTACK: 2}, 0);
+    assertRemainingBuys(startingTechs, 30, [[49, 68, 100]], {Technology.DEFENSE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 37]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 37]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    startingTechs = {Technology.ATTACK: 2, Technology.DEFENSE: 0, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 36, 100]], {Technology.ATTACK: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[37, 68, 100], [1, 9]], {Technology.DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 69]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 69]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    startingTechs = {Technology.ATTACK: 2, Technology.DEFENSE: 1, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 36, 100]], {Technology.ATTACK: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[37, 68, 100]], {Technology.DEFENSE: 2}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 37]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 37]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    startingTechs = {Technology.ATTACK: 1, Technology.DEFENSE: 1, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 30, [[1, 16, 100], [1, 9]], {Technology.SHIP_SIZE: 4, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[17, 48, 100]], {Technology.ATTACK: 2}, 0);
+    assertRemainingBuys(startingTechs, 30, [[49, 68, 100]], {Technology.DEFENSE: 2}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 37]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 12]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 37]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 4}, 0);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+
+    //CP 25 not enough for ATTACK 2 but enough for DEFENSE AND TACTICS
+    startingTechs = {Technology.ATTACK: 1, Technology.DEFENSE: 0, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 25, [[1, 16, 77]], {Technology.SHIP_SIZE: 4}, 5); //20
+    assertRemainingBuys(startingTechs, 25, [[17, 48, 77]], {Technology.DEFENSE: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[49, 50, 77]], {Technology.SCANNER: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[51, 58, 77]], {Technology.FIGHTERS: 1}, 0);
+    assertRemainingBuys(startingTechs, 25, [[59, 61, 77]], {Technology.POINT_DEFENSE: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[62, 66, 77], [1, 12]], {Technology.MINE_SWEEPER: 2}, 0);
+    assertRemainingBuys(startingTechs, 25, [[67, 69, 77], [1, 9]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 25, [[70, 73, 77], [1, 8]], {Technology.MILITARY_ACADEMY: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[74, 77, 77]], {Technology.BOARDING: 1}, 5);
+
+    //CP 25 not enough for DEFENSE 2 but enough for ATTACK AND TACTICS
+    startingTechs = {Technology.ATTACK: 0, Technology.DEFENSE: 1, Technology.SHIP_SIZE: 3};
+    assertRemainingBuys(startingTechs, 25, [[1, 16, 77]], {Technology.SHIP_SIZE: 4}, 5); //20
+    assertRemainingBuys(startingTechs, 25, [[17, 48, 77]], {Technology.ATTACK: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[49, 50, 77]], {Technology.SCANNER: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[51, 58, 77]], {Technology.FIGHTERS: 1}, 0);
+    assertRemainingBuys(startingTechs, 25, [[59, 61, 77]], {Technology.POINT_DEFENSE: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[62, 66, 77], [1, 12]], {Technology.MINE_SWEEPER: 2}, 0);
+    assertRemainingBuys(startingTechs, 25, [[67, 69, 77], [1, 9]], {Technology.SECURITY_FORCES: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 25, [[70, 73, 77], [1, 8]], {Technology.MILITARY_ACADEMY: 1, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 25, [[74, 77, 77]], {Technology.BOARDING: 1}, 5);
   });
 
   test('scenario4/remaining_tech_purchase_test.cantBuyTacticsIfHasNoAttackAndDefense', () {

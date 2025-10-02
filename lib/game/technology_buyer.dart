@@ -83,14 +83,6 @@ abstract class TechnologyBuyer {
 
   void buyRolledTech(AlienPlayer ap, Technology technology) {
     switch (technology) {
-      case Technology.TACTICS:
-        if (ap.getLevel(Technology.ATTACK) < 2 && apCanBuyNextLevel(ap, Technology.ATTACK))
-          buyNextLevel(ap, Technology.ATTACK);
-        else if (ap.getLevel(Technology.DEFENSE) < 2 && apCanBuyNextLevel(ap, Technology.DEFENSE))
-          buyNextLevel(ap, Technology.DEFENSE);
-        else
-          buyNextLevel(ap, Technology.TACTICS);
-        break;
       case Technology.CLOAKING:
         buyNextLevel(ap, Technology.CLOAKING);
         ap.purchasedCloakThisTurn = true;
@@ -113,11 +105,6 @@ abstract class TechnologyBuyer {
 
   bool apCanBuyNextLevel(AlienPlayer ap, Technology technology) {
     int currentLevel = ap.getLevel(technology);
-    if (technology == Technology.TACTICS) {
-      if (ap.getLevel(Technology.ATTACK) < 2 && apCanBuyNextLevel(ap, Technology.ATTACK)) return true;
-      if (ap.getLevel(Technology.DEFENSE) < 2 && apCanBuyNextLevel(ap, Technology.DEFENSE)) return true;
-      if (ap.getLevel(Technology.ATTACK) < 2 || ap.getLevel(Technology.DEFENSE) < 2) return false;
-    }
     if (technology == Technology.CLOAKING &&
         game.getSeenLevel(Technology.SCANNER) == game.scenario.getMaxLevel(Technology.SCANNER)) {
       return false;
@@ -140,10 +127,24 @@ abstract class TechnologyBuyer {
   }
 
   List<Technology> findBuyableTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
+    var rollTable = Map.fromEntries(
+      TECHNOLOGY_ROLL_TABLE.entries.where((entry) => fleetCanBuyNextLevel(ap, fleet, entry.key, options)),
+    );
+    //dont buy tactics if attack or defense < 2
+    if (rollTable.containsKey(Technology.TACTICS) &&
+        ((ap.getLevel(Technology.ATTACK) < 2) || ap.getLevel(Technology.DEFENSE) < 2)) {
+      if (rollTable.containsKey(Technology.ATTACK) && ap.getLevel(Technology.ATTACK) < 2) {
+        rollTable[Technology.ATTACK] = rollTable[Technology.ATTACK]! + rollTable[Technology.TACTICS]!;
+      } else if (rollTable.containsKey(Technology.DEFENSE) && ap.getLevel(Technology.DEFENSE) < 2) {
+        rollTable[Technology.DEFENSE] = rollTable[Technology.DEFENSE]! + rollTable[Technology.TACTICS]!;
+      }
+      //finally
+      rollTable.remove(Technology.TACTICS);
+    }
     List<Technology> buyable = [];
-    for (Technology technology in TECHNOLOGY_ROLL_TABLE.keys) {
+    for (Technology technology in rollTable.keys) {
       if (fleetCanBuyNextLevel(ap, fleet, technology, options)) {
-        for (int i = 0; i < (TECHNOLOGY_ROLL_TABLE[technology] as int); i++) buyable.add(technology);
+        for (int i = 0; i < (rollTable[technology] as int); i++) buyable.add(technology);
       }
     }
     return buyable;
