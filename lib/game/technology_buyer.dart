@@ -49,9 +49,7 @@ abstract class TechnologyPrices {
 abstract class TechnologyBuyer {
   Game game;
 
-  Map<Technology, int> TECHNOLOGY_ROLL_TABLE = SplayTreeMap((tech1, tech2) {
-    return tech1.index - tech2.index;
-  });
+  Map<Technology, int> TECHNOLOGY_ROLL_TABLE = SplayTreeMap<Technology, int>(Enum.compareByIndex);
 
   List<int> get shipSizeRollTable;
 
@@ -127,7 +125,19 @@ abstract class TechnologyBuyer {
   }
 
   List<Technology> findBuyableTechs(AlienPlayer ap, Fleet fleet, [List<FleetBuildOption> options = const []]) {
-    var rollTable = Map.fromEntries(
+    Map<Technology, int> rollTable = createRollTable(ap, fleet, options);
+    List<Technology> buyable = [];
+    for (Technology technology in rollTable.keys) {
+      if (fleetCanBuyNextLevel(ap, fleet, technology, options)) {
+        for (int i = 0; i < (rollTable[technology] as int); i++) buyable.add(technology);
+      }
+    }
+    return buyable;
+  }
+
+  Map<Technology, int> createRollTable(AlienPlayer ap, Fleet fleet, List<FleetBuildOption> options) {
+    Map<Technology, int> rollTable = SplayTreeMap(Enum.compareByIndex);
+    rollTable.addEntries(
       TECHNOLOGY_ROLL_TABLE.entries.where((entry) => fleetCanBuyNextLevel(ap, fleet, entry.key, options)),
     );
     //dont buy tactics if attack or defense < 2
@@ -141,13 +151,7 @@ abstract class TechnologyBuyer {
       //finally
       rollTable.remove(Technology.TACTICS);
     }
-    List<Technology> buyable = [];
-    for (Technology technology in rollTable.keys) {
-      if (fleetCanBuyNextLevel(ap, fleet, technology, options)) {
-        for (int i = 0; i < (rollTable[technology] as int); i++) buyable.add(technology);
-      }
-    }
-    return buyable;
+    return rollTable;
   }
 
   void buyCloakingIfNeeded(AlienPlayer ap, Fleet fleet) {

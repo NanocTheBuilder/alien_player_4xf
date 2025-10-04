@@ -130,6 +130,21 @@ class Scenario4TechnologyBuyer extends TechnologyBuyer {
   }
 
   @override
+  Map<Technology, int> createRollTable(AlienPlayer ap, Fleet fleet, List<FleetBuildOption> options) {
+    var rollTable = super.createRollTable(ap, fleet, options);
+    //buy ship size if attack or defense in unequipable
+    if(rollTable.containsKey(Technology.ATTACK) && ap.getLevel(Technology.ATTACK) >= ap.getLevel(Technology.SHIP_SIZE)){
+      rollTable[Technology.SHIP_SIZE] = (rollTable[Technology.SHIP_SIZE] ?? 0) + rollTable[Technology.ATTACK]!;
+      rollTable.remove(Technology.ATTACK);
+    }
+    if(rollTable.containsKey(Technology.DEFENSE) && ap.getLevel(Technology.DEFENSE) >= ap.getLevel(Technology.SHIP_SIZE)){
+      rollTable[Technology.SHIP_SIZE] = (rollTable[Technology.SHIP_SIZE] ?? 0) + rollTable[Technology.DEFENSE]!;
+      rollTable.remove(Technology.DEFENSE);
+    }
+    return rollTable;
+  }  
+
+  @override
   bool fleetCanBuyNextLevel(
   AlienPlayer ap,
   Fleet fleet,

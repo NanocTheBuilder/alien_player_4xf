@@ -37,7 +37,7 @@ class MockRoller extends DiceRoller {
   int roll(String description, {int bound = 10}) {
     try {
       var call = rolls.removeFirst();
-      expect(bound, call.bound, reason: "bounds");
+      expect(bound, call.bound, reason: "expected bound: ${call.bound}, should return: ${call.result}");
       expect(description, call.description);
       return call.result;
     } on StateError {

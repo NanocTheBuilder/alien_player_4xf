@@ -54,7 +54,7 @@ void main() {
   //20 CP: SHIP_SIZE 4, SCANNER 1, POINT_DEFENSE 1, BOARDING 1 (25)
 
   //DONE Do not buy Tactics before buying Attack 2 and Defense 2. 
-  //TODO If buying Attack or Defense but AP cannot equip next level based on Ship Size tech, instead purchase the next level of Ship Size, if able.
+  //DONE If buying Attack or Defense but AP cannot equip next level based on Ship Size tech, instead purchase the next level of Ship Size, if able.
   //DONE Reroll Cloaking if AP has seen enemy Scanner 2.
 
   test('scenario4/remaining_tech_purchase_test.allTechAvailable', () {
@@ -186,6 +186,33 @@ void main() {
     //CP 15 Not ehnough for ATTACK or DEFENSE, only TACTICS, MINE_SWEEP, SECURITY FORCES and MILITARY ACADEMY
     assertRemainingBuys({Technology.SHIP_SIZE: 3}, 15, [[1, 12]], {Technology.MINE_SWEEPER: 1}, 5);
   });
+
+  test('scenarios4/remaining_tech_purchase_test.buyShipSizeInsteadOfAttackOrDefense', () {
+    var startingTechs = {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 2};
+    assertRemainingBuys(startingTechs, 30, [[1, 56, 100], [1, 24]], {Technology.SHIP_SIZE: 3, Technology.TACTICS: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[57, 68, 100], [1, 40]], {Technology.TACTICS: 1, Technology.SHIP_SIZE: 3}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 49]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 40]], {Technology.SECURITY_FORCES: 1, Technology.SHIP_SIZE: 3}, 0);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 49]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+    
+    startingTechs = {Technology.ATTACK: 1, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 2};
+    assertRemainingBuys(startingTechs, 30, [[1, 36, 100], [1, 12]], {Technology.SHIP_SIZE: 3, Technology.MINE_SWEEPER: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[37, 68, 100]], {Technology.ATTACK: 2}, 0);
+    assertRemainingBuys(startingTechs, 30, [[69, 71, 100]], {Technology.CLOAKING: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[72, 73, 100], [1, 9]], {Technology.SCANNER: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[74, 81, 100]], {Technology.FIGHTERS: 1}, 5);
+    assertRemainingBuys(startingTechs, 30, [[82, 84, 100], [1, 9]], {Technology.POINT_DEFENSE: 1, Technology.MINE_SWEEPER: 1}, 0);
+    assertRemainingBuys(startingTechs, 30, [[85, 89, 100], [1, 37]], {Technology.MINE_SWEEPER: 1, Technology.SHIP_SIZE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[90, 92, 100], [1, 28]], {Technology.SECURITY_FORCES: 1, Technology.SHIP_SIZE: 3}, 0);
+    assertRemainingBuys(startingTechs, 30, [[93, 96, 100], [1, 37]], {Technology.MILITARY_ACADEMY: 1, Technology.SHIP_SIZE: 3}, 5);
+    assertRemainingBuys(startingTechs, 30, [[97, 100, 100], [1, 9]], {Technology.BOARDING: 1, Technology.MINE_SWEEPER: 1}, 0);
+  });
+
 
   test('scenario4/remaining_tech_purchase_test.cantBuyCloakingIfSeenScanner2', () {
     var startingTechs = {Technology.ATTACK: 2, Technology.DEFENSE: 2, Technology.SHIP_SIZE: 3};

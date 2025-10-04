@@ -141,4 +141,5 @@ void _assertRemainingBuys(Map<Technology, int> startingLevels, int startingCP, L
   expectedLevels.addAll(newLevels);
   assertLevels(expectedLevels);
   expect(sheet.techCP, finalCP);
+  roller.assertAllUsed();
 }

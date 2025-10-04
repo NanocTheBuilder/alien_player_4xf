@@ -80,6 +80,7 @@ void main() {
   assertBuiltFleet(7, 12, [], [Group(ShipType.SCOUT, 2)]);
   });
 
+  //TODO refactor/simplify carrier fleet tests
   test('basegame/fleet_build_test.buildCarrierFleet', () {
   ap.setLevel(Technology.FIGHTERS, 1);
   Fleet fleet = Fleet.ofAlienPlayer(ap, FleetType.REGULAR_FLEET, 27);
